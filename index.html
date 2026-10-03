@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Make a countdown for anything and open it full screen in one of fifteen animated themes.">
+<meta name="description" content="Countdowns, a timer and a stopwatch, each shown full screen in one of twenty animated themes.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314171a'/%3E%3Cpath d='M8 10h16M16 10v13' stroke='%23eceeef' stroke-width='3.4' stroke-linecap='round'/%3E%3Cpath d='M21 20h5' stroke='%23e2552b' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>body{margin:0}img{max-width:100%}</style>
 </head>
@@ -127,6 +127,62 @@ button { cursor: pointer; }
 .hero.th-arcade .big { font-size: clamp(18px, 3.6vw, 42px); line-height: 1.3; }
 .hero.th-arcade h2 { font-size: clamp(16px, 2.6vw, 26px); line-height: 1.3; }
 
+.th-lava { --t-bg: #0e1719; --t-fg: #fff3e6; --t-acc: #ffb347; --t-dim: #a9a096; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: radial-gradient(circle at 30% 70%, #ff7a3d 0 22%, transparent 34%), radial-gradient(circle at 68% 34%, #ff4f7b 0 16%, transparent 30%), radial-gradient(circle at 80% 85%, #ffb347 0 12%, transparent 24%); }
+.th-vinyl { --t-bg: #191513; --t-fg: #f3ead9; --t-acc: #e0563a; --t-dim: #a3978a; --t-num: "Schibsted Grotesk", sans-serif; --t-numw: 700; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.02em;
+  --t-art: radial-gradient(circle at 50% 50%, #e0563a 0 14%, #0b0908 15% 17%, transparent 17.5%), repeating-radial-gradient(circle at 50% 50%, #0b0908 0 2px, #1d1917 2px 4px); }
+.th-dunes { --t-bg: #f1d9a8; --t-fg: #3a2414; --t-acc: #b5461f; --t-dim: #7d5b3c; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(ellipse 80% 45% at 20% 112%, #c98445 98%, transparent 100%), radial-gradient(ellipse 80% 40% at 85% 108%, #dba15c 98%, transparent 100%), radial-gradient(circle at 72% 28%, #fff1c9 0 9%, transparent 9.5%), linear-gradient(#f6e2b6, #eabf80); }
+.th-circuit { --t-bg: #0b2a1e; --t-fg: #d9ffe9; --t-acc: #ffd34d; --t-dim: #79b596; --t-num: "Share Tech Mono", monospace; --t-numw: 400; --t-head: "Share Tech Mono", monospace; --t-ui: "Share Tech Mono", monospace;
+  --t-art: linear-gradient(90deg, transparent 46%, rgba(255,211,77,.7) 46% 54%, transparent 54%) 0 0 / 100% 2px no-repeat, radial-gradient(circle at 25% 60%, #ffd34d 0 6%, transparent 7%), radial-gradient(circle at 75% 35%, #ffd34d 0 6%, transparent 7%), linear-gradient(rgba(121,181,150,.25) 1px, transparent 1px) 0 0 / 100% 8px; }
+.th-clouds { --t-bg: #7db9ea; --t-fg: #0f2a44; --t-acc: #0f2a44; --t-dim: #3e5f80; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 500; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: radial-gradient(ellipse 40% 22% at 30% 62%, #fff 98%, transparent 100%), radial-gradient(ellipse 30% 18% at 55% 52%, #fff 98%, transparent 100%), radial-gradient(ellipse 36% 20% at 78% 70%, #f4f9ff 98%, transparent 100%), linear-gradient(#5aa5e3, #cfe8fa); }
+.focus.th-lava .ftitle { font-weight: 800; letter-spacing: -.03em; }
+.focus.th-vinyl .ftitle { font-weight: 400; font-style: italic; font-size: clamp(30px, 6vw, 72px); }
+.focus.th-dunes .ftitle { font-weight: 500; }
+.focus.th-circuit .ftitle { font-weight: 400; text-transform: uppercase; letter-spacing: .06em; }
+.focus.th-clouds .ftitle { font-weight: 800; letter-spacing: -.03em; }
+.focus.th-clouds .dg { font-weight: 800; }
+
+/* ---------- tabs + tools (timer, stopwatch) ---------- */
+.top { flex-wrap: wrap; }
+.tabs { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 7px; }
+.tabs button { border: 0; background: none; border-radius: 4px; padding: 7px 14px; font-weight: 600; font-size: 14px; color: var(--ink-2); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+@media (max-width: 640px) { .tabs { order: 3; width: 100%; } .tabs button { flex: 1; } }
+.tool { display: grid; gap: 18px; }
+.tread { font: 500 clamp(52px, 13vw, 132px)/1 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.03em; padding: 6px 0; }
+.tread small { font-size: .42em; color: var(--ink-3); letter-spacing: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--rule); background: none; border-radius: 4px; padding: 7px 11px; font: 500 13px/1 var(--f-num); }
+.chips button:hover, .chips button[aria-pressed="true"] { border-color: var(--ink); }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.trow { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.trow .field { min-width: 78px; }
+.trow .field.grow { flex: 1; min-width: 180px; }
+.field select, .field input[type=number] { width: 100%; padding: 10px 11px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); }
+.reprow { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 10px; }
+.laps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); max-width: 460px; }
+.laps li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 2px; border-bottom: 1px solid var(--rule); font: 500 14px/1 var(--f-num); font-variant-numeric: tabular-nums; }
+.laps li span:first-child { color: var(--ink-2); }
+.subhead { font: 700 11px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 18px 6px 8px; border-bottom: 1px solid var(--rule); }
+#toast { position: fixed; z-index: 60; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 5px; font: 500 14px/1.3 var(--f-ui); max-width: calc(100vw - 32px); }
+
+/* focus extras */
+.fctl { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.fctl .ib { padding: 11px 18px; font-size: 15px; }
+.fctl .ib.go { background: var(--t-fg); color: var(--t-bg); border-color: var(--t-fg); }
+.fms { font: var(--t-numw) clamp(20px, 3.4vw, 40px)/1 var(--t-num); color: var(--t-dim); font-variant-numeric: tabular-nums; margin-top: calc(var(--gap, 0px) * -1); }
+.falt { font: 400 clamp(12px, 1.3vw, 14px)/1.4 var(--t-ui); color: var(--t-dim); font-variant-numeric: tabular-nums; }
+.fnote { font: 400 clamp(13px, 1.5vw, 16px)/1.4 var(--t-ui); color: var(--t-fg); max-width: 60ch; overflow-wrap: anywhere; }
+.fnote a { color: var(--t-acc); }
+.flaps { position: absolute; z-index: 2; right: clamp(16px, 4vw, 40px); bottom: 58px; text-align: right; font: 500 13px/1.5 var(--t-ui); color: var(--t-dim); font-variant-numeric: tabular-nums; white-space: pre; pointer-events: none; }
+#mmenu { grid-template-columns: minmax(0, 1fr); width: min(280px, calc(100vw - 24px)); }
+#mmenu button { grid-template-columns: 1fr auto; }
+#mmenu button small { grid-column: auto; margin: 0; }
+
+#tab-cd { display: grid; gap: 28px; }
+
 /* ---------- editor sheet ---------- */
 .scrim { position: fixed; inset: 0; background: rgba(10,12,14,.45); z-index: 40; display: grid; place-items: end center; padding: 0; }
 @media (min-width: 700px) { .scrim { place-items: center; padding: 24px; } }
@@ -194,6 +250,7 @@ button { cursor: pointer; }
 .unit label { font: 500 clamp(10px, calc(var(--h) * .1), 15px)/1 var(--t-ui); letter-spacing: .2em; text-transform: uppercase; color: var(--t-dim); }
 .sep { width: calc(var(--h) * .34); height: var(--h); font: var(--t-numw) calc(var(--h) * .6)/var(--h) var(--t-num); color: var(--t-dim); text-align: center; }
 .fclock.nodays .u-d, .fclock.nodays .s0 { display: none; }
+.fclock.nohrs .u-h, .fclock.nohrs .s1 { display: none; }
 @media (max-aspect-ratio: 4/5) {
   .fclock.days { --h: min(calc(88cqw / 3.2), 17vh); display: grid; grid-template-columns: repeat(2, max-content); gap: calc(var(--h) * .14) calc(var(--h) * .3); }
   .fclock.days .sep { display: none; }
@@ -291,9 +348,11 @@ button { cursor: pointer; }
 <div class="shell" id="shell">
   <header class="top">
     <div class="brand"><b>T<i>−</i>Minus</b><span id="nowline">—</span></div>
+    <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true">Countdowns</button><button type="button" data-tab="timer" aria-pressed="false">Timer</button><button type="button" data-tab="sw" aria-pressed="false">Stopwatch</button></nav>
     <button class="btn primary" id="newBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long"> countdown</span></span></button>
   </header>
 
+  <div id="tab-cd">
   <button class="hero" id="hero" type="button" hidden></button>
 
   <section class="sec" id="mineSec">
@@ -306,7 +365,40 @@ button { cursor: pointer; }
     <div id="shared"></div>
   </section>
 
-  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
+  </div>
+
+  <section class="tool" id="tab-timer" hidden>
+    <div class="sechead"><h3>Timer</h3><span id="tmState">Set a time and start</span></div>
+    <div class="tread" id="tmRead">00:10:00</div>
+    <div class="chips" id="tmPresets"></div>
+    <div class="trow">
+      <label class="field"><span>Hours</span><input type="number" id="tmH" min="0" max="99" value="0" inputmode="numeric"></label>
+      <label class="field"><span>Minutes</span><input type="number" id="tmM" min="0" max="59" value="10" inputmode="numeric"></label>
+      <label class="field"><span>Seconds</span><input type="number" id="tmS" min="0" max="59" value="0" inputmode="numeric"></label>
+      <label class="field grow"><span>Label (optional)</span><input type="text" id="tmLabel" maxlength="40" placeholder="Pasta, focus session, laundry…" autocomplete="off"></label>
+    </div>
+    <div class="trow">
+      <label class="field" style="min-width:180px"><span>Theme</span><select id="tmTheme"></select></label>
+      <button class="btn primary" id="tmGo" type="button">Start timer</button>
+      <button class="btn" id="tmReset" type="button">Reset</button>
+      <button class="btn ghost" id="tmOpen" type="button">Open full screen</button>
+    </div>
+  </section>
+
+  <section class="tool" id="tab-sw" hidden>
+    <div class="sechead"><h3>Stopwatch</h3><span>Keeps running if you close the page</span></div>
+    <div class="tread" id="swRead">00:00:00</div>
+    <div class="trow">
+      <label class="field" style="min-width:180px"><span>Theme</span><select id="swTheme"></select></label>
+      <button class="btn primary" id="swGo" type="button">Start</button>
+      <button class="btn" id="swLap" type="button">Lap</button>
+      <button class="btn" id="swReset" type="button">Reset</button>
+      <button class="btn ghost" id="swOpen" type="button">Open full screen</button>
+    </div>
+    <ol class="laps" id="swLaps"></ol>
+  </section>
+
+  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
 </div>
 
 <!-- editor -->
@@ -325,7 +417,8 @@ button { cursor: pointer; }
       </div>
     </div>
     <div class="field"><span>Theme</span><div class="tpick" id="tpick"></div></div>
-    <label class="check"><input type="checkbox" id="fYearly"><span>Repeat every year<small>Birthdays, anniversaries, holidays. On the day it celebrates, then rolls over to next year.</small></span></label>
+    <div class="field"><span>Repeat</span><div class="reprow"><select id="fRepeat"><option value="none">Doesn’t repeat</option><option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option><option value="days">Every few days…</option></select><input type="number" id="fEvery" min="1" max="365" value="14" aria-label="Number of days" hidden></div></div>
+    <label class="field"><span>Note or link (optional)</span><input type="text" id="fNote" maxlength="200" placeholder="Gate B12, bring passport · https://…" autocomplete="off"></label>
     <label class="check" id="shareRow" hidden><input type="checkbox" id="fShared"><span>Share with everyone<small>Adds it to the shared list that everyone with this app's link can see.</small></span></label>
     <div class="err" id="ferr" hidden></div>
     <div class="acts">
@@ -344,13 +437,18 @@ button { cursor: pointer; }
     <button class="ib" id="shareBtn" type="button" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.8 2.8 0 014 4l-1 1M9 11.5l-1 1a2.8 2.8 0 01-4-4l1-1"/></svg><span id="shareLbl">Share link</span></button>
     <button class="ib" id="themeBtn" type="button" aria-haspopup="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5v11" /></svg><span id="themeName">Theme</span></button>
     <button class="ib" id="editBtn" type="button" aria-label="Edit"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13l1-3.5L11 2.5 13.5 5 6.5 12z"/></svg><span>Edit</span></button>
+    <button class="ib" id="moreBtn" type="button" aria-haspopup="true" aria-label="More options"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button>
     <button class="ib" id="fsBtn" type="button" aria-label="Full screen"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button>
   </div>
   <div class="fmain">
     <div class="feb" id="feb"></div>
     <h1 class="ftitle" id="ftitle"></h1>
     <div class="fclock" id="fclock" role="timer"></div>
+    <div class="fms" id="fms" hidden></div>
     <div class="fmeta" id="fmeta"></div>
+    <div class="falt" id="falt" hidden></div>
+    <div class="fnote" id="fnote" hidden></div>
+    <div class="fctl" id="fctl" hidden></div>
   </div>
   <div class="ffoot">
     <div class="fprog"><i id="fprog"></i></div>
@@ -358,8 +456,11 @@ button { cursor: pointer; }
   </div>
   <div class="flog" id="flog" aria-hidden="true"></div>
   <div class="tmenu" id="tmenu" hidden></div>
+  <div class="tmenu" id="mmenu" hidden></div>
+  <div class="flaps" id="flaps" aria-hidden="true" hidden></div>
   <canvas id="fx"></canvas>
 </div>
+<div id="toast" role="status" hidden></div>
 
 <script>
 (() => {
@@ -403,20 +504,44 @@ button { cursor: pointer; }
                 words: { down: 'only this long until', up: 'this long since', today: 'today!' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
     party:    { name: 'Party', blurb: 'Balloons, bunting, confetti', digit: 'roll', glyph: '●',
                 words: { down: 'Get ready for', up: 'Still celebrating', today: 'It’s today' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    lava:     { name: 'Lava lamp', blurb: 'Slow blobs of warm light', digit: 'roll', glyph: '◍',
+                words: { down: 'Counting down to', up: 'Time since', today: 'Happening now' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    vinyl:    { name: 'Vinyl', blurb: 'A record turning at 33⅓', digit: 'roll', glyph: '33',
+                words: { down: 'Next track in', up: 'Playing for', today: 'Now playing' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    dunes:    { name: 'Dunes', blurb: 'Drifting sand under a pale sun', digit: 'roll', glyph: '∿',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    circuit:  { name: 'Circuit', blurb: 'Signals running along board traces', digit: 'glitch', glyph: '⏚',
+                words: { down: 'Time remaining', up: 'Uptime', today: 'Signal live' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
+    clouds:   { name: 'Clouds', blurb: 'A bright day, drifting clouds', digit: 'roll', glyph: '☁',
+                words: { down: 'Looking forward to', up: 'Time since', today: 'Today’s the day' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
   };
   const TKEYS = Object.keys(THEMES);
 
   /* ================= time maths ================= */
-  // effective occurrence: yearly countdowns celebrate for a day, then roll to next year
+  // Repeats: on reaching the date a repeating countdown celebrates for a while, then rolls to its next occurrence.
+  const REPEATS = ['none', 'yearly', 'monthly', 'weekly', 'days'], RCODE = { none: 0, yearly: 1, monthly: 2, weekly: 3, days: 4 };
+  const unrep = c => typeof c === 'string' && c[0] === 'd' ? { repeat: 'days', every: clamp(+c.slice(1) || 1, 1, 365) } : { repeat: ['none', 'yearly', 'monthly', 'weekly'][c] || 'none', every: 1 };
+  const everyN = cd => clamp(cd.every | 0 || 1, 1, 365);
+  const repeatLabel = cd => ({ yearly: 'Every year', monthly: 'Every month', weekly: 'Every week', days: everyN(cd) === 1 ? 'Every day' : 'Every ' + everyN(cd) + ' days' })[cd.repeat] || '';
+  function shift(d, rp, n, dir) {
+    if (rp === 'yearly') d.setFullYear(d.getFullYear() + dir);
+    else if (rp === 'monthly') d.setMonth(d.getMonth() + dir);
+    else d.setDate(d.getDate() + (rp === 'weekly' ? 7 : n) * dir);
+  }
   function occ(cd, now) {
     let t = cd.target, prev;
-    if (cd.repeat === 'yearly') {
-      const d = new Date(t);
+    const rp = REPEATS.includes(cd.repeat) ? cd.repeat : 'none', n = everyN(cd);
+    if (rp !== 'none') {
+      const win = rp === 'yearly' || rp === 'monthly' ? DAY : 36e5, d = new Date(t);
+      if ((rp === 'weekly' || rp === 'days') && t + win <= now) { // jump most of the way, then step
+        const stepD = rp === 'weekly' ? 7 : n, k = Math.floor((now - win - t) / (stepD * DAY));
+        if (k > 0) { d.setDate(d.getDate() + k * stepD); t = d.getTime(); }
+      }
       let guard = 0;
-      while (t + DAY <= now && guard++ < 400) { d.setFullYear(d.getFullYear() + 1); t = d.getTime(); }
-      const p = new Date(t); p.setFullYear(p.getFullYear() - 1); prev = p.getTime();
+      while (t + win <= now && guard++ < 1200) { shift(d, rp, n, 1); t = d.getTime(); }
+      const p = new Date(t); shift(p, rp, n, -1); prev = p.getTime();
     } else prev = Math.min(cd.createdAt || t - 30 * DAY, t - 60e3);
-    const mode = now < t ? 'down' : (cd.repeat === 'yearly' ? 'today' : 'up');
+    const mode = now < t ? 'down' : (rp !== 'none' ? 'today' : 'up');
     return { t, prev, mode, prog: clamp((now - prev) / (t - prev), 0, 1) };
   }
   function split(ms) {
@@ -460,18 +585,18 @@ button { cursor: pointer; }
   const all = () => mine.concat(shared);
   // a countdown opened from a share link lives only in memory until the viewer saves it
   let linked = null;
-  const find = id => all().find(c => c.id === id) || (linked && linked.id === id ? linked : null);
+  const find = id => all().find(c => c.id === id) || (linked && linked.id === id ? linked : null) || toolCd(id);
   // Share links carry the whole countdown in the address, so they need a real web address:
   // they are offered on the website, not inside an embedding frame that hides the page's URL.
   const canLink = (() => { try { return window.self === window.top && /^https?:$/.test(location.protocol); } catch (e) { return false; } })();
   const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
-  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, cd.theme, cd.repeat === 'yearly' ? 1 : 0]));
+  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, cd.theme, cd.repeat === 'days' ? 'd' + everyN(cd) : (RCODE[cd.repeat] || 0), cd.note || '']));
   function readLink(code) {
     try {
       const a = JSON.parse(b64d(code));
       if (typeof a[0] !== 'string' || !isFinite(a[1]) || !THEMES[a[2]]) return null;
-      return { id: 'link', linked: true, title: a[0].slice(0, 80), target: +a[1], theme: a[2], repeat: a[3] ? 'yearly' : 'none', createdAt: Date.now() };
+      return { id: 'link', linked: true, title: a[0].slice(0, 80), target: +a[1], theme: a[2], ...unrep(a[3]), note: typeof a[4] === 'string' ? a[4].slice(0, 200) : '', createdAt: Date.now() };
     } catch (e) { return null; }
   }
   const canEditShared = c => sharedOK && !sharedRO && (me.owner || (c.createdBy && c.createdBy === me.id));
@@ -500,7 +625,7 @@ button { cursor: pointer; }
     const meta = document.createElement('div'); meta.className = 'me';
     const w = document.createElement('span'); w.textContent = fmtShort(occ(cd, Date.now()).t); meta.appendChild(w);
     const th = document.createElement('span'); th.textContent = THEMES[cd.theme].name; meta.appendChild(th);
-    if (cd.repeat === 'yearly') { const r = document.createElement('span'); r.textContent = 'Every year'; meta.appendChild(r); }
+    if (repeatLabel(cd)) { const r = document.createElement('span'); r.textContent = repeatLabel(cd); meta.appendChild(r); }
     if (cd.example) { const e = document.createElement('span'); e.className = 'tag'; e.textContent = 'Example'; meta.appendChild(e); }
     if (cd.shared) { const by = document.createElement('span'); by.className = 'by'; by.dataset.uid = cd.createdBy || ''; meta.appendChild(by); }
     mid.appendChild(meta); b.appendChild(mid);
@@ -513,7 +638,13 @@ button { cursor: pointer; }
     timers.length = 0;
     const m = $('mine'); m.textContent = '';
     if (!mine.length) m.appendChild(emptyEl('Nothing here yet. Press <b>New countdown</b> to add a birthday, a launch, a trip, anything with a date.'));
-    sortList(mine).forEach(c => m.appendChild(rowEl(c)));
+    { // one-off countdowns that have passed are filed under Finished
+      let cut = false; const nowL = Date.now();
+      sortList(mine).forEach(c => {
+        if (!cut && occ(c, nowL).mode === 'up') { cut = true; const h = document.createElement('div'); h.className = 'subhead'; h.textContent = 'Finished'; m.appendChild(h); }
+        m.appendChild(rowEl(c));
+      });
+    }
     $('sharedSec').hidden = !sharedOK;
     const s = $('shared'); s.textContent = '';
     if (sharedOK) {
@@ -612,7 +743,7 @@ button { cursor: pointer; }
     $('fDate').value = ymdStr(h.y, h.m, h.d);
     const t = $('fTitle'); if (!t.value.trim() || t.value === autoName) { t.value = h.name; autoName = h.name; }
     if (!themeTouched) { pickTheme = h.theme; $('tpick').querySelectorAll('.tp').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === h.theme))); }
-    $('fYearly').checked = h.fixed;
+    $('fRepeat').value = h.fixed ? 'yearly' : 'none'; syncEvery();
     renderCal();
   }
   function renderCal() {
@@ -653,6 +784,7 @@ button { cursor: pointer; }
       b.append(n, s); b.onclick = () => pickHoliday(h); holl.appendChild(b);
     });
   }
+  function syncEvery() { $('fEvery').hidden = $('fRepeat').value !== 'days'; }
   function toInputs(t) {
     const d = new Date(t);
     return { date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
@@ -664,7 +796,8 @@ button { cursor: pointer; }
     const v = toInputs(cd ? cd.target : new Date(new Date(base).setHours(0, 0, 0, 0)).getTime());
     $('fTitle').value = cd ? cd.title : '';
     $('fDate').value = v.date; $('fTime').value = v.time;
-    $('fYearly').checked = !!(cd && cd.repeat === 'yearly');
+    $('fRepeat').value = cd && REPEATS.includes(cd.repeat) ? cd.repeat : 'none'; $('fEvery').value = (cd && cd.every) || 14; syncEvery();
+    $('fNote').value = (cd && cd.note) || '';
     pickTheme = cd ? cd.theme : 'minimal'; buildPicker();
     themeTouched = !!cd; autoName = null; calInit();
     const canShare = sharedOK && !sharedRO && (!cd || !cd.shared || canEditShared(cd));
@@ -689,7 +822,7 @@ button { cursor: pointer; }
     const target = new Date(Y, M - 1, D, hh || 0, mm || 0, 0).getTime();
     if (!isFinite(target)) return showErr('That date is not valid.');
     const wantShared = !$('shareRow').hidden && $('fShared').checked;
-    const body = { title, target, theme: pickTheme, repeat: $('fYearly').checked ? 'yearly' : 'none' };
+    const body = { title, target, theme: pickTheme, repeat: $('fRepeat').value, every: clamp($('fEvery').value | 0 || 1, 1, 365), note: $('fNote').value.trim().slice(0, 200) };
     const old = editing;
     const id = old ? old.id : uid();
     const createdAt = old ? (old.createdAt || Date.now()) : Date.now();
@@ -782,12 +915,13 @@ button { cursor: pointer; }
     ['d', 'h', 'm', 's'].forEach(k => ensure(k, 2));
     return {
       seps,
-      set(p) {
-        const nd = p.d === 0;
+      set(p, tool) {
+        const nd = p.d === 0, nh = !!tool && nd && p.h === 0; // a timer under an hour drops the hours column too
+        root.classList.toggle('nohrs', nh);
         const dStr = String(p.d).padStart(2, '0');
         if (dStr.length !== dn) { dn = dStr.length; ensure('d', dn); }
         root.classList.toggle('nodays', nd); root.classList.toggle('days', !nd);
-        root.style.setProperty('--n', nd ? 6 : 6 + dn); root.style.setProperty('--s', nd ? 2 : 3);
+        root.style.setProperty('--n', nh ? 4 : nd ? 6 : 6 + dn); root.style.setProperty('--s', nh ? 1 : nd ? 2 : 3);
         const vals = { d: dStr, h: pad(p.h), m: pad(p.m), s: pad(p.s) };
         for (const k in vals) units[k].cells.forEach((c, i) => setDigit(c, vals[k][i], T.digit));
         root.setAttribute('aria-label', `${p.d} days ${p.h} hours ${p.m} minutes`);
@@ -1394,6 +1528,411 @@ button { cursor: pointer; }
     };
   };
 
+  // Lava lamp: slow blobs of warm light that merge where they overlap; they stir every minute.
+  BG.lava = cv => {
+    const K = canvasKit(cv); let blobs = [], stir = -1e9;
+    const C = ['255,122,61', '255,79,123', '255,179,71'];
+    return {
+      resize() { K.size(); const m = Math.min(K.W, K.H); blobs = Array.from({ length: 9 }, (_, i) => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: m * (.12 + Math.random() * .16), vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .35, c: C[i % 3], ph: Math.random() * 6.283 })); },
+      pulse(kind) { if (kind === 'min') stir = performance.now(); },
+      frame(now) {
+        const g = K.g; g.fillStyle = '#0e1719'; g.fillRect(0, 0, K.W, K.H);
+        const sp = 1 + (now - stir < 4000 ? Math.sin((now - stir) / 4000 * Math.PI) * 5 : 0);
+        g.globalCompositeOperation = 'lighter';
+        for (const b of blobs) {
+          if (!reduce) { b.x += b.vx * sp; b.y += b.vy * sp; if (b.x < -b.r * .3 || b.x > K.W + b.r * .3) b.vx *= -1; if (b.y < -b.r * .3 || b.y > K.H + b.r * .3) b.vy *= -1; }
+          const r = b.r * (1 + (reduce ? 0 : .08 * Math.sin(now / 1800 + b.ph)));
+          const rg = g.createRadialGradient(b.x, b.y, 0, b.x, b.y, r); rg.addColorStop(0, `rgba(${b.c},.5)`); rg.addColorStop(.55, `rgba(${b.c},.22)`); rg.addColorStop(1, `rgba(${b.c},0)`);
+          g.fillStyle = rg; g.fillRect(b.x - r, b.y - r, r * 2, r * 2);
+        }
+        g.globalCompositeOperation = 'source-over';
+        g.fillStyle = 'rgba(14,23,25,.35)'; const [, , r] = centerOf($('fclock')); g.fillRect(0, r.top - 30, K.W, r.height + 60);
+      },
+      finale() { stir = performance.now(); FX.burst('dot', ['#ff7a3d', '#ff4f7b', '#ffb347'], 150); },
+    };
+  };
+
+  // Vinyl: a record turning at 33 1/3 rpm behind the clock, with fixed light catching the grooves.
+  BG.vinyl = cv => {
+    const K = canvasKit(cv); let pops = [];
+    return {
+      resize() { K.size(); },
+      pulse(kind) { if (kind === 'sec' && !reduce) pops.push({ a: Math.random() * 6.283, d: .35 + Math.random() * .6, t0: performance.now() }); },
+      frame(now) {
+        const g = K.g; g.clearRect(0, 0, K.W, K.H);
+        // the record sits off to one side so its label never lands behind the digits
+        const tall = K.H > K.W, cx = tall ? K.W * .5 : K.W * .97, cy = tall ? K.H * 1.02 : K.H * .74, R = Math.max(K.W, K.H) * (tall ? .5 : .56), rot = reduce ? 0 : now / 1000 * (33.333 / 60) * 6.283;
+        g.fillStyle = '#0b0908'; g.beginPath(); g.arc(cx, cy, R, 0, 6.283); g.fill();
+        g.lineWidth = 1;
+        for (let r = R * .25; r < R * .98; r += 5) { g.strokeStyle = `rgba(255,240,220,${(r / 5 | 0) % 9 === 0 ? .11 : .045})`; g.beginPath(); g.arc(cx, cy, r, 0, 6.283); g.stroke(); }
+        for (const a0 of [-.9, 2.24]) { // sheen stays put while the record turns
+          const sg = g.createRadialGradient(cx, cy, R * .34, cx, cy, R); sg.addColorStop(0, 'rgba(255,245,230,0)'); sg.addColorStop(.5, 'rgba(255,245,230,.07)'); sg.addColorStop(1, 'rgba(255,245,230,0)');
+          g.fillStyle = sg; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R, a0 - .22, a0 + .22); g.fill();
+        }
+        g.save(); g.translate(cx, cy); g.rotate(rot);
+        g.scale(.7, .7); g.fillStyle = '#e0563a'; g.beginPath(); g.arc(0, 0, R * .3, 0, 6.283); g.fill();
+        g.fillStyle = 'rgba(25,21,19,.55)'; g.fillRect(-R * .2, -R * .13, R * .4, R * .012); g.fillRect(-R * .14, R * .1, R * .28, R * .008); g.beginPath(); g.arc(R * .17, 0, R * .018, 0, 6.283); g.fill();
+        g.restore();
+        pops = pops.filter(p => now - p.t0 < 500);
+        for (const p of pops) { g.globalAlpha = 1 - (now - p.t0) / 500; g.fillStyle = '#f3ead9'; g.fillRect(cx + Math.cos(p.a) * R * p.d, cy + Math.sin(p.a) * R * p.d, 2, 2); }
+        g.globalAlpha = 1;
+      },
+      finale() { FX.burst('confetti', ['#e0563a', '#f3ead9', '#a3978a'], 150); },
+    };
+  };
+
+  // Dunes: layered sand ridges drifting slowly under a pale sun, with grains blowing across; a gust every minute.
+  BG.dunes = cv => {
+    const K = canvasKit(cv); let grains = [], gust = -1e9;
+    const L = [['#e9bd7c', .56, 34, 1.1], ['#dca35f', .66, 44, 1.7], ['#c98445', .77, 52, 2.3], ['#a9652f', .89, 40, 3.1]];
+    return {
+      resize() { K.size(); grains = Array.from({ length: Math.round(K.W / 7) }, () => ({ x: Math.random() * K.W, y: K.H * (.45 + Math.random() * .55), v: 1 + Math.random() * 2.5, l: 4 + Math.random() * 12 })); },
+      pulse(kind) { if (kind === 'min') gust = performance.now(); },
+      frame(now) {
+        const g = K.g, t = reduce ? 0 : now / 1000;
+        const gr = g.createLinearGradient(0, 0, 0, K.H * .7); gr.addColorStop(0, '#f8e7be'); gr.addColorStop(1, '#efc98d'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        const sx = K.W * .74, sy = K.H * .26, sg = g.createRadialGradient(sx, sy, 0, sx, sy, 190); sg.addColorStop(0, 'rgba(255,248,220,.95)'); sg.addColorStop(.2, 'rgba(255,244,205,.6)'); sg.addColorStop(1, 'rgba(255,244,205,0)');
+        g.fillStyle = sg; g.fillRect(sx - 190, sy - 190, 380, 380);
+        L.forEach(([c, yb, amp, f], i) => {
+          g.fillStyle = c; g.beginPath(); g.moveTo(0, K.H);
+          for (let x = 0; x <= K.W; x += 14) g.lineTo(x, K.H * yb - amp * (Math.sin(x / K.W * 6.283 * f / 2 + i * 1.9 + t * .03 * (i + 1)) * .75 + Math.sin(x / K.W * 6.283 * f * 1.6 + i) * .25));
+          g.lineTo(K.W, K.H); g.fill();
+        });
+        const w = 1 + (now - gust < 5000 ? Math.sin((now - gust) / 5000 * Math.PI) * 5 : 0);
+        g.strokeStyle = 'rgba(255,240,205,.55)'; g.lineWidth = 1; g.beginPath();
+        for (const p of grains) { if (!reduce) { p.x += p.v * w; if (p.x > K.W + 20) { p.x = -20; p.y = K.H * (.45 + Math.random() * .55); } } g.moveTo(p.x, p.y); g.lineTo(p.x - p.l * w * .6, p.y + 1); }
+        g.stroke();
+      },
+      finale() { gust = performance.now(); FX.burst('dot', ['#b5461f', '#fff1c9', '#dba15c'], 140); },
+    };
+  };
+
+  // Circuit: board traces on a grid; signals run along them, and a fresh one leaves the clock each second.
+  BG.circuit = cv => {
+    const K = canvasKit(cv); let traces = [], sig = [], flash = -1e9;
+    return {
+      resize() {
+        K.size(); let s = 21; const rn = () => (s = s * 16807 % 2147483647) / 2147483647; const G = 28; traces = []; sig = [];
+        for (let i = 0; i < Math.round(K.W * K.H / 26000); i++) {
+          let x = Math.round(rn() * K.W / G) * G, y = Math.round(rn() * K.H / G) * G, d = rn() * 4 | 0; const pts = [[x, y]]; let len = 0;
+          for (let k = 0; k < 3 + (rn() * 4 | 0); k++) { const l = (2 + (rn() * 6 | 0)) * G; x += [l, 0, -l, 0][d]; y += [0, l, 0, -l][d]; pts.push([x, y]); len += l; d = (d + (rn() < .5 ? 1 : 3)) % 4; }
+          traces.push({ pts, len });
+          if (rn() < .6) sig.push({ t: i, p: rn(), v: .05 + rn() * .12 });
+        }
+      },
+      pulse(kind) { if (reduce) return; if (kind === 'sec' && traces.length) { const [cx, cy] = centerOf($('fclock')); let best = 0, bd = 1e9; for (let k = 0; k < 6; k++) { const i = Math.random() * traces.length | 0, d = Math.hypot(traces[i].pts[0][0] - cx, traces[i].pts[0][1] - cy); if (d < bd) { bd = d; best = i; } } sig.push({ t: best, p: 0, v: .3, once: true }); } if (kind === 'min') flash = performance.now(); },
+      frame(now) {
+        const g = K.g; g.clearRect(0, 0, K.W, K.H);
+        const fl = now - flash < 1200 ? 1 - (now - flash) / 1200 : 0;
+        g.lineWidth = 2; g.lineJoin = 'round'; g.strokeStyle = `rgba(121,181,150,${.28 + fl * .5})`;
+        for (const t of traces) { g.beginPath(); t.pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.stroke(); }
+        g.fillStyle = '#0b2a1e'; g.strokeStyle = `rgba(255,211,77,${.55 + fl * .45})`; g.lineWidth = 1.6;
+        for (const t of traces) for (const p of [t.pts[0], t.pts[t.pts.length - 1]]) { g.beginPath(); g.arc(p[0], p[1], 4.5, 0, 6.283); g.fill(); g.stroke(); }
+        g.fillStyle = '#ffd34d';
+        sig = sig.filter(sg => !(sg.once && sg.p >= 1));
+        for (const sg of sig) {
+          if (!reduce) sg.p += sg.v * .033; if (sg.p > 1 && !sg.once) sg.p = 0;
+          const t = traces[sg.t]; let d = Math.min(1, sg.p) * t.len;
+          for (let i = 1; i < t.pts.length; i++) { const a = t.pts[i - 1], b = t.pts[i], l = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]); if (d <= l) { const u = d / l; g.fillRect(a[0] + (b[0] - a[0]) * u - 3, a[1] + (b[1] - a[1]) * u - 3, 6, 6); break; } d -= l; }
+        }
+        if (sig.length > 220) sig.splice(0, sig.length - 220);
+      },
+      finale() { flash = performance.now(); FX.burst('dot', ['#ffd34d', '#d9ffe9'], 150); },
+    };
+  };
+
+  // Clouds: a bright day, soft clouds drifting at three depths, a few birds crossing.
+  BG.clouds = cv => {
+    const K = canvasKit(cv); let cl = [], birds = [];
+    const mk = x => { const s = .6 + Math.random() * 1.1; return { x, y: K.H * (.08 + Math.random() * .78), s, v: (.12 + Math.random() * .2) * s, puffs: Array.from({ length: 5 }, (_, i) => [(i - 2) * 34 + (Math.random() - .5) * 14, (Math.random() - .5) * 16, 26 + Math.random() * 22]) }; };
+    return {
+      resize() { K.size(); cl = Array.from({ length: Math.max(6, Math.round(K.W / 190)) }, () => mk(Math.random() * K.W)); birds = Array.from({ length: 4 }, (_, i) => ({ x: Math.random() * K.W, y: K.H * (.14 + i * .07), v: .7 + Math.random() * .6, ph: Math.random() * 6.283 })); },
+      pulse() {},
+      frame(now) {
+        const g = K.g;
+        const gr = g.createLinearGradient(0, 0, 0, K.H); gr.addColorStop(0, '#58a3e2'); gr.addColorStop(1, '#d3eafb'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        const sg = g.createRadialGradient(K.W * .16, K.H * .16, 0, K.W * .16, K.H * .16, 260); sg.addColorStop(0, 'rgba(255,252,230,.9)'); sg.addColorStop(.18, 'rgba(255,250,220,.5)'); sg.addColorStop(1, 'rgba(255,250,220,0)');
+        g.fillStyle = sg; g.fillRect(0, 0, K.W * .16 + 260, K.H * .16 + 260);
+        for (const c of cl) {
+          if (!reduce) c.x += c.v; if (c.x - 140 * c.s > K.W) Object.assign(c, mk(-160));
+          g.globalAlpha = .55 + .3 * (c.s - .6); g.fillStyle = '#ffffff';
+          g.beginPath(); for (const p of c.puffs) { g.moveTo(c.x + p[0] * c.s + p[2] * c.s, c.y + p[1] * c.s); g.arc(c.x + p[0] * c.s, c.y + p[1] * c.s, p[2] * c.s, 0, 6.283); } g.fill();
+          g.beginPath(); g.ellipse(c.x, c.y + 14 * c.s, 92 * c.s, 20 * c.s, 0, 0, 6.283); g.fill();
+        }
+        g.globalAlpha = .7; g.strokeStyle = '#0f2a44'; g.lineWidth = 1.6; g.lineCap = 'round'; g.beginPath();
+        for (const b of birds) { if (!reduce) { b.x += b.v; if (b.x > K.W + 20) b.x = -20; } const f = reduce ? 3 : Math.sin(now / 160 + b.ph) * 5; g.moveTo(b.x - 9, b.y - f); g.quadraticCurveTo(b.x - 4, b.y - 2, b.x, b.y); g.quadraticCurveTo(b.x + 4, b.y - 2, b.x + 9, b.y - f); }
+        g.stroke(); g.globalAlpha = 1;
+      },
+      finale() { FX.burst('confetti', ['#ffffff', '#ff8a3d', '#0f2a44', '#ffd34d'], 160); },
+    };
+  };
+
+  /* ================= tools: timer + stopwatch ================= */
+  // Both run off wall-clock timestamps, so they keep correct time across reloads and background tabs.
+  const TKEY = 'tminus.tools';
+  const tools = {
+    timer: { dur: 600000, left: 600000, endAt: 0, running: false, done: false, theme: 'minimal', label: '' },
+    sw: { acc: 0, startAt: 0, running: false, laps: [], theme: 'board' },
+  };
+  try { const r = JSON.parse(localStorage.getItem(TKEY) || 'null'); if (r && r.timer && r.sw) { Object.assign(tools.timer, r.timer); Object.assign(tools.sw, r.sw); } } catch (e) {}
+  if (!THEMES[tools.timer.theme]) tools.timer.theme = 'minimal';
+  if (!THEMES[tools.sw.theme]) tools.sw.theme = 'board';
+  if (!Array.isArray(tools.sw.laps)) tools.sw.laps = [];
+  const saveTools = () => { try { localStorage.setItem(TKEY, JSON.stringify(tools)); } catch (e) {} };
+  function toolCd(id) {
+    if (id === 'timer') return { id, kind: 'timer', title: tools.timer.label || 'Timer', theme: tools.timer.theme };
+    if (id === 'sw') return { id, kind: 'sw', title: 'Stopwatch', theme: tools.sw.theme };
+    return null;
+  }
+  const timerLeft = now => tools.timer.running ? Math.max(0, tools.timer.endAt - now) : tools.timer.left;
+  const swElapsed = now => tools.sw.running ? now - tools.sw.startAt + tools.sw.acc : tools.sw.acc;
+  const fmtDur = (ms, cs) => { const s = Math.floor(ms / 1000), b = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s % 3600 / 60))}:${pad(s % 60)}`; return cs ? b + '.' + pad(Math.floor(ms % 1000 / 10)) : b; };
+  function timerSet(ms) { const T = tools.timer; if (T.running) return; T.dur = T.left = clamp(ms, 1000, 99 * 36e5 + 59 * 6e4 + 59e3); T.done = false; }
+  function timerToggle() {
+    const T = tools.timer, now = Date.now();
+    if (T.running) { T.left = Math.max(0, T.endAt - now); T.running = false; return; }
+    if (T.left <= 0 || T.done) T.left = T.dur;
+    T.endAt = now + T.left; T.running = true; T.done = false;
+  }
+  function timerReset() { const T = tools.timer; T.running = false; T.left = T.dur; T.done = false; }
+  function timerAdd(ms) { const T = tools.timer; if (T.running) T.endAt += ms; else { T.left += ms; T.done = false; } }
+  function swToggle() { const S = tools.sw, now = Date.now(); if (S.running) { S.acc = swElapsed(now); S.running = false; } else { S.startAt = now; S.running = true; } }
+  function swLap() { const S = tools.sw, el = swElapsed(Date.now()); if (el > 0 && S.laps.length < 200) S.laps.push(el); }
+  function swReset() { const S = tools.sw; S.running = false; S.acc = 0; S.laps = []; }
+
+  /* ---------- sound: short original chimes, matched to the theme's character ---------- */
+  let AC = null, muted = false;
+  try { muted = localStorage.getItem('tminus.mute') === '1'; } catch (e) {}
+  function audio() { try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) {} return AC; }
+  addEventListener('pointerdown', audio, { passive: true }); addEventListener('keydown', audio);
+  function tone(f, at, dur, type, vol) {
+    const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(vol, at + .012); g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+    o.connect(g); g.connect(AC.destination); o.start(at); o.stop(at + dur + .05);
+  }
+  const SOUND = { beep: ['terminal', 'arcade', 'blueprint', 'neon', 'circuit'], bell: ['board', 'minimal', 'snow', 'chalk', 'vinyl', 'rain'] };
+  function chime(theme, times) {
+    if (muted || !audio() || AC.state !== 'running') return;
+    const kind = SOUND.beep.includes(theme) ? 'beep' : SOUND.bell.includes(theme) ? 'bell' : 'soft';
+    for (let i = 0; i < times; i++) {
+      const t = AC.currentTime + .05 + i * (kind === 'beep' ? .6 : 1.15);
+      if (kind === 'beep') [0, .14, .28].forEach(d => tone(1046.5, t + d, .09, 'square', .06));
+      else if (kind === 'bell') [[880, 1.4, .16], [1318.5, 1.1, .08], [1760, .8, .05]].forEach(([f, d, v]) => tone(f, t, d, 'sine', v));
+      else [523.25, 659.25, 783.99].forEach((f, k) => tone(f, t + k * .09, 1.2, 'triangle', .09));
+    }
+  }
+
+  /* ---------- keep the screen awake while a countdown is on display ---------- */
+  let wake = null;
+  async function wakeOn() { try { if (navigator.wakeLock && !wake) { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); } } catch (e) {} }
+  function wakeOff() { try { if (wake) wake.release(); } catch (e) {} wake = null; }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && focusId) wakeOn(); });
+
+  /* ---------- notifications (website only, and only while a T-Minus tab is open) ---------- */
+  const notifOK = canLink && 'Notification' in window;
+  let wantNotif = false;
+  try { wantNotif = localStorage.getItem('tminus.notif') === '1'; } catch (e) {}
+  function notify(body) { try { if (notifOK && wantNotif && Notification.permission === 'granted') new Notification('T-Minus', { body }); } catch (e) {} }
+  let toastT = 0;
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3400); }
+
+  // one watcher for every zero crossing, whether or not that countdown is on screen
+  const seen = new Map();
+  function watch() {
+    const now = Date.now();
+    for (const cd of all()) {
+      const m = occ(cd, now).mode, was = seen.get(cd.id); seen.set(cd.id, m);
+      if (was === 'down' && m !== 'down') {
+        chime(cd.theme, 1); notify(cd.title + ' is here');
+        if (focusId === cd.id && bgi) bgi.finale(); else toast(cd.title + ' has arrived');
+      }
+    }
+    const T = tools.timer;
+    if (T.running && now >= T.endAt) {
+      T.running = false; T.left = 0; T.done = true; saveTools();
+      chime(T.theme, 3); notify((T.label || 'Timer') + ' finished');
+      if (focusId === 'timer' && bgi) bgi.finale(); else toast((T.label || 'Timer') + ' finished');
+      renderTools();
+    }
+  }
+  setInterval(watch, 400);
+
+  /* ---------- focus view pieces for tools ---------- */
+  function buildCtl(cd) {
+    const c = $('fctl'); c.textContent = ''; c.hidden = !cd.kind;
+    $('fms').hidden = cd.kind !== 'sw'; $('flaps').hidden = cd.kind !== 'sw'; $('flaps').textContent = '';
+    if (!cd.kind) return;
+    const btn = (label, fn, cls) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'ib ' + (cls || ''); b.textContent = label;
+      b.onclick = () => { fn(); saveTools(); renderTools(); focusTick(false); }; c.appendChild(b);
+    };
+    if (cd.kind === 'timer') { btn('Start', timerToggle, 'go'); btn('Reset', timerReset); btn('+1 min', () => timerAdd(60000)); }
+    else { btn('Start', swToggle, 'go'); btn('Lap', swLap); btn('Reset', swReset); }
+  }
+  function toolTick(cd) {
+    const now = Date.now(), isT = cd.kind === 'timer', T = isT ? tools.timer : tools.sw;
+    let ms, prog;
+    if (isT) {
+      const left = timerLeft(now); ms = Math.ceil(left / 1000) * 1000; prog = clamp(1 - left / Math.max(T.dur, left, 1), 0, 1);
+      $('feb').textContent = T.done ? 'Time’s up' : T.running ? 'Timer running' : left < T.dur ? 'Paused' : 'Ready';
+      $('fmeta').textContent = T.running ? 'Ends at ' + new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(T.endAt)) : 'Set for ' + fmtDur(T.dur);
+      $('fpl1').textContent = 'Start'; $('fpl2').textContent = Math.round(prog * 100) + '% elapsed';
+    } else {
+      ms = swElapsed(now); prog = (ms % 60000) / 60000;
+      $('feb').textContent = T.running ? 'Stopwatch' : ms ? 'Paused' : 'Ready';
+      $('fmeta').textContent = T.laps.length ? T.laps.length + (T.laps.length === 1 ? ' lap' : ' laps') : 'No laps yet';
+      $('fpl1').textContent = 'This minute'; $('fpl2').textContent = '';
+      const n = T.laps.length, last = T.laps.slice(-5);
+      $('flaps').textContent = last.map((l, i) => { const k = n - last.length + i; return `Lap ${k + 1}   ${fmtDur(l - (k ? T.laps[k - 1] : 0), true)}`; }).join('\n');
+      $('fms').textContent = '.' + pad(Math.floor(ms % 1000 / 10));
+    }
+    const p = split(ms); api.set(p, true); info = { prog, mode: isT ? 'down' : 'up' };
+    $('falt').hidden = true;
+    $('fprog').style.width = (prog * 100).toFixed(2) + '%';
+    const go = $('fctl').firstElementChild;
+    if (go) go.textContent = T.running ? 'Pause' : isT ? (T.done ? 'Restart' : left0(T) ? 'Start' : 'Resume') : (ms ? 'Resume' : 'Start');
+    if (T.running && p.total !== lastSec && lastSec >= 0 && bgi) { bgi.pulse('sec'); if (p.s === 0) bgi.pulse('min'); }
+    lastSec = p.total;
+  }
+  const left0 = T => T.left >= T.dur;
+  setInterval(() => { // hundredths for a running stopwatch
+    if (!tools.sw.running) return;
+    const el = swElapsed(Date.now());
+    if (focusId === 'sw') $('fms').textContent = '.' + pad(Math.floor(el % 1000 / 10));
+    if (!$('tab-sw').hidden) paintSw(el);
+  }, 53);
+
+  /* ---------- home panels ---------- */
+  const PRESETS = [1, 3, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
+  function paintSw(el) { const r = $('swRead'); r.textContent = fmtDur(el); const s = document.createElement('small'); s.textContent = '.' + pad(Math.floor(el % 1000 / 10)); r.appendChild(s); }
+  function renderTools() {
+    const now = Date.now(), T = tools.timer, S = tools.sw, left = timerLeft(now);
+    $('tmRead').textContent = fmtDur(Math.ceil(left / 1000) * 1000);
+    $('tmState').textContent = T.done ? 'Finished' : T.running ? 'Running' : left < T.dur ? 'Paused' : 'Set a time and start';
+    $('tmGo').textContent = T.running ? 'Pause' : T.done ? 'Start again' : left < T.dur ? 'Resume' : 'Start timer';
+    document.querySelectorAll('#tmPresets button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.m * 60000 === T.dur)));
+    if (document.activeElement !== $('tmH') && document.activeElement !== $('tmM') && document.activeElement !== $('tmS')) {
+      const s = Math.round(T.dur / 1000); $('tmH').value = Math.floor(s / 3600); $('tmM').value = Math.floor(s % 3600 / 60); $('tmS').value = s % 60;
+    }
+    paintSw(swElapsed(now));
+    $('swGo').textContent = S.running ? 'Pause' : S.acc ? 'Resume' : 'Start';
+    const ol = $('swLaps');
+    if (ol.childElementCount !== S.laps.length) {
+      ol.textContent = '';
+      S.laps.slice().reverse().forEach((l, i) => { const k = S.laps.length - 1 - i, li = document.createElement('li'); const a = document.createElement('span'); a.textContent = 'Lap ' + (k + 1); const b = document.createElement('span'); b.textContent = fmtDur(l - (k ? S.laps[k - 1] : 0), true) + '   ·   ' + fmtDur(l, true); li.append(a, b); ol.appendChild(li); });
+    }
+  }
+  function setTab(name) {
+    document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
+    $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
+    $('newBtn').style.visibility = name === 'cd' ? '' : 'hidden';
+    renderTools();
+  }
+  document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  PRESETS.forEach(m => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.m = m;
+    b.textContent = m < 60 ? m + ' min' : (m / 60) + ' hr';
+    b.onclick = () => { timerSet(m * 60000); saveTools(); renderTools(); };
+    $('tmPresets').appendChild(b);
+  });
+  ['tmH', 'tmM', 'tmS'].forEach(id => $(id).addEventListener('input', () => {
+    const ms = ((+$('tmH').value || 0) * 3600 + (+$('tmM').value || 0) * 60 + (+$('tmS').value || 0)) * 1000;
+    if (ms > 0) { timerSet(ms); saveTools(); $('tmRead').textContent = fmtDur(tools.timer.left); }
+  }));
+  $('tmLabel').value = tools.timer.label;
+  $('tmLabel').addEventListener('input', () => { tools.timer.label = $('tmLabel').value.trim().slice(0, 40); saveTools(); });
+  [['tmTheme', 'timer'], ['swTheme', 'sw']].forEach(([id, k]) => {
+    TKEYS.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = THEMES[t].name; $(id).appendChild(o); });
+    $(id).value = tools[k].theme;
+    $(id).addEventListener('change', () => { tools[k].theme = $(id).value; saveTools(); });
+  });
+  $('tmGo').addEventListener('click', () => { const starting = !tools.timer.running; timerToggle(); saveTools(); renderTools(); if (starting) openFocus('timer'); });
+  $('tmReset').addEventListener('click', () => { timerReset(); saveTools(); renderTools(); });
+  $('tmOpen').addEventListener('click', () => openFocus('timer'));
+  $('swGo').addEventListener('click', () => { swToggle(); saveTools(); renderTools(); });
+  $('swLap').addEventListener('click', () => { swLap(); saveTools(); renderTools(); });
+  $('swReset').addEventListener('click', () => { swReset(); saveTools(); renderTools(); });
+  $('swOpen').addEventListener('click', () => openFocus('sw'));
+  setInterval(() => { if (!$('tab-timer').hidden || !$('tab-sw').hidden) renderTools(); }, 250);
+  renderTools();
+
+  /* ---------- extras: other units, notes, calendar file, slideshow, backup ---------- */
+  function altUnits(o, now) {
+    const ms = o.t - now; if (o.mode !== 'down' || ms < 2 * DAY) return '';
+    const days = Math.floor(ms / DAY), a = new Date(now), b = new Date(o.t);
+    const sleeps = Math.round((new Date(b.getFullYear(), b.getMonth(), b.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / DAY);
+    return `${Math.floor(days / 7)} wk ${days % 7} d  ·  ${sleeps} sleeps  ·  ${Math.floor(ms / 36e5).toLocaleString()} hours`;
+  }
+  function renderNote(cd) {
+    const el = $('fnote'); el.textContent = ''; el.hidden = !cd.note;
+    if (!cd.note) return;
+    cd.note.split(/(https?:\/\/[^\s]+)/).forEach(part => {
+      if (/^https?:\/\//.test(part)) { const a = document.createElement('a'); a.href = part; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = part.replace(/^https?:\/\//, '').slice(0, 48); el.appendChild(a); }
+      else if (part) el.appendChild(document.createTextNode(part));
+    });
+  }
+  function download(name, text, type) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  function saveICS(cd) {
+    const z = t => new Date(t).toISOString().replace(/[-:]|\.\d{3}/g, ''), o = occ(cd, Date.now());
+    const esc = s => String(s).replace(/([\\;,])/g, '\\$1').replace(/\n/g, '\\n');
+    const rr = { yearly: 'FREQ=YEARLY', monthly: 'FREQ=MONTHLY', weekly: 'FREQ=WEEKLY', days: 'FREQ=DAILY;INTERVAL=' + (cd.every || 1) }[cd.repeat];
+    const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//T-Minus//EN', 'BEGIN:VEVENT', 'UID:' + cd.id + '@tminus', 'DTSTAMP:' + z(Date.now()), 'DTSTART:' + z(o.t), 'DTEND:' + z(o.t + 36e5), 'SUMMARY:' + esc(cd.title)];
+    if (cd.note) L.push('DESCRIPTION:' + esc(cd.note));
+    if (rr) L.push('RRULE:' + rr);
+    L.push('END:VEVENT', 'END:VCALENDAR');
+    download((cd.title.replace(/[^\w\- ]+/g, '').trim().slice(0, 40) || 'countdown') + '.ics', L.join('\r\n'), 'text/calendar');
+  }
+  let slideT = 0;
+  function toggleSlides() {
+    if (slideT) { clearInterval(slideT); slideT = 0; return; }
+    slideT = setInterval(() => {
+      const L = sortList(all()); if (!focusId || L.length < 2) return toggleSlides();
+      const i = L.findIndex(c => c.id === focusId); openFocus(L[(i + 1) % L.length].id);
+    }, 20000);
+    toast('Slideshow on: a new countdown every 20 seconds');
+  }
+  function buildMore() {
+    const m = $('mmenu'); m.textContent = ''; const cd = find(focusId); if (!cd) return;
+    const item = (label, state, fn) => {
+      const b = document.createElement('button'); b.type = 'button';
+      const a = document.createElement('span'); a.textContent = label; const s = document.createElement('small'); s.textContent = state;
+      b.append(a, s); b.onclick = fn; m.appendChild(b);
+    };
+    const store = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch (e) {} };
+    item('Sound at zero', muted ? 'Off' : 'On', () => { muted = !muted; store('tminus.mute', muted); if (!muted) chime(previewTheme || cd.theme, 1); buildMore(); });
+    if (notifOK) item('Notify me at zero', wantNotif && Notification.permission === 'granted' ? 'On' : 'Off', async () => {
+      if (wantNotif) wantNotif = false;
+      else { let p = 'denied'; try { p = await Notification.requestPermission(); } catch (e) {} wantNotif = p === 'granted'; toast(wantNotif ? 'You’ll get an alert at zero while T-Minus is open in a tab.' : 'Notifications are blocked for this site in your browser.'); }
+      store('tminus.notif', wantNotif); buildMore();
+    });
+    if (!cd.kind && canLink) item('Add to calendar', '.ics file', () => { saveICS(cd); m.hidden = true; });
+    if (!cd.kind && all().length > 1) item('Slideshow', slideT ? 'Stop' : 'Start', () => { toggleSlides(); m.hidden = true; });
+  }
+  function cleanItem(v) {
+    if (!v || typeof v.title !== 'string' || !isFinite(v.target) || !THEMES[v.theme]) return null;
+    return { id: typeof v.id === 'string' && /^[a-z0-9]{4,24}$/i.test(v.id) ? v.id : uid(), title: v.title.slice(0, 80), target: +v.target, theme: v.theme,
+      repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', createdAt: +v.createdAt || Date.now() };
+  }
+  $('expBtn').addEventListener('click', async () => {
+    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine }, null, 1);
+    if (canLink) { download('tminus-backup.json', text, 'application/json'); return toast('Backup saved as tminus-backup.json'); }
+    try { await navigator.clipboard.writeText(text); toast('Backup copied. Paste it into a file named tminus-backup.json.'); }
+    catch (e) { toast('Could not copy the backup here. Use the website version to export.'); }
+  });
+  $('impBtn').addEventListener('click', () => $('impFile').click());
+  $('impFile').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      const d = JSON.parse(await f.text()), items = (Array.isArray(d) ? d : d.items).map(cleanItem).filter(Boolean);
+      if (!items.length) throw 0;
+      items.forEach(it => { const i = mine.findIndex(c => c.id === it.id); if (i >= 0) mine[i] = it; else mine.push(it); });
+      saveMine(); renderList(); toast(`Imported ${items.length} countdown${items.length === 1 ? '' : 's'}`);
+    } catch (err) { toast('That file is not a T-Minus backup.'); }
+  });
+
   /* ================= focus view ================= */
   let focusId = null, api = null, bgi = null, raf = 0, lastSec = -1, lastMode = null, previewTheme = null;
   const F = $('focus');
@@ -1412,7 +1951,9 @@ button { cursor: pointer; }
     $('editBtn').lastElementChild.textContent = cd.linked ? 'Save to my list' : 'Edit';
     $('shareBtn').hidden = !canLink; $('shareLbl').textContent = 'Share link';
     $('flog').textContent = ''; $('flog').hidden = theme !== 'terminal';
-    $('tmenu').hidden = true;
+    $('tmenu').hidden = true; $('mmenu').hidden = true;
+    buildCtl(cd); renderNote(cd); wakeOn();
+    if (cd.kind) { $('editBtn').hidden = true; $('shareBtn').hidden = true; }
     api = makeClock($('fclock'), theme);
     lastSec = -1; lastMode = null;
     FX.clear();
@@ -1421,9 +1962,10 @@ button { cursor: pointer; }
     focusTick(true);
     bgi.resize(); // the view is visible now, so layout is real
     cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
-    if (!cd.linked) try { history.replaceState(null, '', '#c-' + id); } catch (e) {}
+    if (!cd.linked && !cd.kind) try { history.replaceState(null, '', '#c-' + id); } catch (e) {}
   }
   function closeFocus() {
+    wakeOff(); if (slideT) toggleSlides();
     focusId = null; linked = null; F.hidden = true; cancelAnimationFrame(raf); bgi = null; api = null; FX.clear();
     $('shell').removeAttribute('aria-hidden'); document.body.style.overflow = '';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -1432,17 +1974,19 @@ button { cursor: pointer; }
   let info = { prog: 0 };
   function focusTick(first) {
     const cd = find(focusId); if (!cd || !api) return;
+    if (cd.kind) return toolTick(cd);
     const now = Date.now(), o = occ(cd, now), p = split(o.t - now);
     const theme = previewTheme || cd.theme, T = THEMES[theme];
     api.set(o.mode === 'today' ? split(now - o.t) : p);
     info = { prog: o.prog, mode: o.mode };
     $('feb').textContent = T.words[o.mode];
     $('fmeta').innerHTML = '';
-    const b = document.createElement('b'); b.textContent = fmtWhen(o.t); $('fmeta').append(b, cd.repeat === 'yearly' ? ' · every year' : '', cd.shared ? ' · shared' : '');
+    const b = document.createElement('b'); b.textContent = fmtWhen(o.t); $('fmeta').append(b, repeatLabel(cd) ? ' · ' + repeatLabel(cd).toLowerCase() : '', cd.shared ? ' · shared' : '');
+    $('falt').textContent = altUnits(o, now); $('falt').hidden = !$('falt').textContent;
     $('fprog').style.width = (o.prog * 100).toFixed(3) + '%';
-    $('fpl1').textContent = cd.repeat === 'yearly' ? 'Last time' : 'Created';
+    $('fpl1').textContent = repeatLabel(cd) ? 'Last time' : 'Created';
     $('fpl2').textContent = o.mode === 'down' ? (o.prog * 100).toFixed(1) + '% of the wait done' : 'Arrived';
-    if (!first && lastMode === 'down' && o.mode !== 'down' && bgi) bgi.finale();
+    if (cd.linked && !first && lastMode === 'down' && o.mode !== 'down' && bgi) { bgi.finale(); chime(theme, 1); } // saved ones are handled by watch()
     lastMode = o.mode;
     if (p.total !== lastSec) { if (lastSec >= 0 && bgi) { bgi.pulse('sec'); if (p.s === 0) bgi.pulse('min'); } lastSec = p.total; }
   }
@@ -1468,6 +2012,7 @@ button { cursor: pointer; }
   async function setFocusTheme(k) {
     const cd = find(focusId); if (!cd) return;
     $('tmenu').hidden = true;
+    if (cd.kind) { tools[cd.kind].theme = k; saveTools(); $(cd.kind === 'timer' ? 'tmTheme' : 'swTheme').value = k; return openFocus(cd.id); }
     const editable = !cd.linked && (!cd.shared || canEditShared(cd));
     if (!editable) { previewTheme = k; openFocus(cd.id, true); return; }
     previewTheme = null;
@@ -1489,7 +2034,7 @@ button { cursor: pointer; }
   $('editBtn').addEventListener('click', () => {
     const cd = find(focusId); if (!cd) return;
     if (!cd.linked) return openEditor(cd);
-    const item = { id: uid(), title: cd.title, target: cd.target, theme: previewTheme || cd.theme, repeat: cd.repeat, createdAt: Date.now() };
+    const item = { id: uid(), title: cd.title, target: cd.target, theme: previewTheme || cd.theme, repeat: cd.repeat, every: cd.every || 1, note: cd.note || '', createdAt: Date.now() };
     mine.push(item); saveMine(); linked = null; renderList(); openFocus(item.id);
   });
   $('shareBtn').addEventListener('click', async () => {
@@ -1501,11 +2046,14 @@ button { cursor: pointer; }
   });
   $('themeBtn').addEventListener('click', e => { e.stopPropagation(); const m = $('tmenu'); if (m.hidden) buildThemeMenu(); m.hidden = !m.hidden; });
   F.addEventListener('click', e => { if (!$('tmenu').hidden && !$('tmenu').contains(e.target) && e.target !== $('themeBtn')) $('tmenu').hidden = true; });
+  $('moreBtn').addEventListener('click', e => { e.stopPropagation(); const m = $('mmenu'); if (m.hidden) buildMore(); m.hidden = !m.hidden; $('tmenu').hidden = true; });
+  F.addEventListener('click', e => { if (!$('mmenu').hidden && !$('mmenu').contains(e.target) && !$('moreBtn').contains(e.target)) $('mmenu').hidden = true; });
+  $('fRepeat').addEventListener('change', syncEvery);
   $('fsBtn').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); else if (F.requestFullscreen) F.requestFullscreen().catch(() => {}); });
   $('clearEx').addEventListener('click', () => { mine = mine.filter(c => !c.example); saveMine(); renderList(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden) $('tmenu').hidden = true; else if (focusId) closeFocus();
+    if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
   });
   let rz = 0;
   addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (bgi) bgi.resize(); }); });
@@ -1539,7 +2087,7 @@ button { cursor: pointer; }
       shared = snap.docs.map(d => {
         const v = d.data() || {};
         const ok = typeof v.title === 'string' && isFinite(v.target) && THEMES[v.theme];
-        return ok ? { id: d.id, title: v.title.slice(0, 80), target: +v.target, theme: v.theme, repeat: v.repeat === 'yearly' ? 'yearly' : 'none', createdAt: +v.createdAt || 0, createdBy: typeof v.createdBy === 'string' ? v.createdBy : null, shared: true } : null;
+        return ok ? { id: d.id, title: v.title.slice(0, 80), target: +v.target, theme: v.theme, repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', createdAt: +v.createdAt || 0, createdBy: typeof v.createdBy === 'string' ? v.createdBy : null, shared: true } : null;
       }).filter(Boolean);
       renderList();
       if (focusId && !find(focusId)) closeFocus();
