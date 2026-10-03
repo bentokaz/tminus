@@ -439,6 +439,11 @@ button { cursor: pointer; }
 .tsearch { grid-column: 1 / -1; }
 .tmenu .tsearch { margin-bottom: 2px; }
 .tmenu { text-shadow: none; }
+.field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); color: var(--ink); font: 400 16px/1.45 var(--f-ui); resize: vertical; min-height: 120px; }
+.field textarea:focus { outline: none; border-color: var(--ink); }
+.fbnote { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.check > span { min-width: 0; }
+.check small { overflow-wrap: anywhere; }
 .tabs svg, .fbar, .ib .lbl-m { display: none; }
 button { touch-action: manipulation; }
 body { -webkit-tap-highlight-color: transparent; }
@@ -554,7 +559,7 @@ body { -webkit-tap-highlight-color: transparent; }
     </section>
   </section>
 
-  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
+  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="fbBtn" type="button">Send feedback</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
 </div>
 
 <!-- editor -->
@@ -632,6 +637,22 @@ body { -webkit-tap-highlight-color: transparent; }
     <div class="acts">
       <div><button class="btn ghost danger" type="button" id="ceDel" hidden>Delete theme</button></div>
       <div><button class="btn ghost" type="button" id="ceCancel">Cancel</button><button class="btn primary" type="button" id="ceSave">Save theme</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- feedback: opens a pre-filled issue on the project's GitHub page -->
+<div class="scrim" id="fbscrim" hidden style="z-index:46">
+  <div class="sheet" id="fbsheet">
+    <h2>Send feedback</h2>
+    <div class="field"><span>What kind?</span><div class="chips" id="fbKind"><button type="button" data-k="Bug" aria-pressed="true">Something is broken</button><button type="button" data-k="Idea" aria-pressed="false">An idea</button><button type="button" data-k="Other" aria-pressed="false">Something else</button></div></div>
+    <label class="field"><span>Tell me about it</span><textarea id="fbText" maxlength="1500" rows="6" placeholder="What happened, and what did you expect to happen?"></textarea></label>
+    <label class="check"><input type="checkbox" id="fbInfo" checked><span>Include device details<small id="fbInfoText"></small></span></label>
+    <p class="fbnote">Feedback is posted on the project’s GitHub page, where anyone can read it, and you need a GitHub account. The button opens GitHub with your report filled in; press <b>Create</b> there to send it. Your text is also copied, in case the page does not open.</p>
+    <div class="err" id="fbErr" hidden></div>
+    <div class="acts">
+      <div></div>
+      <div><button class="btn ghost" type="button" id="fbCancel">Cancel</button><button class="btn primary" type="button" id="fbSend">Continue on GitHub</button></div>
     </div>
   </div>
 </div>
@@ -3034,6 +3055,7 @@ body { -webkit-tap-highlight-color: transparent; }
     });
     if (!cd.kind && canLink) item('Add to calendar', '.ics file', () => { saveICS(cd); m.hidden = true; });
     if (!cd.kind && all().length > 1) item('Slideshow', slideT ? 'Stop' : 'Start', () => { toggleSlides(); m.hidden = true; });
+    item('Send feedback', 'Bug or idea', () => { m.hidden = true; openFeedback(); });
   }
   function cleanItem(v) {
     if (!v || typeof v.title !== 'string' || !isFinite(v.target) || !THEMES[v.theme]) return null;
@@ -3169,6 +3191,33 @@ body { -webkit-tap-highlight-color: transparent; }
   }
   mqPhone.addEventListener('change', placeBar); placeBar();
 
+  /* ---------- feedback: a pre-filled issue at github.com/bentokaz/tminus ---------- */
+  const APPV = '2026-10-03';
+  let fbKind = 'Bug';
+  function fbDetails() {
+    const cd = focusId && find(focusId), th = cd ? (previewTheme || cd.theme) : '';
+    return ['T-Minus ' + APPV, canLink ? 'website' : 'inside Claude', matchMedia('(display-mode: standalone)').matches ? 'installed app' : '', innerWidth + '×' + innerHeight,
+      cd ? (cd.kind || 'countdown') + ' open, theme ' + (THEMES[th] && THEMES[th].custom ? 'custom' : th) : curTab + ' tab', navigator.userAgent].filter(Boolean).join(' · ');
+  }
+  function openFeedback() {
+    $('fbText').value = ''; $('fbErr').hidden = true; $('fbInfo').checked = true; $('fbInfoText').textContent = fbDetails();
+    $('fbscrim').hidden = false;
+    if (!mqPhone.matches) setTimeout(() => $('fbText').focus(), 30);
+  }
+  $('fbKind').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { fbKind = b.dataset.k; $('fbKind').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); }));
+  $('fbBtn').addEventListener('click', openFeedback);
+  $('fbCancel').addEventListener('click', () => { $('fbscrim').hidden = true; });
+  $('fbscrim').addEventListener('click', e => { if (e.target === $('fbscrim')) $('fbscrim').hidden = true; });
+  $('fbSend').addEventListener('click', () => {
+    const text = $('fbText').value.trim();
+    if (text.length < 5) { $('fbErr').textContent = 'Write a few words about it first.'; $('fbErr').hidden = false; return; }
+    const title = '[' + fbKind + '] ' + text.split('\n')[0].slice(0, 70), body = text + ($('fbInfo').checked ? '\n\n---\n' + fbDetails() : '');
+    try { navigator.clipboard.writeText(title + '\n\n' + body).catch(() => {}); } catch (e) {}
+    const a = document.createElement('a'); a.href = 'https://github.com/bentokaz/tminus/issues/new?title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(body);
+    a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+    $('fbscrim').hidden = true; toast('GitHub opened with your report filled in. Press Create there to send it.');
+  });
+
   /* ================= wiring ================= */
   $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
   $('cancelBtn').addEventListener('click', closeEditor);
@@ -3202,7 +3251,7 @@ body { -webkit-tap-highlight-color: transparent; }
   $('clearEx').addEventListener('click', () => { mine = mine.filter(c => !c.example); saveMine(); renderList(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
+    if (!$('fbscrim').hidden) $('fbscrim').hidden = true; else if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
   });
   let rz = 0;
   addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (bgi) bgi.resize(); }); });
