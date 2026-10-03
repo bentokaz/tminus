@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Countdowns, a timer and a stopwatch, each shown full screen in one of twenty animated themes.">
+<meta name="description" content="Countdowns, timers and stopwatches, shown full screen in animated themes you can also design yourself.">
+<meta name="theme-color" content="#111315">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="T-Minus">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314171a'/%3E%3Cpath d='M8 10h16M16 10v13' stroke='%23eceeef' stroke-width='3.4' stroke-linecap='round'/%3E%3Cpath d='M21 20h5' stroke='%23e2552b' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>body{margin:0}img{max-width:100%}</style>
 </head>
@@ -73,8 +79,11 @@ button { cursor: pointer; }
 .sechead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
 .sechead h3 { margin: 0; font: 800 13px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; }
 .sechead span { font: 500 12px/1.3 var(--f-num); color: var(--ink-3); }
-.row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--rule); cursor: pointer; border-radius: 0; background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; width: 100%; }
-.row:hover { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--rule); cursor: pointer; border-radius: 0; background: var(--bg); border-left: 0; border-right: 0; border-top: 0; text-align: left; width: 100%; position: relative; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.rowwrap { position: relative; overflow: hidden; }
+.rowdel { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; background: #c4321a; color: #fff; font: 700 13px/1 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; }
+.rowwrap.arm .rowdel { background: #9c1f0c; }
+.row:hover { background: color-mix(in srgb, var(--ink) 5%, var(--bg)); }
 .row .ti { font-weight: 650; font-size: 16px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row .me { font-size: 13px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 10px; }
 .row .tm { font: 500 clamp(14px, 2.2vw, 18px)/1 var(--f-num); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
@@ -127,8 +136,8 @@ button { cursor: pointer; }
 .hero.th-arcade .big { font-size: clamp(18px, 3.6vw, 42px); line-height: 1.3; }
 .hero.th-arcade h2 { font-size: clamp(16px, 2.6vw, 26px); line-height: 1.3; }
 
-.th-lava { --t-bg: #0e1719; --t-fg: #fff3e6; --t-acc: #ffb347; --t-dim: #a9a096; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
-  --t-art: radial-gradient(circle at 30% 70%, #ff7a3d 0 22%, transparent 34%), radial-gradient(circle at 68% 34%, #ff4f7b 0 16%, transparent 30%), radial-gradient(circle at 80% 85%, #ffb347 0 12%, transparent 24%); }
+.th-lava { --t-bg: #160b0a; --t-fg: #fff3e6; --t-acc: #ffc247; --t-dim: #c9b3a2; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: radial-gradient(ellipse 34% 46% at 30% 74%, #ff5a22 0 96%, transparent 100%), radial-gradient(ellipse 22% 30% at 66% 34%, #ff7a2a 0 96%, transparent 100%), radial-gradient(ellipse 60% 26% at 50% 112%, #ffb03a 0 96%, transparent 100%), linear-gradient(#120807, #3a140b); }
 .th-vinyl { --t-bg: #191513; --t-fg: #f3ead9; --t-acc: #e0563a; --t-dim: #a3978a; --t-num: "Schibsted Grotesk", sans-serif; --t-numw: 700; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.02em;
   --t-art: radial-gradient(circle at 50% 50%, #e0563a 0 14%, #0b0908 15% 17%, transparent 17.5%), repeating-radial-gradient(circle at 50% 50%, #0b0908 0 2px, #1d1917 2px 4px); }
 .th-dunes { --t-bg: #f1d9a8; --t-fg: #3a2414; --t-acc: #b5461f; --t-dim: #7d5b3c; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
@@ -138,6 +147,21 @@ button { cursor: pointer; }
 .th-clouds { --t-bg: #7db9ea; --t-fg: #0f2a44; --t-acc: #0f2a44; --t-dim: #3e5f80; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 500; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
   --t-art: radial-gradient(ellipse 40% 22% at 30% 62%, #fff 98%, transparent 100%), radial-gradient(ellipse 30% 18% at 55% 52%, #fff 98%, transparent 100%), radial-gradient(ellipse 36% 20% at 78% 70%, #f4f9ff 98%, transparent 100%), linear-gradient(#5aa5e3, #cfe8fa); }
 .focus.th-lava .ftitle { font-weight: 800; letter-spacing: -.03em; }
+.hero.th-lava { text-shadow: 0 1px 14px rgba(18,8,7,.85); }
+.focus.th-lava .fmain { text-shadow: 0 2px 22px rgba(18,8,7,.9), 0 0 3px rgba(18,8,7,.7); }
+.th-forest { --t-bg: #12301f; --t-fg: #eef8e6; --t-acc: #c8e86b; --t-dim: #a3c2a0; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(90deg, transparent 18%, #0c2318 18% 26%, transparent 26% 58%, #0c2318 58% 70%, transparent 70%), linear-gradient(115deg, transparent 30%, rgba(255,244,190,.35) 45%, transparent 60%), linear-gradient(#3d6b4a, #0f2a1c); }
+.th-reef { --t-bg: #0f6d93; --t-fg: #eefcff; --t-acc: #ffb08f; --t-dim: #a8dbe8; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: radial-gradient(ellipse 20% 34% at 22% 104%, #ff8f6b 0 96%, transparent 100%), radial-gradient(ellipse 16% 28% at 76% 106%, #f25f7a 0 96%, transparent 100%), radial-gradient(ellipse 12% 6% at 58% 44%, #ffd27a 0 96%, transparent 100%), linear-gradient(#2aa6c9, #073a55); }
+.th-lake { --t-bg: #9db9df; --t-fg: #16243a; --t-acc: #b8431f; --t-dim: #42536e; --t-num: "Instrument Serif", Georgia, serif; --t-numw: 400; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: conic-gradient(from 135deg at 34% 56%, #5f7699 0 90deg, transparent 0), conic-gradient(from 135deg at 70% 50%, #3c5072 0 90deg, transparent 0), linear-gradient(#9db9df 0, #ffe2bd 56%, #8ea6c4 56.5%, #31476a 100%); }
+.th-sakura { --t-bg: #fbeaf0; --t-fg: #3a1f2b; --t-acc: #d9457a; --t-dim: #7d5a68; --t-num: "Fraunces", Georgia, serif; --t-numw: 300; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(circle at 78% 26%, #f5a0be 0 9%, transparent 10%), radial-gradient(circle at 62% 16%, #f7b6cb 0 7%, transparent 8%), radial-gradient(circle at 88% 44%, #f7b6cb 0 6%, transparent 7%), linear-gradient(200deg, #4a2a2f 0 8%, transparent 8.5%), linear-gradient(#fbeaf0, #f3cbd8); }
+.focus.th-forest .ftitle { font-weight: 500; }
+.focus.th-reef .ftitle, .focus.th-reef .dg { font-weight: 800; }
+.focus.th-lake .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
+.focus.th-sakura .ftitle { font-weight: 500; }
+.focus.th-sakura .feb, .focus.th-forest .feb { text-transform: none; letter-spacing: .02em; font-family: "Fraunces", serif; font-style: italic; font-size: clamp(16px, 2.2vw, 24px); }
 .focus.th-vinyl .ftitle { font-weight: 400; font-style: italic; font-size: clamp(30px, 6vw, 72px); }
 .focus.th-dunes .ftitle { font-weight: 500; }
 .focus.th-circuit .ftitle { font-weight: 400; text-transform: uppercase; letter-spacing: .06em; }
@@ -166,7 +190,19 @@ button { cursor: pointer; }
 .laps li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 2px; border-bottom: 1px solid var(--rule); font: 500 14px/1 var(--f-num); font-variant-numeric: tabular-nums; }
 .laps li span:first-child { color: var(--ink-2); }
 .subhead { font: 700 11px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 18px 6px 8px; border-bottom: 1px solid var(--rule); }
-#toast { position: fixed; z-index: 60; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 5px; font: 500 14px/1.3 var(--f-ui); max-width: calc(100vw - 32px); }
+#toast { position: fixed; z-index: 60; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 5px; font: 500 14px/1.3 var(--f-ui); max-width: calc(100vw - 32px); display: flex; align-items: center; gap: 14px; }
+#toast button { background: none; border: 0; padding: 0; color: var(--accent); font: 700 14px/1 var(--f-ui); text-decoration: underline; text-underline-offset: 3px; }
+.cols4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 520px) { .cols3 { grid-template-columns: minmax(0, 1fr); } .cols4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.field input[type=color] { width: 100%; height: 42px; padding: 3px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); cursor: pointer; }
+.tp.tpadd .pv { background: var(--bg); color: var(--ink-2); font: 500 24px/1 var(--f-ui); }
+.tp.tpadd .pv::before { display: none; }
+.tool .hero { margin-bottom: 0; }
+#cePrev { min-height: 0; padding: 18px; }
+#cePrev .big { font-size: clamp(26px, 6.5vw, 42px); }
+#cePrev h2 { font-size: clamp(20px, 4vw, 26px); white-space: nowrap; }
+#cePrev .when { white-space: nowrap; }
 
 /* focus extras */
 .fctl { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -349,7 +385,7 @@ button { cursor: pointer; }
   <header class="top">
     <div class="brand"><b>T<i>−</i>Minus</b><span id="nowline">—</span></div>
     <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true">Countdowns</button><button type="button" data-tab="timer" aria-pressed="false">Timer</button><button type="button" data-tab="sw" aria-pressed="false">Stopwatch</button></nav>
-    <button class="btn primary" id="newBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long"> countdown</span></span></button>
+    <button class="btn primary" id="newBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long" id="nbLong"> countdown</span></span></button>
   </header>
 
   <div id="tab-cd">
@@ -368,37 +404,22 @@ button { cursor: pointer; }
   </div>
 
   <section class="tool" id="tab-timer" hidden>
-    <div class="sechead"><h3>Timer</h3><span id="tmState">Set a time and start</span></div>
-    <div class="tread" id="tmRead">00:10:00</div>
-    <div class="chips" id="tmPresets"></div>
-    <div class="trow">
-      <label class="field"><span>Hours</span><input type="number" id="tmH" min="0" max="99" value="0" inputmode="numeric"></label>
-      <label class="field"><span>Minutes</span><input type="number" id="tmM" min="0" max="59" value="10" inputmode="numeric"></label>
-      <label class="field"><span>Seconds</span><input type="number" id="tmS" min="0" max="59" value="0" inputmode="numeric"></label>
-      <label class="field grow"><span>Label (optional)</span><input type="text" id="tmLabel" maxlength="40" placeholder="Pasta, focus session, laundry…" autocomplete="off"></label>
-    </div>
-    <div class="trow">
-      <label class="field" style="min-width:180px"><span>Theme</span><select id="tmTheme"></select></label>
-      <button class="btn primary" id="tmGo" type="button">Start timer</button>
-      <button class="btn" id="tmReset" type="button">Reset</button>
-      <button class="btn ghost" id="tmOpen" type="button">Open full screen</button>
-    </div>
+    <button class="hero" id="tmHero" type="button" hidden></button>
+    <section class="sec">
+      <div class="sechead"><h3>Timers</h3><span>Swipe a row left to delete it</span></div>
+      <div id="tmList"></div>
+    </section>
   </section>
 
   <section class="tool" id="tab-sw" hidden>
-    <div class="sechead"><h3>Stopwatch</h3><span>Keeps running if you close the page</span></div>
-    <div class="tread" id="swRead">00:00:00</div>
-    <div class="trow">
-      <label class="field" style="min-width:180px"><span>Theme</span><select id="swTheme"></select></label>
-      <button class="btn primary" id="swGo" type="button">Start</button>
-      <button class="btn" id="swLap" type="button">Lap</button>
-      <button class="btn" id="swReset" type="button">Reset</button>
-      <button class="btn ghost" id="swOpen" type="button">Open full screen</button>
-    </div>
-    <ol class="laps" id="swLaps"></ol>
+    <button class="hero" id="swHero" type="button" hidden></button>
+    <section class="sec">
+      <div class="sechead"><h3>Stopwatches</h3><span>They keep running if you close the page</span></div>
+      <div id="swList"></div>
+    </section>
   </section>
 
-  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
+  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
 </div>
 
 <!-- editor -->
@@ -426,6 +447,56 @@ button { cursor: pointer; }
       <div><button class="btn ghost" type="button" id="cancelBtn">Cancel</button><button class="btn primary" type="button" id="saveBtn">Save</button></div>
     </div>
   </form>
+</div>
+
+<!-- new / edit timer or stopwatch -->
+<div class="scrim" id="tscrim" hidden>
+  <div class="sheet" id="tsheet">
+    <h2 id="tsTitle">New timer</h2>
+    <div id="tsDur" style="display:grid;gap:14px">
+      <div class="tread" id="tmRead">00:10:00</div>
+      <div class="chips" id="tmPresets"></div>
+      <div class="trow">
+        <label class="field"><span>Hours</span><input type="number" id="tmH" min="0" max="99" value="0" inputmode="numeric"></label>
+        <label class="field"><span>Minutes</span><input type="number" id="tmM" min="0" max="59" value="10" inputmode="numeric"></label>
+        <label class="field"><span>Seconds</span><input type="number" id="tmS" min="0" max="59" value="0" inputmode="numeric"></label>
+      </div>
+    </div>
+    <label class="field"><span>Label (optional)</span><input type="text" id="tsLabel" maxlength="40" autocomplete="off"></label>
+    <div class="field"><span>Theme</span><div class="tpick" id="tsPick"></div></div>
+    <div class="acts">
+      <div><button class="btn ghost danger" type="button" id="tsDel" hidden>Delete</button></div>
+      <div><button class="btn ghost" type="button" id="tsCancel">Cancel</button><button class="btn primary" type="button" id="tsGo">Start timer</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- custom theme editor -->
+<div class="scrim" id="cscrim" hidden style="z-index:45">
+  <div class="sheet" id="csheet">
+    <h2 id="ceTitle">Create a theme</h2>
+    <div class="hero" id="cePrev" aria-hidden="true"><div><div class="eb">Preview</div><h2>Summer trip</h2><div class="when">Sat, 18 Jul · 09:00</div></div><div class="big"><small>to go</small>12d 03:45:10</div></div>
+    <label class="field"><span>Name</span><input type="text" id="ceName" maxlength="30" placeholder="My theme" autocomplete="off"></label>
+    <div class="cols4">
+      <label class="field"><span>Background</span><input type="color" id="ceBg1"></label>
+      <label class="field"><span>Fade to</span><input type="color" id="ceBg2"></label>
+      <label class="field"><span>Text</span><input type="color" id="ceFg"></label>
+      <label class="field"><span>Accent</span><input type="color" id="ceAcc"></label>
+    </div>
+    <div class="cols3">
+      <label class="field"><span>Font</span><select id="ceFont"></select></label>
+      <label class="field"><span>Digits</span><select id="ceDigit"><option value="roll">Rolling</option><option value="flap">Split-flap</option><option value="glitch">Flicker</option></select></label>
+      <label class="field"><span>Motion</span><select id="ceMotion"></select></label>
+    </div>
+    <div class="field"><span>Background picture (optional)</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="ceImgBtn">Choose a picture…</button><button class="btn ghost" type="button" id="ceImgRm" hidden>Remove picture</button><input type="file" id="ceFile" accept="image/*" hidden></div>
+    </div>
+    <div class="err" id="ceErr" hidden></div>
+    <div class="acts">
+      <div><button class="btn ghost danger" type="button" id="ceDel" hidden>Delete theme</button></div>
+      <div><button class="btn ghost" type="button" id="ceCancel">Cancel</button><button class="btn primary" type="button" id="ceSave">Save theme</button></div>
+    </div>
+  </div>
 </div>
 
 <!-- focus -->
@@ -514,8 +585,16 @@ button { cursor: pointer; }
                 words: { down: 'Time remaining', up: 'Uptime', today: 'Signal live' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
     clouds:   { name: 'Clouds', blurb: 'A bright day, drifting clouds', digit: 'roll', glyph: '☁',
                 words: { down: 'Looking forward to', up: 'Time since', today: 'Today’s the day' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    forest:   { name: 'Forest', blurb: 'Tall trees, light shafts, falling leaves', digit: 'roll', glyph: '♣',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    reef:     { name: 'Coral reef', blurb: 'Fish, coral and rippling light', digit: 'roll', glyph: '><>',
+                words: { down: 'Surfacing in', up: 'Under for', today: 'Today’s the dive' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    lake:     { name: 'Mountain lake', blurb: 'Dawn ridges mirrored in still water', digit: 'roll', glyph: '△',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    sakura:   { name: 'Cherry blossom', blurb: 'A flowering branch and drifting petals', digit: 'roll', glyph: '✿',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
   };
-  const TKEYS = Object.keys(THEMES);
+  let TKEYS = Object.keys(THEMES);
 
   /* ================= time maths ================= */
   // Repeats: on reaching the date a repeating countdown celebrates for a while, then rolls to its next occurrence.
@@ -591,7 +670,7 @@ button { cursor: pointer; }
   const canLink = (() => { try { return window.self === window.top && /^https?:$/.test(location.protocol); } catch (e) { return false; } })();
   const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
-  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, cd.theme, cd.repeat === 'days' ? 'd' + everyN(cd) : (RCODE[cd.repeat] || 0), cd.note || '']));
+  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, THEMES[cd.theme] && THEMES[cd.theme].custom ? 'minimal' : cd.theme, cd.repeat === 'days' ? 'd' + everyN(cd) : (RCODE[cd.repeat] || 0), cd.note || '']));
   function readLink(code) {
     try {
       const a = JSON.parse(b64d(code));
@@ -604,7 +683,7 @@ button { cursor: pointer; }
   /* ================= list rendering ================= */
   const timers = []; // [el, cd]
   function swatch(theme, size) {
-    const s = document.createElement('span'); s.className = 'sw th-' + theme; if (size) s.style.width = s.style.height = size;
+    const s = document.createElement('span'); dress(s, 'sw', theme);
     const g = document.createElement('span'); g.textContent = THEMES[theme].glyph; s.appendChild(g); return s;
   }
   function sortList(list) {
@@ -631,7 +710,7 @@ button { cursor: pointer; }
     mid.appendChild(meta); b.appendChild(mid);
     const tm = document.createElement('div'); tm.className = 'tm'; b.appendChild(tm);
     timers.push([tm, cd]);
-    return b;
+    return wrapRow(b, !cd.shared || canEditShared(cd) ? () => deleteCd(cd) : null);
   }
   function emptyEl(html) { const d = document.createElement('div'); d.className = 'empty'; d.innerHTML = html; return d; }
   function renderList() {
@@ -673,7 +752,7 @@ button { cursor: pointer; }
     heroCd = up[0] || null;
     const h = $('hero');
     if (!heroCd) { h.hidden = true; return; }
-    h.hidden = false; h.className = 'hero th-' + heroCd.theme;
+    h.hidden = false; dress(h, 'hero', heroCd.theme);
     h.textContent = '';
     const l = document.createElement('div');
     const eb = document.createElement('div'); eb.className = 'eb'; eb.textContent = 'Next up';
@@ -702,18 +781,25 @@ button { cursor: pointer; }
 
   /* ================= editor ================= */
   let editing = null, pickTheme = 'minimal', delArmed = false;
-  function buildPicker() {
-    const tp = $('tpick'); tp.textContent = '';
+  function fillPicker(tp, cur, set) {
+    tp.textContent = '';
+    const press = k => tp.querySelectorAll('.tp').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
     TKEYS.forEach(k => {
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'tp th-' + k; b.dataset.k = k;
-      b.setAttribute('aria-pressed', String(k === pickTheme));
+      const b = document.createElement('button'); b.type = 'button'; dress(b, 'tp', k); b.dataset.k = k;
+      b.setAttribute('aria-pressed', String(k === cur));
       const pv = document.createElement('span'); pv.className = 'pv'; const g = document.createElement('span'); g.textContent = THEMES[k].glyph; pv.appendChild(g);
       const n = document.createElement('b'); n.textContent = THEMES[k].name;
       b.append(pv, n);
-      b.addEventListener('click', () => { pickTheme = k; themeTouched = true; tp.querySelectorAll('.tp').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k))); });
+      b.addEventListener('click', () => { set(k); press(k); });
       tp.appendChild(b);
     });
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'tp tpadd';
+    const pv = document.createElement('span'); pv.className = 'pv'; const g = document.createElement('span'); g.textContent = '+'; pv.appendChild(g);
+    const n = document.createElement('b'); n.textContent = 'Your own…'; add.append(pv, n);
+    add.addEventListener('click', () => openThemeEditor(null, id => { set(id); fillPicker(tp, id, set); }));
+    tp.appendChild(add);
   }
+  function buildPicker() { fillPicker($('tpick'), pickTheme, k => { pickTheme = k; themeTouched = true; }); }
   /* ---------- calendar with highlighted holidays ---------- */
   // fixed: true means the same date every year, so "Repeat every year" is safe to tick for it
   function easter(y) { // anonymous Gregorian algorithm
@@ -852,7 +938,7 @@ button { cursor: pointer; }
     }
     done();
     closeEditor(); renderList();
-    if (focusId === id) openFocus(id, true);
+    if (focusId === id) openFocus(id, true); else if (!old) openFocus(id); // a new countdown opens straight away
   }
   async function deleteEditing() {
     if (!editing) return;
@@ -1528,27 +1614,175 @@ button { cursor: pointer; }
     };
   };
 
-  // Lava lamp: slow blobs of warm light that merge where they overlap; they stir every minute.
+  // Lava lamp: wax blobs that rise, sink, stretch and merge, computed as a metaball field
+  // on a small grid and scaled up; hotter (denser) wax glows yellow. They churn every minute.
   BG.lava = cv => {
-    const K = canvasKit(cv); let blobs = [], stir = -1e9;
-    const C = ['255,122,61', '255,79,123', '255,179,71'];
+    const K = canvasKit(cv); let blobs = [], off = null, og = null, im = null, w = 0, h = 0, stir = -1e9, phase = 0, lastN = 0;
     return {
-      resize() { K.size(); const m = Math.min(K.W, K.H); blobs = Array.from({ length: 9 }, (_, i) => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: m * (.12 + Math.random() * .16), vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .35, c: C[i % 3], ph: Math.random() * 6.283 })); },
+      resize() {
+        K.size(); w = Math.max(40, Math.ceil(K.W / 7)); h = Math.max(40, Math.ceil(K.H / 7));
+        off = document.createElement('canvas'); off.width = w; off.height = h; og = off.getContext('2d'); im = og.createImageData(w, h);
+        const m = Math.min(w, h);
+        blobs = Array.from({ length: 9 }, () => ({ x: w * (.1 + Math.random() * .8), r: m * (.07 + Math.random() * .075), ph: Math.random() * 6.283, sp: .05 + Math.random() * .07, dx: Math.random() * 6.283 }));
+      },
       pulse(kind) { if (kind === 'min') stir = performance.now(); },
       frame(now) {
-        const g = K.g; g.fillStyle = '#0e1719'; g.fillRect(0, 0, K.W, K.H);
-        const sp = 1 + (now - stir < 4000 ? Math.sin((now - stir) / 4000 * Math.PI) * 5 : 0);
-        g.globalCompositeOperation = 'lighter';
-        for (const b of blobs) {
-          if (!reduce) { b.x += b.vx * sp; b.y += b.vy * sp; if (b.x < -b.r * .3 || b.x > K.W + b.r * .3) b.vx *= -1; if (b.y < -b.r * .3 || b.y > K.H + b.r * .3) b.vy *= -1; }
-          const r = b.r * (1 + (reduce ? 0 : .08 * Math.sin(now / 1800 + b.ph)));
-          const rg = g.createRadialGradient(b.x, b.y, 0, b.x, b.y, r); rg.addColorStop(0, `rgba(${b.c},.5)`); rg.addColorStop(.55, `rgba(${b.c},.22)`); rg.addColorStop(1, `rgba(${b.c},0)`);
-          g.fillStyle = rg; g.fillRect(b.x - r, b.y - r, r * 2, r * 2);
+        const g = K.g; if (!im) return;
+        const dt = lastN ? Math.min(.1, (now - lastN) / 1000) : 0; lastN = now;
+        if (!reduce) phase += dt * (1 + (now - stir < 6000 ? Math.sin((now - stir) / 6000 * Math.PI) * 4 : 0));
+        const bs = blobs.map(b => ({ x: b.x + Math.sin(phase * .13 + b.dx) * w * .06, y: h * (.5 + .47 * Math.sin(phase * b.sp + b.ph)), q: b.r * b.r }));
+        bs.push({ x: w * .5, y: h + h * .2, q: (h * .3) * (h * .3) }, { x: w * .3, y: -h * .16, q: (h * .22) * (h * .22) }); // pools at the base and the cap
+        const d = im.data;
+        for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4) {
+          let v = 0;
+          for (let k = 0; k < bs.length; k++) { const ex = x - bs[k].x, ey = y - bs[k].y; const a = bs[k].q / (ex * ex + ey * ey + 1); v += a * a; }
+          if (v < .92) { d[i + 3] = 0; continue; }
+          const hot = Math.min(1, (v - 1) / 6);
+          d[i] = 255; d[i + 1] = 86 + hot * 132; d[i + 2] = 34 + hot * 60; d[i + 3] = Math.min(1, (v - .92) / .18) * 240;
         }
-        g.globalCompositeOperation = 'source-over';
-        g.fillStyle = 'rgba(14,23,25,.35)'; const [, , r] = centerOf($('fclock')); g.fillRect(0, r.top - 30, K.W, r.height + 60);
+        og.putImageData(im, 0, 0);
+        const gr = g.createLinearGradient(0, 0, 0, K.H); gr.addColorStop(0, '#120807'); gr.addColorStop(.7, '#22100c'); gr.addColorStop(1, '#4a1a0d'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(off, 0, 0, K.W, K.H);
+        const sh = g.createLinearGradient(0, 0, K.W, 0); sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(.12, 'rgba(255,240,220,.06)'); sh.addColorStop(.2, 'rgba(255,255,255,0)'); sh.addColorStop(.86, 'rgba(255,240,220,.04)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = sh; g.fillRect(0, 0, K.W, K.H); // light catching the glass
       },
-      finale() { stir = performance.now(); FX.burst('dot', ['#ff7a3d', '#ff4f7b', '#ffb347'], 150); },
+      finale() { stir = performance.now(); FX.burst('dot', ['#ff5a22', '#ffc247', '#fff3e6'], 150); },
+    };
+  };
+
+  // Forest: tall trunks at three depths, shafts of light through the canopy, drifting leaves, fireflies after dark.
+  BG.forest = cv => {
+    const K = canvasKit(cv); let trunks = [], leaves = [], flies = [];
+    return {
+      resize() {
+        K.size(); let s = 31; const rn = () => (s = s * 16807 % 2147483647) / 2147483647;
+        trunks = [0, 1, 2].map(L => Array.from({ length: Math.round(K.W / [150, 210, 300][L]) + 2 }, () => ({ x: rn() * K.W, w: [14, 26, 46][L] * (.7 + rn() * .7), lean: (rn() - .5) * .05 })));
+        leaves = Array.from({ length: 26 }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, v: .3 + Math.random() * .6, r: Math.random() * 6.283, vr: (Math.random() - .5) * .04, s: 4 + Math.random() * 5, ph: Math.random() * 6.283 }));
+        flies = Array.from({ length: 22 }, () => ({ x: Math.random() * K.W, y: K.H * (.35 + Math.random() * .6), ph: Math.random() * 6.283 }));
+      },
+      pulse() {},
+      frame(now) {
+        const g = K.g, t = reduce ? 0 : now / 1000, hr = new Date().getHours(), night = hr < 6 || hr >= 19;
+        const gr = g.createLinearGradient(0, 0, 0, K.H); gr.addColorStop(0, night ? '#0a1a16' : '#3d6b4a'); gr.addColorStop(.6, night ? '#0c2018' : '#1f4a33'); gr.addColorStop(1, '#0a1d14'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        const TC = night ? ['#11261c', '#0c1d15', '#07130e'] : ['#2a573b', '#18392a', '#0c2318'];
+        trunks.forEach((layer, L) => {
+          if (L === 1 && !night) { // light shafts sit between the far and near trees
+            g.globalCompositeOperation = 'lighter';
+            for (let i = 0; i < 5; i++) { const x = K.W * (.1 + i * .2) + Math.sin(t * .2 + i) * 30, a = .05 + .03 * Math.sin(t * .4 + i * 1.7); const lg = g.createLinearGradient(0, 0, 0, K.H); lg.addColorStop(0, `rgba(255,244,190,${a * 1.6})`); lg.addColorStop(1, 'rgba(255,244,190,0)'); g.fillStyle = lg; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 70, 0); g.lineTo(x + 70 - K.H * .34, K.H); g.lineTo(x - 60 - K.H * .34, K.H); g.fill(); }
+            g.globalCompositeOperation = 'source-over';
+          }
+          g.fillStyle = TC[L];
+          for (const tr of layer) { g.beginPath(); g.moveTo(tr.x - tr.w / 2, K.H); g.lineTo(tr.x - tr.w * .36 + tr.lean * K.H, 0); g.lineTo(tr.x + tr.w * .36 + tr.lean * K.H, 0); g.lineTo(tr.x + tr.w / 2, K.H); g.fill(); }
+        });
+        g.fillStyle = '#06110c'; g.beginPath(); g.moveTo(0, 0); for (let x = 0; x <= K.W; x += 26) g.lineTo(x, 26 + Math.abs(Math.sin(x / 73)) * 44 + Math.sin(x / 31 + t * .3) * 5); g.lineTo(K.W, 0); g.fill();
+        g.strokeStyle = '#0d2a1b'; g.lineWidth = 2; g.beginPath();
+        for (let x = 6; x < K.W; x += 11) { const hgt = 16 + (hash(x, 3, 1) % 30), sw = reduce ? 0 : Math.sin(t * .9 + x / 60) * 5; g.moveTo(x, K.H); g.quadraticCurveTo(x + sw * .4, K.H - hgt * .6, x + sw + (hash(x, 5, 2) % 9) - 4, K.H - hgt); }
+        g.stroke();
+        for (const l of leaves) { if (!reduce) { l.y += l.v; l.x += Math.sin(t * .8 + l.ph) * .7; l.r += l.vr; if (l.y > K.H + 10) { l.y = -10; l.x = Math.random() * K.W; } } g.save(); g.translate(l.x, l.y); g.rotate(l.r); g.globalAlpha = .75; g.fillStyle = night ? '#4f7a55' : (hash(l.s * 10 | 0, 1, 1) % 3 ? '#c8e86b' : '#e9b54a'); g.beginPath(); g.ellipse(0, 0, l.s, l.s * .45, 0, 0, 6.283); g.fill(); g.restore(); }
+        if (night) for (const f of flies) { const a = .5 + .5 * Math.sin(t * 2 + f.ph * 3), x = f.x + Math.sin(t * .4 + f.ph) * 30, y = f.y + Math.cos(t * .33 + f.ph) * 18; g.globalAlpha = a; g.fillStyle = '#e9ff8a'; g.beginPath(); g.arc(x, y, 2, 0, 6.283); g.fill(); g.globalAlpha = a * .22; g.beginPath(); g.arc(x, y, 8, 0, 6.283); g.fill(); }
+        g.globalAlpha = 1;
+      },
+      finale() { FX.burst('petal', ['#c8e86b', '#e9b54a', '#eaf7e4'], 160); },
+    };
+  };
+
+  // Coral reef: rippling light from the surface, swaying weed, coral on the seabed, schools of fish, bubbles.
+  BG.reef = cv => {
+    const K = canvasKit(cv); let weed = [], coral = [], fish = [], bub = [];
+    return {
+      resize() {
+        K.size(); let s = 17; const rn = () => (s = s * 16807 % 2147483647) / 2147483647;
+        weed = Array.from({ length: Math.round(K.W / 46) }, () => ({ x: rn() * K.W, h: 60 + rn() * 150, ph: rn() * 6.283, c: rn() < .5 ? '#1f7a5c' : '#2a936a' }));
+        coral = Array.from({ length: Math.round(K.W / 120) + 2 }, () => ({ x: rn() * K.W, s: 36 + rn() * 60, c: ['#ff8f6b', '#f25f7a', '#ffc46b', '#e879a8'][rn() * 4 | 0], seed: rn() * 1000 | 0 }));
+        fish = [0, 1, 2].map(i => ({ y: K.H * (.25 + i * .18), x: rn() * K.W, v: (.6 + rn() * .7) * (i % 2 ? -1 : 1), n: 7 + (rn() * 7 | 0), c: ['#ffd27a', '#9fe8ff', '#ff9f7a'][i], ph: rn() * 6.283 }));
+        bub = Array.from({ length: 34 }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: 1.5 + Math.random() * 3.5, v: .4 + Math.random() * 1.1, ph: Math.random() * 6.283 }));
+      },
+      pulse(kind) { if (kind === 'sec' && !reduce) { const x = Math.random() * K.W; for (let i = 0; i < 3; i++) bub.push({ x: x + (Math.random() - .5) * 30, y: K.H + Math.random() * 20, r: 1.5 + Math.random() * 3, v: .6 + Math.random(), ph: Math.random() * 6.283 }); } },
+      frame(now) {
+        const g = K.g, t = reduce ? 0 : now / 1000;
+        const gr = g.createLinearGradient(0, 0, 0, K.H); gr.addColorStop(0, '#2aa6c9'); gr.addColorStop(.5, '#0f6d93'); gr.addColorStop(1, '#073a55'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        g.globalCompositeOperation = 'lighter'; g.strokeStyle = 'rgba(190,245,255,.10)'; g.lineWidth = 3; // caustics
+        for (let r = 0; r < 7; r++) { g.beginPath(); for (let x = 0; x <= K.W; x += 18) { const y = K.H * .05 + r * 26 + Math.sin(x / 60 + t * 1.1 + r * 1.3) * 10 + Math.sin(x / 23 - t * .8 + r) * 5; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.globalAlpha = 1 - r / 8; g.stroke(); }
+        g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+        for (const f of fish) {
+          if (!reduce) { f.x += f.v; if (f.x > K.W + 160) f.x = -160; if (f.x < -160) f.x = K.W + 160; }
+          g.fillStyle = f.c; g.globalAlpha = .85;
+          for (let i = 0; i < f.n; i++) { const fx = f.x - Math.sign(f.v) * (i % 4) * 26 - Math.sign(f.v) * (hash(i, 2, 3) % 20), fy = f.y + ((i * 37) % 60) - 30 + Math.sin(t * 2 + i + f.ph) * 6, d = Math.sign(f.v); g.beginPath(); g.ellipse(fx, fy, 9, 4, 0, 0, 6.283); g.fill(); g.beginPath(); g.moveTo(fx - d * 8, fy); g.lineTo(fx - d * 15, fy - 5); g.lineTo(fx - d * 15, fy + 5); g.fill(); }
+        }
+        g.globalAlpha = 1; g.lineCap = 'round';
+        for (const w of weed) { g.strokeStyle = w.c; g.lineWidth = 5; g.beginPath(); g.moveTo(w.x, K.H); const sw = reduce ? 0 : Math.sin(t * .9 + w.ph) * 22; g.bezierCurveTo(w.x + sw * .3, K.H - w.h * .4, w.x - sw * .6, K.H - w.h * .7, w.x + sw, K.H - w.h); g.stroke(); }
+        for (const c of coral) { // a fan of rounded branches
+          g.strokeStyle = c.c; g.lineWidth = Math.max(4, c.s * .12);
+          for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i - 2.5) * .34 + ((hash(c.seed, i, 1) % 20) - 10) / 80, l = c.s * (.6 + (hash(c.seed, i, 2) % 40) / 100); g.beginPath(); g.moveTo(c.x, K.H + 4); g.quadraticCurveTo(c.x + Math.cos(a) * l * .3, K.H - l * .5, c.x + Math.cos(a) * l, K.H + Math.sin(a) * l); g.stroke(); }
+        }
+        g.fillStyle = '#0a4763'; g.beginPath(); g.moveTo(0, K.H); for (let x = 0; x <= K.W; x += 24) g.lineTo(x, K.H - 10 - Math.sin(x / 140) * 8 - Math.sin(x / 47) * 4); g.lineTo(K.W, K.H); g.fill();
+        g.strokeStyle = '#d6fbff'; g.lineWidth = 1;
+        for (const b of bub) { if (!reduce) { b.y -= b.v; b.x += Math.sin(now / 600 + b.ph) * .4; } if (b.y < -10) { b.y = K.H + 10; b.x = Math.random() * K.W; } g.globalAlpha = .2 + b.r / 14; g.beginPath(); g.arc(b.x, b.y, b.r, 0, 6.283); g.stroke(); }
+        if (bub.length > 150) bub.splice(0, bub.length - 150);
+        g.globalAlpha = 1;
+      },
+      finale() { for (let i = 0; i < 12; i++) this.pulse('sec'); FX.burst('dot', ['#ff8f6b', '#ffd27a', '#eafcff'], 150); },
+    };
+  };
+
+  // Mountain lake at dawn: ridges, their reflection in rippling water, drifting mist, a few birds.
+  BG.lake = cv => {
+    const K = canvasKit(cv); let birds = [];
+    const R = [['#c9d3e6', .30, 110, 1.3, 0], ['#b3c1dc', .38, 150, 2.1, 2], ['#9aaccd', .46, 120, 3.3, 4]];
+    const ridge = (x, W, amp, f, ph) => amp * (Math.abs(Math.sin(x / W * 3.14159 * f + ph)) * .7 + Math.abs(Math.sin(x / W * 3.14159 * f * 2.3 + ph * 2)) * .3);
+    return {
+      resize() { K.size(); birds = Array.from({ length: 5 }, (_, i) => ({ x: Math.random() * K.W, y: K.H * (.12 + i * .04), v: .5 + Math.random() * .5, ph: Math.random() * 6.283 })); },
+      pulse() {},
+      frame(now) {
+        const g = K.g, t = reduce ? 0 : now / 1000, hz = K.H * .58;
+        const sky = g.createLinearGradient(0, 0, 0, hz); sky.addColorStop(0, '#9db9df'); sky.addColorStop(.6, '#f1cdb5'); sky.addColorStop(1, '#ffe2bd'); g.fillStyle = sky; g.fillRect(0, 0, K.W, hz);
+        const sg = g.createRadialGradient(K.W * .68, hz, 0, K.W * .68, hz, 260); sg.addColorStop(0, 'rgba(255,238,200,.95)'); sg.addColorStop(.25, 'rgba(255,220,170,.5)'); sg.addColorStop(1, 'rgba(255,220,170,0)'); g.fillStyle = sg; g.fillRect(K.W * .68 - 260, hz - 260, 520, 260);
+        for (const [c, yb, amp, f, ph] of R) { g.fillStyle = c; g.beginPath(); g.moveTo(0, hz); for (let x = 0; x <= K.W; x += 10) g.lineTo(x, K.H * yb + amp - ridge(x, K.W, amp, f, ph)); g.lineTo(K.W, hz); g.fill(); }
+        const wat = g.createLinearGradient(0, hz, 0, K.H); wat.addColorStop(0, '#f6dcc2'); wat.addColorStop(.4, '#b9c8df'); wat.addColorStop(1, '#6f86ad'); g.fillStyle = wat; g.fillRect(0, hz, K.W, K.H - hz);
+        g.globalAlpha = .5; // reflection: the ridges again, upside down and squashed
+        for (const [c, yb, amp, f, ph] of R) { g.fillStyle = c; g.beginPath(); g.moveTo(0, hz); for (let x = 0; x <= K.W; x += 10) { const top = K.H * yb + amp - ridge(x, K.W, amp, f, ph); g.lineTo(x + Math.sin(t * 1.2 + x / 40) * 2, hz + (hz - top) * .62); } g.lineTo(K.W, hz); g.fill(); }
+        g.globalAlpha = 1; g.strokeStyle = 'rgba(255,255,255,.16)'; g.lineWidth = 1;
+        for (let i = 0; i < 16; i++) { const y = hz + 8 + i * i * 1.4 + ((t * 5) % 9), x0 = (hash(i, 9, 2) % K.W), w = 60 + (hash(i, 4, 4) % 200); g.beginPath(); g.moveTo(x0 + Math.sin(t * .5 + i) * 20, y); g.lineTo(x0 + w + Math.sin(t * .5 + i) * 20, y); g.stroke(); }
+        for (let i = 0; i < 3; i++) { const x = ((t * (6 + i * 3) + i * 400) % (K.W + 600)) - 300, mg = g.createRadialGradient(x, hz - 6 + i * 6, 0, x, hz - 6 + i * 6, 300); mg.addColorStop(0, 'rgba(255,255,255,.3)'); mg.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = mg; g.fillRect(x - 300, hz - 46, 600, 90); }
+        g.globalAlpha = .65; g.strokeStyle = '#22314a'; g.lineWidth = 1.5; g.lineCap = 'round'; g.beginPath();
+        for (const b of birds) { if (!reduce) { b.x += b.v; if (b.x > K.W + 20) b.x = -20; } const f = reduce ? 3 : Math.sin(now / 170 + b.ph) * 5; g.moveTo(b.x - 8, b.y - f); g.quadraticCurveTo(b.x - 3, b.y - 2, b.x, b.y); g.quadraticCurveTo(b.x + 3, b.y - 2, b.x + 8, b.y - f); }
+        g.stroke(); g.globalAlpha = 1;
+      },
+      finale() { FX.burst('dot', ['#ffe2bd', '#d9603b', '#ffffff'], 140); },
+    };
+  };
+
+  // Cherry blossom: a flowering branch reaching in from the corner and petals carried on the breeze; a gust every minute.
+  BG.sakura = cv => {
+    const K = canvasKit(cv); let petals = [], blooms = [], twigs = [], gust = -1e9;
+    return {
+      resize() {
+        K.size(); let s = 44; const rn = () => (s = s * 16807 % 2147483647) / 2147483647;
+        petals = Array.from({ length: Math.round(K.W * K.H / 16000) }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, v: .5 + Math.random() * .9, r: Math.random() * 6.283, vr: (Math.random() - .5) * .05, s: 4 + Math.random() * 5, ph: Math.random() * 6.283 }));
+        twigs = []; blooms = [];
+        const grow = (x, y, a, len, w, depth) => { // a branch that forks as it thins
+          const x2 = x + Math.cos(a) * len, y2 = y + Math.sin(a) * len; twigs.push([x, y, x2, y2, w]);
+          for (let i = 0; i < 3; i++) if (rn() < .75) { const u = rn(); blooms.push([x + (x2 - x) * u + (rn() - .5) * 26, y + (y2 - y) * u + (rn() - .5) * 26, 7 + rn() * 9]); }
+          if (depth > 0) { grow(x2, y2, a + .25 + rn() * .35, len * .72, w * .66, depth - 1); if (rn() < .85) grow(x2, y2, a - .2 - rn() * .4, len * .64, w * .6, depth - 1); }
+        };
+        grow(K.W + 10, K.H * .06, Math.PI * .86, Math.min(K.W, K.H) * .3, 13, 4);
+      },
+      pulse(kind) { if (kind === 'min') gust = performance.now(); },
+      frame(now) {
+        const g = K.g, t = reduce ? 0 : now / 1000;
+        const gr = g.createLinearGradient(0, 0, 0, K.H); gr.addColorStop(0, '#fbeaf0'); gr.addColorStop(1, '#f3cbd8'); g.fillStyle = gr; g.fillRect(0, 0, K.W, K.H);
+        g.fillStyle = 'rgba(214,160,180,.35)'; g.beginPath(); g.moveTo(K.W * .08, K.H); g.lineTo(K.W * .3, K.H * .58); g.lineTo(K.W * .34, K.H * .6); g.lineTo(K.W * .38, K.H * .58); g.lineTo(K.W * .6, K.H); g.fill();
+        g.strokeStyle = '#4a2a2f'; g.lineCap = 'round';
+        for (const [x, y, x2, y2, w] of twigs) { g.lineWidth = w; g.beginPath(); g.moveTo(x, y); g.lineTo(x2, y2); g.stroke(); }
+        for (const [x, y, r] of blooms) { g.fillStyle = 'rgba(245,160,190,.9)'; for (let i = 0; i < 5; i++) { const a = i * 1.2566 + x; g.beginPath(); g.ellipse(x + Math.cos(a) * r * .5, y + Math.sin(a) * r * .5, r * .5, r * .32, a, 0, 6.283); g.fill(); } g.fillStyle = '#d9457a'; g.beginPath(); g.arc(x, y, r * .16, 0, 6.283); g.fill(); }
+        const wind = 1 + (now - gust < 5000 ? Math.sin((now - gust) / 5000 * Math.PI) * 5 : 0);
+        for (const p of petals) {
+          if (!reduce) { p.y += p.v; p.x -= (.6 + Math.sin(t * .7 + p.ph) * .5) * wind; p.r += p.vr * wind; if (p.y > K.H + 10 || p.x < -10) { p.y = -10; p.x = Math.random() * (K.W + 200); } }
+          g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.globalAlpha = .85; g.fillStyle = p.s > 7 ? '#f7b6cb' : '#fde3ec'; g.beginPath(); g.ellipse(0, 0, p.s, p.s * .55, 0, 0, 6.283); g.fill(); g.restore();
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { gust = performance.now(); FX.burst('petal', ['#f7b6cb', '#fde3ec', '#ffffff', '#d9457a'], 220); },
     };
   };
 
@@ -1667,38 +1901,175 @@ button { cursor: pointer; }
     };
   };
 
-  /* ================= tools: timer + stopwatch ================= */
-  // Both run off wall-clock timestamps, so they keep correct time across reloads and background tabs.
+  /* ================= custom themes ================= */
+  // A custom theme is data, not CSS: its colours ride on inline variables and one generic background renderer.
+  const CKEY = 'tminus.themes';
+  const FONTS = [['Schibsted Grotesk', '"Schibsted Grotesk", sans-serif', 700], ['Bricolage Grotesque', '"Bricolage Grotesque", sans-serif', 800], ['Instrument Serif', '"Instrument Serif", Georgia, serif', 400],
+    ['Fraunces', '"Fraunces", Georgia, serif', 500], ['Big Shoulders Display', '"Big Shoulders Display", sans-serif', 800], ['Chakra Petch', '"Chakra Petch", sans-serif', 600], ['JetBrains Mono', '"JetBrains Mono", monospace', 500],
+    ['Share Tech Mono', '"Share Tech Mono", monospace', 400], ['VT323', '"VT323", monospace', 400], ['Caveat', '"Caveat", cursive', 700], ['Tilt Neon', '"Tilt Neon", sans-serif', 400]];
+  const MOTIONS = [['none', 'Still'], ['float', 'Floating dust'], ['stars', 'Twinkling stars'], ['snow', 'Falling snow'], ['bubbles', 'Rising bubbles'], ['rain', 'Rain']];
+  const hex = (v, d) => /^#[0-9a-f]{6}$/i.test(v) ? v : d;
+  function cleanTheme(c) {
+    if (!c || typeof c !== 'object') return null;
+    return { id: typeof c.id === 'string' && /^u[a-z0-9]{4,20}$/.test(c.id) ? c.id : 'u' + uid(), name: String(c.name || 'My theme').slice(0, 30),
+      bg1: hex(c.bg1, '#16324a'), bg2: hex(c.bg2, '#0b1622'), fg: hex(c.fg, '#f4f7fb'), acc: hex(c.acc, '#ffb347'),
+      font: FONTS.some(f => f[0] === c.font) ? c.font : FONTS[0][0], digit: ['roll', 'flap', 'glitch'].includes(c.digit) ? c.digit : 'roll',
+      motion: MOTIONS.some(m => m[0] === c.motion) ? c.motion : 'float', img: typeof c.img === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(c.img) ? c.img : '' };
+  }
+  let customs = [];
+  try { customs = (JSON.parse(localStorage.getItem(CKEY) || '[]') || []).map(cleanTheme).filter(Boolean); } catch (e) {}
+  const saveCustoms = () => { try { localStorage.setItem(CKEY, JSON.stringify(customs)); return true; } catch (e) { return false; } };
+  function syncCustoms() {
+    Object.keys(THEMES).forEach(k => { if (THEMES[k].custom) { delete THEMES[k]; delete BG[k]; } });
+    customs.forEach(c => {
+      THEMES[c.id] = { name: c.name, blurb: 'Your theme', digit: c.digit, glyph: '★', custom: c, words: { down: 'until', up: 'since', today: 'is today' }, labels: ['Days', 'Hours', 'Min', 'Sec'] };
+      BG[c.id] = cv => customBG(cv, c);
+    });
+    TKEYS = Object.keys(THEMES);
+  }
+  function themeVars(k) {
+    const c = THEMES[k] && THEMES[k].custom; if (!c) return '';
+    const f = FONTS.find(x => x[0] === c.font) || FONTS[0];
+    return `--t-bg:${c.bg1};--t-fg:${c.fg};--t-acc:${c.acc};--t-dim:color-mix(in srgb, ${c.fg} 62%, ${c.bg1});--t-num:${f[1]};--t-numw:${f[2]};--t-head:${f[1]};--t-ui:"Schibsted Grotesk", sans-serif;` +
+      `--t-art:${c.img ? `linear-gradient(${c.bg1}66, ${c.bg1}66), url("${c.img}") center / cover` : `linear-gradient(160deg, ${c.bg1}, ${c.bg2})`};`;
+  }
+  function dress(el, cls, key) { el.className = cls + ' th-' + key; el.style.cssText = themeVars(key); }
+  function customBG(cv, c) {
+    const K = canvasKit(cv); let ps = [], img = null;
+    if (c.img) { img = new Image(); img.src = c.img; }
+    return {
+      resize() {
+        K.size(); const per = { none: 0, float: 9000, stars: 3500, snow: 6000, bubbles: 16000, rain: 5000 }[c.motion];
+        ps = per ? Array.from({ length: Math.round(K.W * K.H / per) }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: .6 + Math.random() * 2.4, v: .2 + Math.random() * .8, ph: Math.random() * 6.283 })) : [];
+      },
+      pulse() {},
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H;
+        const gr = g.createLinearGradient(0, 0, W * .5, H); gr.addColorStop(0, c.bg1); gr.addColorStop(1, c.bg2); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        if (img && img.complete && img.naturalWidth) {
+          const s = Math.max(W / img.naturalWidth, H / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
+          g.drawImage(img, (W - w) / 2, (H - h) / 2, w, h); g.globalAlpha = .42; g.fillStyle = c.bg1; g.fillRect(0, 0, W, H); g.globalAlpha = 1;
+        }
+        g.fillStyle = c.fg; g.strokeStyle = c.fg; g.lineWidth = 1;
+        for (const p of ps) {
+          const m = c.motion;
+          if (!reduce) {
+            if (m === 'float') { p.y -= p.v * .25; p.x += Math.sin(now / 1600 + p.ph) * .25; }
+            else if (m === 'snow') { p.y += p.v * .8 + .2; p.x += Math.sin(now / 1300 + p.ph) * .4; }
+            else if (m === 'bubbles') { p.y -= p.v * 1.1; p.x += Math.sin(now / 700 + p.ph) * .4; }
+            else if (m === 'rain') { p.y += 9 + p.v * 8; p.x -= 1.4; }
+            if (p.y < -12) { p.y = H + 10; p.x = Math.random() * W; } if (p.y > H + 12) { p.y = -10; p.x = Math.random() * W; }
+          }
+          if (m === 'rain') { g.globalAlpha = .28; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x - 3, p.y + 16); g.stroke(); }
+          else if (m === 'bubbles') { g.globalAlpha = .3; g.beginPath(); g.arc(p.x, p.y, p.r * 2.2, 0, 6.283); g.stroke(); }
+          else { g.globalAlpha = m === 'stars' ? .25 + .45 * (.5 + .5 * Math.sin(now / 800 + p.ph)) : .35; g.beginPath(); g.arc(p.x, p.y, m === 'stars' ? p.r * .6 : p.r, 0, 6.283); g.fill(); }
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { FX.burst('confetti', [c.acc, c.fg], 170); },
+    };
+  }
+  syncCustoms();
+
+  /* ---------- theme editor ---------- */
+  let ceEdit = null, ceImg = '', ceDone = null, ceDelArmed = false;
+  const ceRead = () => cleanTheme({ id: ceEdit ? ceEdit.id : undefined, name: $('ceName').value.trim() || 'My theme', bg1: $('ceBg1').value, bg2: $('ceBg2').value, fg: $('ceFg').value, acc: $('ceAcc').value, font: $('ceFont').value, digit: $('ceDigit').value, motion: $('ceMotion').value, img: ceImg });
+  function cePreview() {
+    const c = ceRead(), f = FONTS.find(x => x[0] === c.font) || FONTS[0], p = $('cePrev');
+    p.style.cssText = `--t-bg:${c.bg1};--t-fg:${c.fg};--t-acc:${c.acc};--t-dim:color-mix(in srgb, ${c.fg} 62%, ${c.bg1});--t-num:${f[1]};--t-numw:${f[2]};--t-head:${f[1]};--t-ui:"Schibsted Grotesk", sans-serif;--t-art:${c.img ? `linear-gradient(${c.bg1}66, ${c.bg1}66), url("${c.img}") center / cover` : `linear-gradient(160deg, ${c.bg1}, ${c.bg2})`};cursor:default;min-height:150px`;
+    $('ceImgRm').hidden = !ceImg;
+  }
+  function openThemeEditor(c, done) {
+    ceEdit = c || null; ceDone = done || null; ceDelArmed = false;
+    const v = c || cleanTheme({});
+    $('ceTitle').textContent = c ? 'Edit theme' : 'Create a theme';
+    $('ceName').value = c ? c.name : ''; $('ceBg1').value = v.bg1; $('ceBg2').value = v.bg2; $('ceFg').value = v.fg; $('ceAcc').value = v.acc;
+    $('ceFont').value = v.font; $('ceDigit').value = v.digit; $('ceMotion').value = v.motion; ceImg = v.img;
+    $('ceDel').hidden = !c; $('ceDel').textContent = 'Delete theme'; $('ceErr').hidden = true;
+    cePreview(); $('cscrim').hidden = false;
+  }
+  function closeThemeEditor() { $('cscrim').hidden = true; ceEdit = null; }
+  FONTS.forEach(f => { const o = document.createElement('option'); o.value = f[0]; o.textContent = f[0]; $('ceFont').appendChild(o); });
+  MOTIONS.forEach(m => { const o = document.createElement('option'); o.value = m[0]; o.textContent = m[1]; $('ceMotion').appendChild(o); });
+  ['ceName', 'ceBg1', 'ceBg2', 'ceFg', 'ceAcc', 'ceFont', 'ceDigit', 'ceMotion'].forEach(id => $(id).addEventListener('input', cePreview));
+  $('ceImgBtn').addEventListener('click', () => $('ceFile').click());
+  $('ceImgRm').addEventListener('click', () => { ceImg = ''; cePreview(); });
+  $('ceFile').addEventListener('change', e => { // shrink the photo so it fits in browser storage
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    const im = new Image(), url = URL.createObjectURL(f);
+    im.onload = () => {
+      let q = .82, max = 1500, out = '';
+      for (let i = 0; i < 5; i++) {
+        const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)), cvs = document.createElement('canvas');
+        cvs.width = Math.round(im.naturalWidth * s); cvs.height = Math.round(im.naturalHeight * s);
+        cvs.getContext('2d').drawImage(im, 0, 0, cvs.width, cvs.height); out = cvs.toDataURL('image/jpeg', q);
+        if (out.length < 700000) break; max *= .75; q -= .06;
+      }
+      URL.revokeObjectURL(url); ceImg = out.length < 900000 ? out : ''; cePreview();
+      if (!ceImg) { $('ceErr').textContent = 'That picture is too large to store. Try a smaller one.'; $('ceErr').hidden = false; }
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); $('ceErr').textContent = 'That file could not be read as a picture.'; $('ceErr').hidden = false; };
+    im.src = url;
+  });
+  $('ceCancel').addEventListener('click', closeThemeEditor);
+  $('cscrim').addEventListener('click', e => { if (e.target === $('cscrim')) closeThemeEditor(); });
+  $('ceSave').addEventListener('click', () => {
+    const c = ceRead(), i = customs.findIndex(x => x.id === c.id), prev = customs.slice();
+    if (i >= 0) customs[i] = c; else customs.push(c);
+    if (!saveCustoms()) { customs = prev; $('ceErr').textContent = 'Not enough browser storage for this theme. Remove the picture or delete another custom theme.'; $('ceErr').hidden = false; return; }
+    syncCustoms(); const done = ceDone; closeThemeEditor(); renderList(); renderTools();
+    if (done) done(c.id);
+  });
+  $('ceDel').addEventListener('click', () => {
+    if (!ceEdit) return;
+    if (!ceDelArmed) { ceDelArmed = true; $('ceDel').textContent = 'Press again to delete'; return; }
+    const id = ceEdit.id; customs = customs.filter(x => x.id !== id); saveCustoms(); syncCustoms();
+    mine.forEach(c => { if (c.theme === id) c.theme = 'minimal'; }); saveMine();
+    tools.timers.concat(tools.sws).forEach(t => { if (t.theme === id) t.theme = 'minimal'; }); saveTools();
+    closeThemeEditor(); renderList(); renderTools(); if (focusId) openFocus(focusId);
+  });
+  function importThemes(list) {
+    if (!Array.isArray(list)) return;
+    list.map(cleanTheme).filter(Boolean).forEach(c => { const i = customs.findIndex(x => x.id === c.id); if (i >= 0) customs[i] = c; else customs.push(c); });
+    saveCustoms(); syncCustoms();
+  }
+
+  /* ================= tools: timers + stopwatches ================= */
+  // Each runs off wall-clock timestamps, so it keeps correct time across reloads and background tabs.
   const TKEY = 'tminus.tools';
-  const tools = {
-    timer: { dur: 600000, left: 600000, endAt: 0, running: false, done: false, theme: 'minimal', label: '' },
-    sw: { acc: 0, startAt: 0, running: false, laps: [], theme: 'board' },
-  };
-  try { const r = JSON.parse(localStorage.getItem(TKEY) || 'null'); if (r && r.timer && r.sw) { Object.assign(tools.timer, r.timer); Object.assign(tools.sw, r.sw); } } catch (e) {}
-  if (!THEMES[tools.timer.theme]) tools.timer.theme = 'minimal';
-  if (!THEMES[tools.sw.theme]) tools.sw.theme = 'board';
-  if (!Array.isArray(tools.sw.laps)) tools.sw.laps = [];
+  const tools = { timers: [], sws: [] };
+  try {
+    const r = JSON.parse(localStorage.getItem(TKEY) || 'null');
+    if (r) {
+      if (Array.isArray(r.timers)) tools.timers = r.timers; else if (r.timer && (r.timer.running || r.timer.left < r.timer.dur)) tools.timers = [Object.assign({ id: uid(), createdAt: Date.now() }, r.timer)];
+      if (Array.isArray(r.sws)) tools.sws = r.sws; else if (r.sw && (r.sw.running || r.sw.acc)) tools.sws = [Object.assign({ id: uid(), label: '', createdAt: Date.now() }, r.sw)];
+    }
+  } catch (e) {}
+  tools.timers = tools.timers.filter(t => t && typeof t.id === 'string' && isFinite(t.dur));
+  tools.sws = tools.sws.filter(s => s && typeof s.id === 'string');
+  tools.timers.concat(tools.sws).forEach(t => { if (!THEMES[t.theme]) t.theme = 'minimal'; if (typeof t.label !== 'string') t.label = ''; });
+  tools.sws.forEach(s => { if (!Array.isArray(s.laps)) s.laps = []; s.acc = +s.acc || 0; });
   const saveTools = () => { try { localStorage.setItem(TKEY, JSON.stringify(tools)); } catch (e) {} };
   function toolCd(id) {
-    if (id === 'timer') return { id, kind: 'timer', title: tools.timer.label || 'Timer', theme: tools.timer.theme };
-    if (id === 'sw') return { id, kind: 'sw', title: 'Stopwatch', theme: tools.sw.theme };
-    return null;
+    if (typeof id !== 'string') return null;
+    const k = id.slice(0, 2), T = k === 't-' ? tools.timers.find(t => t.id === id.slice(2)) : k === 'w-' ? tools.sws.find(s => s.id === id.slice(2)) : null;
+    return T ? { id, kind: k === 't-' ? 'timer' : 'sw', title: T.label || (k === 't-' ? 'Timer' : 'Stopwatch'), theme: T.theme, tool: T } : null;
   }
-  const timerLeft = now => tools.timer.running ? Math.max(0, tools.timer.endAt - now) : tools.timer.left;
-  const swElapsed = now => tools.sw.running ? now - tools.sw.startAt + tools.sw.acc : tools.sw.acc;
+  const timerLeft = (T, now) => T.running ? Math.max(0, T.endAt - now) : T.left;
+  const swElapsed = (S, now) => S.running ? now - S.startAt + S.acc : S.acc;
   const fmtDur = (ms, cs) => { const s = Math.floor(ms / 1000), b = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s % 3600 / 60))}:${pad(s % 60)}`; return cs ? b + '.' + pad(Math.floor(ms % 1000 / 10)) : b; };
-  function timerSet(ms) { const T = tools.timer; if (T.running) return; T.dur = T.left = clamp(ms, 1000, 99 * 36e5 + 59 * 6e4 + 59e3); T.done = false; }
-  function timerToggle() {
-    const T = tools.timer, now = Date.now();
+  const MAXDUR = 99 * 36e5 + 59 * 6e4 + 59e3;
+  function timerToggle(T) {
+    const now = Date.now();
     if (T.running) { T.left = Math.max(0, T.endAt - now); T.running = false; return; }
     if (T.left <= 0 || T.done) T.left = T.dur;
     T.endAt = now + T.left; T.running = true; T.done = false;
   }
-  function timerReset() { const T = tools.timer; T.running = false; T.left = T.dur; T.done = false; }
-  function timerAdd(ms) { const T = tools.timer; if (T.running) T.endAt += ms; else { T.left += ms; T.done = false; } }
-  function swToggle() { const S = tools.sw, now = Date.now(); if (S.running) { S.acc = swElapsed(now); S.running = false; } else { S.startAt = now; S.running = true; } }
-  function swLap() { const S = tools.sw, el = swElapsed(Date.now()); if (el > 0 && S.laps.length < 200) S.laps.push(el); }
-  function swReset() { const S = tools.sw; S.running = false; S.acc = 0; S.laps = []; }
+  function timerReset(T) { T.running = false; T.left = T.dur; T.done = false; }
+  function timerAdd(T, ms) { if (T.running) T.endAt += ms; else { T.left += ms; T.done = false; } }
+  function swToggle(S) { const now = Date.now(); if (S.running) { S.acc = swElapsed(S, now); S.running = false; } else { S.startAt = now; S.running = true; } }
+  function swLap(S) { const el = swElapsed(S, Date.now()); if (el > 0 && S.laps.length < 200) S.laps.push(el); }
+  function swReset(S) { S.running = false; S.acc = 0; S.laps = []; }
 
   /* ---------- sound: short original chimes, matched to the theme's character ---------- */
   let AC = null, muted = false;
@@ -1734,7 +2105,11 @@ button { cursor: pointer; }
   try { wantNotif = localStorage.getItem('tminus.notif') === '1'; } catch (e) {}
   function notify(body) { try { if (notifOK && wantNotif && Notification.permission === 'granted') new Notification('T-Minus', { body }); } catch (e) {} }
   let toastT = 0;
-  function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3400); }
+  function toast(msg, action, fn) {
+    const t = $('toast'); t.textContent = msg; t.hidden = false;
+    if (action) { const b = document.createElement('button'); b.type = 'button'; b.textContent = action; b.onclick = () => { t.hidden = true; fn(); }; t.appendChild(b); }
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, action ? 6000 : 3400);
+  }
 
   // one watcher for every zero crossing, whether or not that countdown is on screen
   const seen = new Map();
@@ -1747,13 +2122,14 @@ button { cursor: pointer; }
         if (focusId === cd.id && bgi) bgi.finale(); else toast(cd.title + ' has arrived');
       }
     }
-    const T = tools.timer;
-    if (T.running && now >= T.endAt) {
-      T.running = false; T.left = 0; T.done = true; saveTools();
+    let changed = false;
+    for (const T of tools.timers) {
+      if (!T.running || now < T.endAt) continue;
+      T.running = false; T.left = 0; T.done = true; changed = true;
       chime(T.theme, 3); notify((T.label || 'Timer') + ' finished');
-      if (focusId === 'timer' && bgi) bgi.finale(); else toast((T.label || 'Timer') + ' finished');
-      renderTools();
+      if (focusId === 't-' + T.id && bgi) bgi.finale(); else toast((T.label || 'Timer') + ' finished', 'Open', () => openFocus('t-' + T.id));
     }
+    if (changed) { saveTools(); renderTools(); }
   }
   setInterval(watch, 400);
 
@@ -1762,23 +2138,24 @@ button { cursor: pointer; }
     const c = $('fctl'); c.textContent = ''; c.hidden = !cd.kind;
     $('fms').hidden = cd.kind !== 'sw'; $('flaps').hidden = cd.kind !== 'sw'; $('flaps').textContent = '';
     if (!cd.kind) return;
+    const T = cd.tool;
     const btn = (label, fn, cls) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ib ' + (cls || ''); b.textContent = label;
-      b.onclick = () => { fn(); saveTools(); renderTools(); focusTick(false); }; c.appendChild(b);
+      b.onclick = () => { fn(T); saveTools(); renderTools(); focusTick(false); }; c.appendChild(b);
     };
-    if (cd.kind === 'timer') { btn('Start', timerToggle, 'go'); btn('Reset', timerReset); btn('+1 min', () => timerAdd(60000)); }
+    if (cd.kind === 'timer') { btn('Start', timerToggle, 'go'); btn('Reset', timerReset); btn('+1 min', t => timerAdd(t, 60000)); }
     else { btn('Start', swToggle, 'go'); btn('Lap', swLap); btn('Reset', swReset); }
   }
   function toolTick(cd) {
-    const now = Date.now(), isT = cd.kind === 'timer', T = isT ? tools.timer : tools.sw;
+    const now = Date.now(), isT = cd.kind === 'timer', T = cd.tool;
     let ms, prog;
     if (isT) {
-      const left = timerLeft(now); ms = Math.ceil(left / 1000) * 1000; prog = clamp(1 - left / Math.max(T.dur, left, 1), 0, 1);
+      const left = timerLeft(T, now); ms = Math.ceil(left / 1000) * 1000; prog = clamp(1 - left / Math.max(T.dur, left, 1), 0, 1);
       $('feb').textContent = T.done ? 'Time’s up' : T.running ? 'Timer running' : left < T.dur ? 'Paused' : 'Ready';
       $('fmeta').textContent = T.running ? 'Ends at ' + new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(T.endAt)) : 'Set for ' + fmtDur(T.dur);
       $('fpl1').textContent = 'Start'; $('fpl2').textContent = Math.round(prog * 100) + '% elapsed';
     } else {
-      ms = swElapsed(now); prog = (ms % 60000) / 60000;
+      ms = swElapsed(T, now); prog = (ms % 60000) / 60000;
       $('feb').textContent = T.running ? 'Stopwatch' : ms ? 'Paused' : 'Ready';
       $('fmeta').textContent = T.laps.length ? T.laps.length + (T.laps.length === 1 ? ' lap' : ' laps') : 'No laps yet';
       $('fpl1').textContent = 'This minute'; $('fpl2').textContent = '';
@@ -1790,70 +2167,169 @@ button { cursor: pointer; }
     $('falt').hidden = true;
     $('fprog').style.width = (prog * 100).toFixed(2) + '%';
     const go = $('fctl').firstElementChild;
-    if (go) go.textContent = T.running ? 'Pause' : isT ? (T.done ? 'Restart' : left0(T) ? 'Start' : 'Resume') : (ms ? 'Resume' : 'Start');
+    if (go) go.textContent = T.running ? 'Pause' : isT ? (T.done ? 'Restart' : T.left >= T.dur ? 'Start' : 'Resume') : (ms ? 'Resume' : 'Start');
     if (T.running && p.total !== lastSec && lastSec >= 0 && bgi) { bgi.pulse('sec'); if (p.s === 0) bgi.pulse('min'); }
     lastSec = p.total;
   }
-  const left0 = T => T.left >= T.dur;
-  setInterval(() => { // hundredths for a running stopwatch
-    if (!tools.sw.running) return;
-    const el = swElapsed(Date.now());
-    if (focusId === 'sw') $('fms').textContent = '.' + pad(Math.floor(el % 1000 / 10));
-    if (!$('tab-sw').hidden) paintSw(el);
+  setInterval(() => { // hundredths for a running stopwatch, in the focus view and on the hero
+    const now = Date.now();
+    if (focusId && focusId.slice(0, 2) === 'w-') { const cd = toolCd(focusId); if (cd && cd.tool.running) $('fms').textContent = '.' + pad(Math.floor(swElapsed(cd.tool, now) % 1000 / 10)); }
+    if (!$('tab-sw').hidden && heroTool.sw && heroTool.sw.running) paintToolHero('sw', now);
   }, 53);
 
-  /* ---------- home panels ---------- */
-  const PRESETS = [1, 3, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
-  function paintSw(el) { const r = $('swRead'); r.textContent = fmtDur(el); const s = document.createElement('small'); s.textContent = '.' + pad(Math.floor(el % 1000 / 10)); r.appendChild(s); }
-  function renderTools() {
-    const now = Date.now(), T = tools.timer, S = tools.sw, left = timerLeft(now);
-    $('tmRead').textContent = fmtDur(Math.ceil(left / 1000) * 1000);
-    $('tmState').textContent = T.done ? 'Finished' : T.running ? 'Running' : left < T.dur ? 'Paused' : 'Set a time and start';
-    $('tmGo').textContent = T.running ? 'Pause' : T.done ? 'Start again' : left < T.dur ? 'Resume' : 'Start timer';
-    document.querySelectorAll('#tmPresets button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.m * 60000 === T.dur)));
-    if (document.activeElement !== $('tmH') && document.activeElement !== $('tmM') && document.activeElement !== $('tmS')) {
-      const s = Math.round(T.dur / 1000); $('tmH').value = Math.floor(s / 3600); $('tmM').value = Math.floor(s % 3600 / 60); $('tmS').value = s % 60;
-    }
-    paintSw(swElapsed(now));
-    $('swGo').textContent = S.running ? 'Pause' : S.acc ? 'Resume' : 'Start';
-    const ol = $('swLaps');
-    if (ol.childElementCount !== S.laps.length) {
-      ol.textContent = '';
-      S.laps.slice().reverse().forEach((l, i) => { const k = S.laps.length - 1 - i, li = document.createElement('li'); const a = document.createElement('span'); a.textContent = 'Lap ' + (k + 1); const b = document.createElement('span'); b.textContent = fmtDur(l - (k ? S.laps[k - 1] : 0), true) + '   ·   ' + fmtDur(l, true); li.append(a, b); ol.appendChild(li); });
-    }
+  /* ---------- swipe a row left to delete it ---------- */
+  function swipeable(row, del) {
+    let x0 = 0, y0 = 0, dx = 0, drag = false, pid = null;
+    row.addEventListener('pointerdown', e => { if (e.button) return; x0 = e.clientX; y0 = e.clientY; dx = 0; drag = false; pid = e.pointerId; });
+    row.addEventListener('pointermove', e => {
+      if (pid !== e.pointerId) return;
+      const mx = e.clientX - x0, my = e.clientY - y0;
+      if (!drag) { if (Math.abs(mx) < 10 || Math.abs(mx) < Math.abs(my) * 1.3) return; drag = true; try { row.setPointerCapture(pid); } catch (err) {} row.style.transition = 'none'; }
+      dx = Math.min(0, mx); row.style.transform = `translateX(${dx}px)`; row.parentElement.classList.toggle('arm', dx < -110);
+    });
+    const end = e => {
+      if (pid !== e.pointerId) return; pid = null; if (!drag) return;
+      row._swiped = Date.now(); row.parentElement.classList.remove('arm'); row.style.transition = 'transform .18s ease';
+      if (dx < -110 && e.type === 'pointerup') { row.style.transform = 'translateX(-105%)'; setTimeout(del, 170); }
+      else { row.style.transform = ''; setTimeout(() => { row.style.transition = ''; }, 200); }
+    };
+    row.addEventListener('pointerup', end); row.addEventListener('pointercancel', end);
+    // a drag must not also count as a tap that opens the row
+    row.addEventListener('click', e => { if (row._swiped && Date.now() - row._swiped < 400) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
   }
+  function wrapRow(row, del) {
+    const w = document.createElement('div'); w.className = 'rowwrap';
+    if (del) { const d = document.createElement('div'); d.className = 'rowdel'; d.textContent = 'Delete'; d.setAttribute('aria-hidden', 'true'); w.appendChild(d); swipeable(row, del); }
+    w.appendChild(row); return w;
+  }
+  async function deleteCd(cd) {
+    if (cd.shared) {
+      try { await dbNS.collection('countdowns').doc(cd.id).delete(); } catch (e) { renderList(); return toast('Could not delete that shared countdown.'); }
+      const { id, shared: _s, ...doc } = cd;
+      return toast(`Deleted “${cd.title}”`, 'Undo', () => { dbNS.collection('countdowns').doc(id).set(doc).catch(() => {}); });
+    }
+    const i = mine.findIndex(c => c.id === cd.id); if (i < 0) return;
+    mine.splice(i, 1); saveMine(); renderList();
+    toast(`Deleted “${cd.title}”`, 'Undo', () => { mine.splice(Math.min(i, mine.length), 0, cd); saveMine(); renderList(); });
+  }
+
+  /* ---------- timer and stopwatch tabs: a hero for the main one, then the list ---------- */
+  const heroTool = { timer: null, sw: null };
+  const toolTimers = []; // [el, kind, tool] for live text
+  const stateOf = (kind, T, now) => kind === 'timer' ? (T.done ? 'Finished' : T.running ? 'Running' : T.left < T.dur ? 'Paused' : 'Ready') : (T.running ? 'Running' : T.acc ? 'Paused' : 'Ready');
+  const readOf = (kind, T, now) => kind === 'timer' ? fmtDur(Math.ceil(timerLeft(T, now) / 1000) * 1000) : fmtDur(swElapsed(T, now));
+  function paintToolHero(kind, now) {
+    const T = heroTool[kind], big = $(kind === 'timer' ? 'tmHeroBig' : 'swHeroBig'); if (!T || !big) return;
+    big.textContent = readOf(kind, T, now);
+    if (kind === 'sw') { const s = document.createElement('span'); s.style.cssText = 'font-size:.45em;opacity:.7'; s.textContent = '.' + pad(Math.floor(swElapsed(T, now) % 1000 / 10)); big.appendChild(s); }
+    const sm = document.createElement('small'); sm.textContent = stateOf(kind, T, now); big.prepend(sm);
+  }
+  function renderTools() {
+    const now = Date.now(); toolTimers.length = 0;
+    [['timer', tools.timers, 'tmHero', 'tmList', 't-'], ['sw', tools.sws, 'swHero', 'swList', 'w-']].forEach(([kind, list, heroId, listId, pre]) => {
+      // main one: running first (a timer nearest to zero), otherwise the most recent
+      const sorted = list.slice().sort((a, b) => (b.running - a.running) || (kind === 'timer' && a.running ? timerLeft(a, now) - timerLeft(b, now) : (b.createdAt || 0) - (a.createdAt || 0)));
+      const main = sorted[0] || null, h = $(heroId); heroTool[kind] = main;
+      h.hidden = !main;
+      if (main) {
+        dress(h, 'hero', main.theme); h.textContent = '';
+        const l = document.createElement('div'), eb = document.createElement('div'), t = document.createElement('h2'), w = document.createElement('div');
+        eb.className = 'eb'; eb.textContent = kind === 'timer' ? 'Timer' : 'Stopwatch'; t.textContent = main.label || (kind === 'timer' ? 'Timer' : 'Stopwatch');
+        w.className = 'when'; w.textContent = kind === 'timer' ? 'Set for ' + fmtDur(main.dur) : (main.laps.length ? main.laps.length + (main.laps.length === 1 ? ' lap' : ' laps') : 'No laps yet');
+        l.append(eb, t, w);
+        const big = document.createElement('div'); big.className = 'big'; big.id = kind === 'timer' ? 'tmHeroBig' : 'swHeroBig';
+        h.append(l, big); h.onclick = () => openFocus(pre + main.id); paintToolHero(kind, now);
+      }
+      const box = $(listId); box.textContent = '';
+      if (!list.length) box.appendChild(emptyEl(kind === 'timer' ? 'No timers yet. Press <b>New timer</b>, pick a time, and it starts straight away.' : 'No stopwatches yet. Press <b>New stopwatch</b> to start one.'));
+      sorted.forEach(T => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'row'; b.addEventListener('click', () => openFocus(pre + T.id));
+        b.appendChild(swatch(T.theme));
+        const mid = document.createElement('div'); mid.style.minWidth = '0';
+        const ti = document.createElement('div'); ti.className = 'ti'; ti.textContent = T.label || (kind === 'timer' ? 'Timer' : 'Stopwatch'); mid.appendChild(ti);
+        const meta = document.createElement('div'); meta.className = 'me';
+        const a = document.createElement('span'); a.textContent = kind === 'timer' ? fmtDur(T.dur) : (T.laps.length + (T.laps.length === 1 ? ' lap' : ' laps'));
+        const th = document.createElement('span'); th.textContent = THEMES[T.theme].name; meta.append(a, th); mid.appendChild(meta); b.appendChild(mid);
+        const tm = document.createElement('div'); tm.className = 'tm'; b.appendChild(tm); toolTimers.push([tm, kind, T]);
+        box.appendChild(wrapRow(b, () => deleteTool(kind, T)));
+      });
+    });
+    tickTools();
+  }
+  function tickTools() {
+    const now = Date.now();
+    for (const [el, kind, T] of toolTimers) {
+      el.className = 'tm' + (T.running ? ' live' : ''); el.textContent = readOf(kind, T, now);
+      const sm = document.createElement('small'); sm.textContent = stateOf(kind, T, now); el.appendChild(sm);
+    }
+    paintToolHero('timer', now); if (!(heroTool.sw && heroTool.sw.running)) paintToolHero('sw', now);
+  }
+  function deleteTool(kind, T) {
+    const list = kind === 'timer' ? tools.timers : tools.sws, i = list.indexOf(T); if (i < 0) return;
+    list.splice(i, 1); saveTools(); renderTools();
+    if (focusId === (kind === 'timer' ? 't-' : 'w-') + T.id) closeFocus();
+    toast(`Deleted “${T.label || (kind === 'timer' ? 'Timer' : 'Stopwatch')}”`, 'Undo', () => { list.splice(Math.min(i, list.length), 0, T); saveTools(); renderTools(); });
+  }
+  let curTab = 'cd';
   function setTab(name) {
+    curTab = name;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
     $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
-    $('newBtn').style.visibility = name === 'cd' ? '' : 'hidden';
+    $('nbLong').textContent = name === 'cd' ? ' countdown' : name === 'timer' ? ' timer' : ' stopwatch';
     renderTools();
   }
   document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  setInterval(() => { if (!$('tab-timer').hidden || !$('tab-sw').hidden) tickTools(); }, 250);
+
+  /* ---------- the sheet for a new (or edited) timer or stopwatch ---------- */
+  const PRESETS = [1, 3, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
+  let tsKind = 'timer', tsEdit = null, tsTheme = 'minimal', tsMs = 600000, tsDelArmed = false;
+  function paintTs(skipInputs) {
+    $('tmRead').textContent = fmtDur(tsMs);
+    document.querySelectorAll('#tmPresets button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.m * 60000 === tsMs)));
+    if (!skipInputs) { const s = Math.round(tsMs / 1000); $('tmH').value = Math.floor(s / 3600); $('tmM').value = Math.floor(s % 3600 / 60); $('tmS').value = s % 60; }
+  }
+  function openToolSheet(kind, T) {
+    tsKind = kind; tsEdit = T || null; tsDelArmed = false;
+    const list = kind === 'timer' ? tools.timers : tools.sws, last = list[list.length - 1];
+    tsTheme = T ? T.theme : last ? last.theme : (kind === 'timer' ? 'minimal' : 'board');
+    tsMs = T ? T.dur : last && last.dur ? last.dur : 600000;
+    const noun = kind === 'timer' ? 'timer' : 'stopwatch';
+    $('tsTitle').textContent = (T ? 'Edit ' : 'New ') + noun;
+    $('tsDur').hidden = kind !== 'timer';
+    $('tsLabel').value = T ? T.label : '';
+    $('tsLabel').placeholder = kind === 'timer' ? 'Pasta, focus session, laundry…' : 'Morning run, lap times, study…';
+    $('tsGo').textContent = T ? 'Save' : 'Start ' + noun;
+    $('tsDel').hidden = !T; $('tsDel').textContent = 'Delete';
+    fillPicker($('tsPick'), tsTheme, k => { tsTheme = k; });
+    paintTs(); $('tscrim').hidden = false;
+  }
   PRESETS.forEach(m => {
-    const b = document.createElement('button'); b.type = 'button'; b.dataset.m = m;
-    b.textContent = m < 60 ? m + ' min' : (m / 60) + ' hr';
-    b.onclick = () => { timerSet(m * 60000); saveTools(); renderTools(); };
-    $('tmPresets').appendChild(b);
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.m = m; b.textContent = m < 60 ? m + ' min' : (m / 60) + ' hr';
+    b.onclick = () => { tsMs = m * 60000; paintTs(); }; $('tmPresets').appendChild(b);
   });
   ['tmH', 'tmM', 'tmS'].forEach(id => $(id).addEventListener('input', () => {
     const ms = ((+$('tmH').value || 0) * 3600 + (+$('tmM').value || 0) * 60 + (+$('tmS').value || 0)) * 1000;
-    if (ms > 0) { timerSet(ms); saveTools(); $('tmRead').textContent = fmtDur(tools.timer.left); }
+    if (ms > 0) { tsMs = clamp(ms, 1000, MAXDUR); paintTs(true); }
   }));
-  $('tmLabel').value = tools.timer.label;
-  $('tmLabel').addEventListener('input', () => { tools.timer.label = $('tmLabel').value.trim().slice(0, 40); saveTools(); });
-  [['tmTheme', 'timer'], ['swTheme', 'sw']].forEach(([id, k]) => {
-    TKEYS.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = THEMES[t].name; $(id).appendChild(o); });
-    $(id).value = tools[k].theme;
-    $(id).addEventListener('change', () => { tools[k].theme = $(id).value; saveTools(); });
+  $('tsCancel').addEventListener('click', () => { $('tscrim').hidden = true; });
+  $('tscrim').addEventListener('click', e => { if (e.target === $('tscrim')) $('tscrim').hidden = true; });
+  $('tsDel').addEventListener('click', () => {
+    if (!tsEdit) return;
+    if (!tsDelArmed) { tsDelArmed = true; $('tsDel').textContent = 'Press again to delete'; return; }
+    $('tscrim').hidden = true; deleteTool(tsKind, tsEdit);
   });
-  $('tmGo').addEventListener('click', () => { const starting = !tools.timer.running; timerToggle(); saveTools(); renderTools(); if (starting) openFocus('timer'); });
-  $('tmReset').addEventListener('click', () => { timerReset(); saveTools(); renderTools(); });
-  $('tmOpen').addEventListener('click', () => openFocus('timer'));
-  $('swGo').addEventListener('click', () => { swToggle(); saveTools(); renderTools(); });
-  $('swLap').addEventListener('click', () => { swLap(); saveTools(); renderTools(); });
-  $('swReset').addEventListener('click', () => { swReset(); saveTools(); renderTools(); });
-  $('swOpen').addEventListener('click', () => openFocus('sw'));
-  setInterval(() => { if (!$('tab-timer').hidden || !$('tab-sw').hidden) renderTools(); }, 250);
+  $('tsGo').addEventListener('click', () => {
+    const now = Date.now(), label = $('tsLabel').value.trim().slice(0, 40), pre = tsKind === 'timer' ? 't-' : 'w-';
+    let T = tsEdit;
+    if (T) {
+      T.label = label; T.theme = tsTheme;
+      if (tsKind === 'timer' && T.dur !== tsMs && !T.running) { T.dur = T.left = tsMs; T.done = false; }
+    } else if (tsKind === 'timer') { T = { id: uid(), label, theme: tsTheme, dur: tsMs, left: tsMs, endAt: now + tsMs, running: true, done: false, createdAt: now }; tools.timers.push(T); }
+    else { T = { id: uid(), label, theme: tsTheme, acc: 0, startAt: now, running: true, laps: [], createdAt: now }; tools.sws.push(T); }
+    saveTools(); $('tscrim').hidden = true; renderTools();
+    openFocus(pre + T.id); // straight into the full-screen view
+  });
   renderTools();
 
   /* ---------- extras: other units, notes, calendar file, slideshow, backup ---------- */
@@ -1917,7 +2393,7 @@ button { cursor: pointer; }
       repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', createdAt: +v.createdAt || Date.now() };
   }
   $('expBtn').addEventListener('click', async () => {
-    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine }, null, 1);
+    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs }, null, 1);
     if (canLink) { download('tminus-backup.json', text, 'application/json'); return toast('Backup saved as tminus-backup.json'); }
     try { await navigator.clipboard.writeText(text); toast('Backup copied. Paste it into a file named tminus-backup.json.'); }
     catch (e) { toast('Could not copy the backup here. Use the website version to export.'); }
@@ -1926,7 +2402,8 @@ button { cursor: pointer; }
   $('impFile').addEventListener('change', async e => {
     const f = e.target.files[0]; e.target.value = ''; if (!f) return;
     try {
-      const d = JSON.parse(await f.text()), items = (Array.isArray(d) ? d : d.items).map(cleanItem).filter(Boolean);
+      const d = JSON.parse(await f.text()); importThemes(d && d.themes);
+      const items = (Array.isArray(d) ? d : d.items).map(cleanItem).filter(Boolean);
       if (!items.length) throw 0;
       items.forEach(it => { const i = mine.findIndex(c => c.id === it.id); if (i >= 0) mine[i] = it; else mine.push(it); });
       saveMine(); renderList(); toast(`Imported ${items.length} countdown${items.length === 1 ? '' : 's'}`);
@@ -1941,7 +2418,7 @@ button { cursor: pointer; }
     focusId = id;
     if (!keep) previewTheme = null;
     const theme = previewTheme || cd.theme;
-    F.className = 'focus th-' + theme; F.style.cssText = ''; F._fg = null;
+    dress(F, 'focus', theme); F._fg = null;
     F.hidden = false; $('shell').setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden';
     $('ftitle').textContent = cd.title;
@@ -1953,7 +2430,7 @@ button { cursor: pointer; }
     $('flog').textContent = ''; $('flog').hidden = theme !== 'terminal';
     $('tmenu').hidden = true; $('mmenu').hidden = true;
     buildCtl(cd); renderNote(cd); wakeOn();
-    if (cd.kind) { $('editBtn').hidden = true; $('shareBtn').hidden = true; }
+    if (cd.kind) { $('editBtn').hidden = false; $('shareBtn').hidden = true; }
     api = makeClock($('fclock'), theme);
     lastSec = -1; lastMode = null;
     FX.clear();
@@ -2008,11 +2485,14 @@ button { cursor: pointer; }
       b.addEventListener('click', () => setFocusTheme(k));
       m.appendChild(b);
     });
+    const add = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.style.cssText = 'grid-column:1 / -1;display:block;padding:10px 8px;font-weight:600'; b.textContent = label; b.onclick = () => { m.hidden = true; fn(); }; m.appendChild(b); };
+    if (THEMES[cur] && THEMES[cur].custom) add('Edit this theme…', () => openThemeEditor(THEMES[cur].custom, id => setFocusTheme(id)));
+    add('+ Create your own theme…', () => openThemeEditor(null, id => setFocusTheme(id)));
   }
   async function setFocusTheme(k) {
     const cd = find(focusId); if (!cd) return;
     $('tmenu').hidden = true;
-    if (cd.kind) { tools[cd.kind].theme = k; saveTools(); $(cd.kind === 'timer' ? 'tmTheme' : 'swTheme').value = k; return openFocus(cd.id); }
+    if (cd.kind) { cd.tool.theme = k; saveTools(); renderTools(); return openFocus(cd.id); }
     const editable = !cd.linked && (!cd.shared || canEditShared(cd));
     if (!editable) { previewTheme = k; openFocus(cd.id, true); return; }
     previewTheme = null;
@@ -2022,7 +2502,7 @@ button { cursor: pointer; }
   }
 
   /* ================= wiring ================= */
-  $('newBtn').addEventListener('click', () => openEditor(null));
+  $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
   $('cancelBtn').addEventListener('click', closeEditor);
   $('scrim').addEventListener('click', e => { if (e.target === $('scrim')) closeEditor(); });
   // Save is a plain button: a sandboxed frame can swallow a form's submit event entirely
@@ -2033,6 +2513,7 @@ button { cursor: pointer; }
   $('backBtn').addEventListener('click', closeFocus);
   $('editBtn').addEventListener('click', () => {
     const cd = find(focusId); if (!cd) return;
+    if (cd.kind) return openToolSheet(cd.kind, cd.tool);
     if (!cd.linked) return openEditor(cd);
     const item = { id: uid(), title: cd.title, target: cd.target, theme: previewTheme || cd.theme, repeat: cd.repeat, every: cd.every || 1, note: cd.note || '', createdAt: Date.now() };
     mine.push(item); saveMine(); linked = null; renderList(); openFocus(item.id);
@@ -2053,14 +2534,14 @@ button { cursor: pointer; }
   $('clearEx').addEventListener('click', () => { mine = mine.filter(c => !c.example); saveMine(); renderList(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
+    if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
   });
   let rz = 0;
   addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (bgi) bgi.resize(); }); });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (bgi) bgi.resize(); });
 
   try { $('tzname').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { $('tzname').textContent = 'local'; }
-  loadMine(); renderList();
+  loadMine(); mine.forEach(c => { if (!THEMES[c.theme]) c.theme = 'minimal'; }); renderList();
   setInterval(() => { tickList(); if (focusId) focusTick(false); }, 250);
   // re-sort once a minute so finished countdowns move down the list
   setInterval(renderList, 60000);
@@ -2071,6 +2552,12 @@ button { cursor: pointer; }
   }
   routeHash();
   addEventListener('hashchange', routeHash);
+
+  // Install: the browser offers this only on the real website, when the app is installable
+  let installEv = null;
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; $('installBtn').hidden = false; });
+  $('installBtn').addEventListener('click', async () => { if (!installEv) return; installEv.prompt(); try { await installEv.userChoice; } catch (e) {} installEv = null; $('installBtn').hidden = true; });
+  addEventListener('appinstalled', () => { $('installBtn').hidden = true; });
 
   /* ================= shared list (db) ================= */
   (async () => {
@@ -2097,5 +2584,6 @@ button { cursor: pointer; }
 })();
 </script>
 
+<script>if ('serviceWorker' in navigator) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });</script>
 </body>
 </html>
