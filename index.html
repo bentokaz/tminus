@@ -157,6 +157,19 @@ button { cursor: pointer; }
   --t-art: conic-gradient(from 135deg at 34% 56%, #5f7699 0 90deg, transparent 0), conic-gradient(from 135deg at 70% 50%, #3c5072 0 90deg, transparent 0), linear-gradient(#9db9df 0, #ffe2bd 56%, #8ea6c4 56.5%, #31476a 100%); }
 .th-sakura { --t-bg: #fbeaf0; --t-fg: #3a1f2b; --t-acc: #d9457a; --t-dim: #7d5a68; --t-num: "Fraunces", Georgia, serif; --t-numw: 300; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
   --t-art: radial-gradient(circle at 78% 26%, #f5a0be 0 9%, transparent 10%), radial-gradient(circle at 62% 16%, #f7b6cb 0 7%, transparent 8%), radial-gradient(circle at 88% 44%, #f7b6cb 0 6%, transparent 7%), linear-gradient(200deg, #4a2a2f 0 8%, transparent 8.5%), linear-gradient(#fbeaf0, #f3cbd8); }
+.th-campfire { --t-bg: #120f14; --t-fg: #fbead2; --t-acc: #ff9a2e; --t-dim: #b39a84; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(ellipse 14% 30% at 50% 100%, #ffe08a 0 60%, #ff7a1f 61% 96%, transparent 100%), radial-gradient(circle at 50% 100%, rgba(255,120,40,.5), transparent 60%), linear-gradient(#0d1020, #1a1210); }
+.th-storm { --t-bg: #1b222c; --t-fg: #eaf0f7; --t-acc: #ffe45c; --t-dim: #93a3b5; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: linear-gradient(105deg, transparent 47%, #ffe45c 47% 51%, transparent 51%) 50% 60% / 40% 70% no-repeat, radial-gradient(ellipse 60% 40% at 40% 0, #0e1319 0 96%, transparent 100%), radial-gradient(ellipse 50% 34% at 85% 4%, #151b23 0 96%, transparent 100%), linear-gradient(#2a3441, #1b222c); }
+.th-jelly { --t-bg: #050a24; --t-fg: #e6f6ff; --t-acc: #ff8fc0; --t-dim: #8aa6cf; --t-num: "Schibsted Grotesk", sans-serif; --t-numw: 300; --t-head: "Schibsted Grotesk", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(ellipse 22% 24% at 34% 46%, rgba(120,230,255,.9) 0 50%, transparent 100%), radial-gradient(ellipse 16% 18% at 72% 62%, rgba(255,143,192,.85) 0 50%, transparent 100%), linear-gradient(#0a1d4a, #040818); }
+.th-fireworks { --t-bg: #0a0d1f; --t-fg: #fff6e6; --t-acc: #ffcf4a; --t-dim: #9aa0bf; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: repeating-conic-gradient(from 0deg at 34% 40%, #ffcf4a 0 4deg, transparent 4deg 30deg) 0 0 / 100% 100%, radial-gradient(circle at 34% 40%, transparent 0 22%, #0a0d1f 23%), radial-gradient(circle at 74% 30%, #ff5d7a 0 7%, transparent 8%), linear-gradient(#0a0d1f, #1a1c3a); }
+.th-warp { --t-bg: #03040a; --t-fg: #eaf4ff; --t-acc: #6fd3ff; --t-dim: #7f8ea8; --t-num: "Share Tech Mono", monospace; --t-numw: 400; --t-head: "Share Tech Mono", monospace; --t-ui: "Share Tech Mono", monospace;
+  --t-art: repeating-conic-gradient(from 8deg at 50% 50%, rgba(190,225,255,.85) 0 1.5deg, transparent 1.5deg 24deg), radial-gradient(circle at 50% 50%, #03040a 0 24%, transparent 60%), #03040a; }
+.focus.th-jelly .ftitle { font-weight: 300; letter-spacing: .01em; }
+.focus.th-warp .ftitle { font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
+.focus.th-campfire .fmain, .focus.th-fireworks .fmain, .focus.th-storm .fmain { text-shadow: 0 2px 18px rgba(6,8,14,.75); }
 .focus.th-forest .ftitle { font-weight: 500; }
 .focus.th-reef .ftitle, .focus.th-reef .dg { font-weight: 800; }
 .focus.th-lake .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
@@ -610,13 +623,23 @@ button { cursor: pointer; }
                 words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
     sakura:   { name: 'Cherry blossom', blurb: 'A flowering branch and drifting petals', digit: 'roll', glyph: '✿',
                 words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    campfire: { name: 'Campfire', blurb: 'A fire under the stars, embers rising', digit: 'roll', glyph: '▲',
+                words: { down: 'until', up: 'since', today: 'is tonight' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    storm:    { name: 'Thunderstorm', blurb: 'Heavy rain and lightning', digit: 'roll', glyph: 'ϟ',
+                words: { down: 'Rolling in', up: 'Passed', today: 'Overhead now' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    jelly:    { name: 'Jellyfish', blurb: 'Glowing jellies in the deep', digit: 'roll', glyph: '◠',
+                words: { down: 'Drifting towards', up: 'Drifting since', today: 'Here now' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    fireworks:{ name: 'Fireworks', blurb: 'Rockets over the city at night', digit: 'roll', glyph: '✺',
+                words: { down: 'Counting down to', up: 'Celebrating for', today: 'Tonight’s the night' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    warp:     { name: 'Hyperspace', blurb: 'Stars streaking past at speed', digit: 'glitch', glyph: '✦',
+                words: { down: 'Arrival in', up: 'In flight for', today: 'Arrived' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
   };
   let TKEYS = Object.keys(THEMES);
   const GROUPS = [
-    ['Nature', ['nature', 'forest', 'lake', 'sakura', 'dunes', 'clouds']],
-    ['Water & weather', ['ocean', 'reef', 'rain', 'snow']],
-    ['Sky & night', ['space', 'aurora', 'sunset']],
-    ['Retro & tech', ['board', 'terminal', 'arcade', 'circuit', 'blueprint', 'neon']],
+    ['Nature', ['nature', 'forest', 'lake', 'sakura', 'dunes', 'clouds', 'campfire']],
+    ['Water & weather', ['ocean', 'reef', 'jelly', 'rain', 'storm', 'snow']],
+    ['Sky & night', ['space', 'aurora', 'sunset', 'fireworks']],
+    ['Retro & tech', ['board', 'terminal', 'arcade', 'circuit', 'blueprint', 'neon', 'warp']],
     ['Simple & playful', ['minimal', 'chalk', 'party', 'lava', 'vinyl']],
   ];
   function themeGroups() {
@@ -887,8 +910,8 @@ button { cursor: pointer; }
       [[0, 1], "New Year's Day", 'space', 1], [[1, 14], "Valentine's Day", 'neon', 1], [[2, 14], 'Pi Day', 'blueprint', 1],
       [[2, 17], "St Patrick's Day", 'nature', 1], [[3, 22], 'Earth Day', 'nature', 1], [[4, 4], 'Star Wars Day', 'space', 1],
       [nthDow(y, 4, 0, 2), "Mother's Day (US)", 'minimal', 0], [nthDow(y, 5, 0, 3), "Father's Day (US)", 'minimal', 0],
-      [[6, 4], 'Independence Day (US)', 'party', 1], [[9, 31], 'Halloween', 'terminal', 1], [nthDow(y, 10, 4, 4), 'Thanksgiving (US)', 'sunset', 0],
-      [[11, 24], 'Christmas Eve', 'snow', 1], [[11, 25], 'Christmas', 'snow', 1], [[11, 31], "New Year's Eve", 'party', 1],
+      [[6, 4], 'Independence Day (US)', 'fireworks', 1], [[9, 31], 'Halloween', 'terminal', 1], [nthDow(y, 10, 4, 4), 'Thanksgiving (US)', 'sunset', 0],
+      [[11, 24], 'Christmas Eve', 'snow', 1], [[11, 25], 'Christmas', 'snow', 1], [[11, 31], "New Year's Eve", 'fireworks', 1],
     ];
     const ea = easter(y); L.push([ea, 'Easter Sunday', 'nature', 0]);
     if (LNY[y]) L.push([LNY[y], 'Lunar New Year', 'party', 0]);
@@ -1909,6 +1932,187 @@ button { cursor: pointer; }
         g.globalAlpha = 1;
       },
       finale() { FX.burst('confetti', ['#e0563a', '#f3ead9', '#a3978a'], 150); },
+    };
+  };
+
+  // Campfire: a flickering fire under a starry sky, with embers that rise and drift; a shower of them every minute.
+  BG.campfire = cv => {
+    const K = canvasKit(cv); let stars = [], trees = [], emb = [];
+    const ember = (W, H, wide) => ({ x: W / 2 + (Math.random() - .5) * (wide ? 90 : 40), y: H * .9, vy: 1 + Math.random() * 2.2, ph: Math.random() * 6.283, r: .8 + Math.random() * 1.8, life: 1 });
+    return {
+      resize() {
+        K.size(); let sd = 77; const rn = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+        stars = Array.from({ length: Math.round(K.W * K.H / 5200) }, () => ({ x: rn() * K.W, y: rn() * K.H * .7, r: .4 + rn() * 1.1, ph: rn() * 6.283 }));
+        trees = []; for (let x = -20; x < K.W + 40; x += 26 + rn() * 34) trees.push({ x, h: 60 + rn() * 110, w: 22 + rn() * 20 });
+        emb = Array.from({ length: 24 }, () => { const e = ember(K.W, K.H); e.y = K.H * (.3 + Math.random() * .6); e.life = Math.random(); return e; });
+      },
+      pulse(kind) { if (reduce) return; const n = kind === 'min' ? 40 : 2; for (let i = 0; i < n && emb.length < 160; i++) emb.push(ember(K.W, K.H, kind === 'min')); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000, fx = W / 2, fy = H * .93, sc = Math.min(W, H) * .15;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#0a0d1e'); gr.addColorStop(.75, '#17131a'); gr.addColorStop(1, '#1d130e'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.fillStyle = '#fff3dc'; for (const p of stars) { g.globalAlpha = .25 + .5 * (.5 + .5 * Math.sin(t * 1.3 + p.ph)); g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill(); }
+        g.globalAlpha = 1; g.fillStyle = '#0b0c12'; const hz = H * .84;
+        for (const tr of trees) { g.beginPath(); g.moveTo(tr.x - tr.w, hz); g.lineTo(tr.x, hz - tr.h); g.lineTo(tr.x + tr.w, hz); g.fill(); }
+        g.fillRect(0, hz - 1, W, H - hz + 1);
+        const fl = .8 + .12 * Math.sin(t * 11) + .08 * Math.sin(t * 23.7);
+        const gl = g.createRadialGradient(fx, fy - sc * .6, 0, fx, fy - sc * .6, sc * 5.5); gl.addColorStop(0, `rgba(255,140,50,${.42 * fl})`); gl.addColorStop(.35, `rgba(255,96,30,${.16 * fl})`); gl.addColorStop(1, 'rgba(255,96,30,0)');
+        g.fillStyle = gl; g.fillRect(0, 0, W, H);
+        g.save(); g.translate(fx, fy); g.fillStyle = '#2a1a12';
+        g.rotate(.22); g.fillRect(-sc * .85, -sc * .1, sc * 1.7, sc * .2); g.rotate(-.44); g.fillRect(-sc * .85, -sc * .1, sc * 1.7, sc * .2); g.restore();
+        [['#ff4d1a', 1], ['#ff9a2e', .72], ['#ffe08a', .42]].forEach(([c, k], i) => {
+          const wob = Math.sin(t * 7 + i * 2) * .09 + Math.sin(t * 13.3 + i) * .05, hh = sc * k * (1.7 + Math.sin(t * 9 + i * 1.3) * .18), w = sc * k;
+          g.fillStyle = c; g.beginPath(); g.moveTo(fx - w * .55, fy);
+          g.bezierCurveTo(fx - w * .8, fy - hh * .45, fx - w * .1 + wob * sc, fy - hh * .6, fx + wob * sc * 1.6, fy - hh);
+          g.bezierCurveTo(fx + w * .2 + wob * sc, fy - hh * .55, fx + w * .8, fy - hh * .4, fx + w * .55, fy); g.fill();
+        });
+        for (let i = emb.length - 1; i >= 0; i--) {
+          const e = emb[i];
+          if (!reduce) { e.y -= e.vy; e.x += Math.sin(t * 2 + e.ph) * .8; e.life -= .006; if (e.life <= 0 || e.y < -10) { if (emb.length > 24) { emb.splice(i, 1); continue; } Object.assign(e, ember(W, H)); } }
+          g.globalAlpha = Math.max(0, e.life) * .9; g.fillStyle = e.life > .6 ? '#ffd27a' : '#ff7a2a'; g.beginPath(); g.arc(e.x, e.y, e.r, 0, 6.283); g.fill();
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { for (let i = 0; i < 120; i++) emb.push(ember(K.W, K.H, true)); FX.burst('dot', ['#ff9a2e', '#ffe08a', '#ff4d1a'], 150); },
+    };
+  };
+
+  // Thunderstorm: a dark cloud bank, driving rain, and lightning now and then; always a strike on the minute.
+  BG.storm = cv => {
+    const K = canvasKit(cv); let rain = [], clouds = [], bolt = null, flash = -1e9, next = 0;
+    function strike(now) {
+      flash = now; const pts = []; let x = K.W * (.15 + Math.random() * .7), y = K.H * .16; pts.push([x, y]);
+      while (y < K.H * (.6 + Math.random() * .3)) { x += (Math.random() - .5) * 70; y += 18 + Math.random() * 42; pts.push([x, y]); }
+      const k = 2 + (Math.random() * (pts.length - 3) | 0), br = [pts[k]]; let bx = pts[k][0], by = pts[k][1]; const dir = Math.random() < .5 ? -1 : 1;
+      for (let i = 0; i < 4; i++) { bx += dir * (20 + Math.random() * 40); by += 14 + Math.random() * 30; br.push([bx, by]); }
+      bolt = { pts, br };
+    }
+    return {
+      resize() {
+        K.size(); rain = Array.from({ length: Math.round(K.W * K.H / 3200) }, () => ({ x: Math.random() * (K.W + 200), y: Math.random() * K.H, v: 16 + Math.random() * 12, l: 14 + Math.random() * 18 }));
+        clouds = Array.from({ length: Math.ceil(K.W / 150) + 3 }, (_, i) => ({ x: i * 150 - 100 + Math.random() * 60, y: K.H * (.02 + Math.random() * .1), rx: 150 + Math.random() * 130, ry: 60 + Math.random() * 50, v: .1 + Math.random() * .2, d: Math.random() }));
+      },
+      pulse(kind) { if (kind === 'min' && !reduce) strike(performance.now()); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, f = Math.max(0, 1 - (now - flash) / 520), fl = f * (.6 + .4 * Math.sin(now / 28));
+        if (!reduce && now > next) { if (next) strike(now); next = now + 7000 + Math.random() * 11000; }
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#141a22'); gr.addColorStop(1, '#27313d'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        if (fl > 0) { g.fillStyle = `rgba(200,215,255,${fl * .3})`; g.fillRect(0, 0, W, H); }
+        if (bolt && f > .25) {
+          g.strokeStyle = '#fffbe0'; g.lineJoin = 'round'; g.shadowColor = '#ffe45c'; g.shadowBlur = 16; g.globalAlpha = Math.min(1, f * 1.4);
+          [[bolt.pts, 3], [bolt.br, 1.5]].forEach(([p, lw]) => { g.lineWidth = lw; g.beginPath(); p.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); });
+          g.shadowBlur = 0; g.globalAlpha = 1;
+        }
+        for (const c of clouds) {
+          if (!reduce) { c.x += c.v; if (c.x - c.rx > W) c.x = -c.rx; }
+          const v = 14 + c.d * 14 + fl * 70; g.fillStyle = `rgb(${v},${v + 5},${v + 12})`; g.beginPath(); g.ellipse(c.x, c.y, c.rx, c.ry, 0, 0, 6.283); g.fill();
+        }
+        g.strokeStyle = 'rgba(190,210,235,.34)'; g.lineWidth = 1; g.beginPath();
+        for (const p of rain) { if (!reduce) { p.y += p.v; p.x -= p.v * .22; if (p.y > H) { p.y = -20; p.x = Math.random() * (W + 200); } } g.moveTo(p.x, p.y); g.lineTo(p.x - p.l * .22, p.y + p.l); }
+        g.stroke();
+      },
+      finale() { const n = performance.now(); strike(n); setTimeout(() => strike(performance.now()), 420); setTimeout(() => strike(performance.now()), 980); FX.burst('dot', ['#ffe45c', '#eaf0f7', '#93a3b5'], 130); },
+    };
+  };
+
+  // Jellyfish: glowing bells that pulse their way up through dark water, trailing tentacles, with drifting plankton.
+  BG.jelly = cv => {
+    const K = canvasKit(cv); let js = [], pl = [], glow = -1e9;
+    const COL = [[120, 230, 255], [255, 143, 192], [255, 205, 130], [150, 255, 210]];
+    const mk = (W, H, anyY) => ({ x: Math.random() * W, y: anyY ? Math.random() * H : H + 80 + Math.random() * 200, s: 22 + Math.random() * 40, ph: Math.random() * 6.283, sp: .9 + Math.random() * .8, c: COL[Math.random() * COL.length | 0], dx: (Math.random() - .5) * .3 });
+    return {
+      resize() {
+        K.size(); js = Array.from({ length: Math.max(6, Math.round(K.W / 150)) }, () => mk(K.W, K.H, true)).sort((a, b) => a.s - b.s);
+        pl = Array.from({ length: Math.round(K.W * K.H / 9000) }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: .5 + Math.random() * 1.2, ph: Math.random() * 6.283 }));
+      },
+      pulse(kind) { if (kind === 'min') glow = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000, boost = now - glow < 4000 ? Math.sin((now - glow) / 4000 * Math.PI) : 0;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#0b2152'); gr.addColorStop(.6, '#071236'); gr.addColorStop(1, '#03061a'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.fillStyle = '#bfe6ff'; for (const p of pl) { if (!reduce) { p.y -= .08; p.x += Math.sin(t * .5 + p.ph) * .12; if (p.y < -4) p.y = H + 4; } g.globalAlpha = .12 + .2 * (.5 + .5 * Math.sin(t + p.ph)); g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill(); }
+        for (const j of js) {
+          const beat = Math.sin(t * j.sp + j.ph), sq = 1 - beat * .14, s = j.s, [r, gg, b] = j.c, a = .5 + boost * .35;
+          if (!reduce) { j.y -= (.18 + Math.max(0, beat) * .5) * (s / 40); j.x += j.dx; if (j.y < -s * 5) Object.assign(j, mk(W, H), { s: j.s }); }
+          g.globalAlpha = 1; const ha = g.createRadialGradient(j.x, j.y, 0, j.x, j.y, s * 2.6); ha.addColorStop(0, `rgba(${r},${gg},${b},${.2 + boost * .2})`); ha.addColorStop(1, `rgba(${r},${gg},${b},0)`);
+          g.fillStyle = ha; g.fillRect(j.x - s * 2.6, j.y - s * 2.6, s * 5.2, s * 5.2);
+          g.strokeStyle = `rgba(${r},${gg},${b},.42)`; g.lineWidth = 1.2; g.beginPath();
+          for (let k = 0; k < 6; k++) { const ox = (k - 2.5) / 2.5 * s * .7 * sq; g.moveTo(j.x + ox, j.y); for (let d = 1; d <= 9; d++) g.lineTo(j.x + ox + Math.sin(t * 1.6 + j.ph + d * .7 + k) * s * .13 * d / 4, j.y + d * s * (.28 + k % 2 * .06)); }
+          g.stroke();
+          const bg = g.createLinearGradient(0, j.y - s, 0, j.y); bg.addColorStop(0, `rgba(255,255,255,${a})`); bg.addColorStop(.35, `rgba(${r},${gg},${b},${a})`); bg.addColorStop(1, `rgba(${r},${gg},${b},${a * .35})`);
+          g.fillStyle = bg; g.beginPath(); g.ellipse(j.x, j.y, s * sq, s * (.85 + beat * .1), 0, Math.PI, 0); g.quadraticCurveTo(j.x, j.y + s * .22, j.x - s * sq, j.y); g.fill();
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { glow = performance.now(); FX.burst('dot', ['#78e6ff', '#ff8fc0', '#ffcd82'], 150); },
+    };
+  };
+
+  // Fireworks: rockets climb over a city skyline and burst; one most seconds, a volley on the minute.
+  BG.fireworks = cv => {
+    const K = canvasKit(cv); let stars = [], bld = [], rk = [], sp = [];
+    const COL = ['#ffcf4a', '#ff5d7a', '#6fe0ff', '#9dff8a', '#ffffff', '#ff9a3c'];
+    const launch = () => { if (K.W && rk.length < 14) rk.push({ x: K.W * (.08 + Math.random() * .84), y: K.H * .9, vy: -(9 + Math.random() * 4) * (K.H / 800), ty: K.H * (.14 + Math.random() * .34), c: COL[Math.random() * COL.length | 0] }); };
+    function burst(x, y, c) {
+      const n = 46 + (Math.random() * 30 | 0), ring = Math.random() < .3, pw = 2.2 + Math.random() * 2.6;
+      for (let i = 0; i < n; i++) { const a = i / n * 6.283 + Math.random() * .1, v = ring ? pw : pw * (.25 + Math.random() * .85); sp.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, c, life: 1, d: .012 + Math.random() * .01 }); }
+    }
+    return {
+      resize() {
+        K.size(); let sd = 11; const rn = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+        stars = Array.from({ length: Math.round(K.W * K.H / 9000) }, () => ({ x: rn() * K.W, y: rn() * K.H * .75, r: .4 + rn() }));
+        bld = []; for (let x = 0; x < K.W;) { const w = 34 + rn() * 60, h = K.H * (.06 + rn() * .16), win = []; for (let wy = 8; wy < h - 8; wy += 12) for (let wx = 6; wx < w - 8; wx += 11) if (rn() < .3) win.push([wx, wy]); bld.push({ x, w, h, win }); x += w + 2; }
+      },
+      pulse(kind) { if (reduce) return; if (kind === 'min') for (let i = 0; i < 6; i++) setTimeout(launch, i * 180); else if (Math.random() < .7) launch(); },
+      frame() {
+        const g = K.g, W = K.W, H = K.H;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#070a1c'); gr.addColorStop(1, '#1b1d3d'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.fillStyle = 'rgba(255,255,255,.5)'; for (const p of stars) { g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill(); }
+        g.lineCap = 'round';
+        for (let i = rk.length - 1; i >= 0; i--) {
+          const r = rk[i]; r.y += r.vy; r.vy *= .985;
+          g.strokeStyle = 'rgba(255,225,170,.8)'; g.lineWidth = 2; g.beginPath(); g.moveTo(r.x, r.y); g.lineTo(r.x, r.y - r.vy * 2.5); g.stroke();
+          if (r.y <= r.ty || r.vy > -1.2) { burst(r.x, r.y, r.c); rk.splice(i, 1); }
+        }
+        g.lineWidth = 2;
+        for (let i = sp.length - 1; i >= 0; i--) {
+          const p = sp[i]; const ox = p.x, oy = p.y; p.x += p.vx; p.y += p.vy; p.vx *= .975; p.vy = p.vy * .975 + .035; p.life -= p.d;
+          if (p.life <= 0) { sp.splice(i, 1); continue; }
+          g.globalAlpha = Math.min(1, p.life * 1.6); g.strokeStyle = p.c; g.beginPath(); g.moveTo(ox - p.vx * 2, oy - p.vy * 2); g.lineTo(p.x, p.y); g.stroke();
+        }
+        g.globalAlpha = 1;
+        const lit = Math.min(1, sp.length / 260);
+        for (const b of bld) {
+          g.fillStyle = '#05060f'; g.fillRect(b.x, H - b.h, b.w, b.h);
+          g.fillStyle = `rgba(255,214,130,${.5 + lit * .4})`; for (const [wx, wy] of b.win) g.fillRect(b.x + wx, H - b.h + wy, 4, 5);
+        }
+      },
+      finale() { for (let i = 0; i < 14; i++) setTimeout(launch, i * 160); FX.burst('confetti', COL, 140); },
+    };
+  };
+
+  // Hyperspace: stars streak outwards from the middle of the screen; the ship surges forward every minute.
+  BG.warp = cv => {
+    const K = canvasKit(cv); let st = [], surge = -1e9;
+    const mk = z => ({ a: Math.random() * 6.283, d: .04 + Math.random() * .96, z: z || 1, c: Math.random() < .2 ? '#6fd3ff' : Math.random() < .1 ? '#ffd9a8' : '#eaf4ff' });
+    return {
+      resize() { K.size(); st = Array.from({ length: Math.round(Math.min(700, K.W * K.H / 2600)) }, () => mk(.05 + Math.random() * .95)); },
+      pulse(kind) { if (kind === 'min') surge = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, cx = W / 2, cy = H / 2, R = Math.hypot(W, H) * .5;
+        const sp = reduce ? 0 : .006 * (1 + (now - surge < 5000 ? Math.sin((now - surge) / 5000 * Math.PI) * 7 : 0));
+        g.fillStyle = '#03040a'; g.fillRect(0, 0, W, H);
+        const core = g.createRadialGradient(cx, cy, 0, cx, cy, R * .7); core.addColorStop(0, 'rgba(60,110,190,.22)'); core.addColorStop(1, 'rgba(60,110,190,0)'); g.fillStyle = core; g.fillRect(0, 0, W, H);
+        g.lineCap = 'round';
+        for (const p of st) {
+          const z0 = p.z; p.z -= sp * (.4 + p.d); if (p.z <= .02) { Object.assign(p, mk(1)); continue; }
+          const r1 = p.d * R * .12 / p.z, r0 = p.d * R * .12 / Math.min(1, z0 + sp * 1.2);
+          if (r1 > R * 1.1) { Object.assign(p, mk(1)); continue; }
+          const ca = Math.cos(p.a), sa = Math.sin(p.a);
+          g.globalAlpha = Math.min(.75, (1 - p.z) + .1); g.strokeStyle = p.c; g.lineWidth = .5 + (1 - p.z) * 1.1;
+          g.beginPath(); g.moveTo(cx + ca * r0, cy + sa * r0); g.lineTo(cx + ca * (r1 + .5), cy + sa * (r1 + .5)); g.stroke();
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { surge = performance.now(); FX.burst('dot', ['#6fd3ff', '#eaf4ff', '#ffd9a8'], 150); },
     };
   };
 
