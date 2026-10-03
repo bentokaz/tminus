@@ -170,6 +170,29 @@ button { cursor: pointer; }
 .focus.th-jelly .ftitle { font-weight: 300; letter-spacing: .01em; }
 .focus.th-warp .ftitle { font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
 .focus.th-campfire .fmain, .focus.th-fireworks .fmain, .focus.th-storm .fmain { text-shadow: 0 2px 18px rgba(6,8,14,.75); }
+.th-plain { --t-bg: #ffffff; --t-fg: #111315; --t-acc: #111315; --t-dim: #6b7177; --t-num: "Schibsted Grotesk", sans-serif; --t-numw: 600; --t-head: "Schibsted Grotesk", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.02em; --t-art: none; }
+@media (prefers-color-scheme: dark) { .th-plain { --t-bg: #0c0d0e; --t-fg: #f2f3f4; --t-acc: #f2f3f4; --t-dim: #8a9097; } }
+.focus.th-plain .ffoot, .focus.th-plain .falt, .focus.th-plain .feb { display: none; }
+.focus.th-plain .dg.roll span { transition: none; }
+.focus.th-plain .ftitle { font-weight: 600; font-size: clamp(20px, 3.4vw, 40px); color: var(--t-dim); }
+.th-math { --t-bg: #f7f5ec; --t-fg: #1d2a44; --t-acc: #d1462f; --t-dim: #5d6a85; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(rgba(40,90,170,.22) 1px, transparent 1px) 0 0 / 100% 10px, linear-gradient(90deg, rgba(40,90,170,.22) 1px, transparent 1px) 0 0 / 10px 100%, #f7f5ec; }
+.th-science { --t-bg: #0c2b2e; --t-fg: #e8fff8; --t-acc: #7dffb0; --t-dim: #86b8b0; --t-num: "Share Tech Mono", monospace; --t-numw: 400; --t-head: "Schibsted Grotesk", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(circle at 50% 50%, #7dffb0 0 7%, transparent 8%), radial-gradient(ellipse 44% 16% at 50% 50%, transparent 0 88%, rgba(125,255,176,.8) 90% 96%, transparent 100%), radial-gradient(ellipse 16% 44% at 50% 50%, transparent 0 88%, rgba(125,255,176,.6) 90% 96%, transparent 100%), linear-gradient(#11393c, #08201f); }
+.th-history { --t-bg: #ead9b5; --t-fg: #3b2a17; --t-acc: #8a2f1b; --t-dim: #7a6243; --t-num: "Instrument Serif", Georgia, serif; --t-numw: 400; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(#3b2a17, #3b2a17) 0 78% / 100% 1px no-repeat, repeating-linear-gradient(90deg, #3b2a17 0 1px, transparent 1px 12px) 0 82% / 100% 6px no-repeat, radial-gradient(ellipse at 50% 50%, #f2e4c4, #d9c08f); }
+.th-english { --t-bg: #fbfaf4; --t-fg: #22252b; --t-acc: #c8321e; --t-dim: #6d727c; --t-num: "Instrument Serif", Georgia, serif; --t-numw: 400; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(90deg, transparent 14%, rgba(200,50,30,.6) 14% 16%, transparent 16%), repeating-linear-gradient(transparent 0 9px, rgba(60,110,190,.35) 9px 10px), #fbfaf4; }
+.th-geography { --t-bg: #0e3a5a; --t-fg: #f1f8ff; --t-acc: #ffd166; --t-dim: #9cc0dc; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 700; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.02em;
+  --t-art: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)) 50% 50% / 62% 1px no-repeat, radial-gradient(ellipse 14% 31% at 50% 50%, transparent 0 90%, rgba(255,255,255,.5) 92% 97%, transparent 100%), radial-gradient(circle at 50% 50%, #1b5a86 0 30%, rgba(255,255,255,.6) 31% 33%, transparent 34%), #0e3a5a; }
+.th-music { --t-bg: #2a1216; --t-fg: #fbeedd; --t-acc: #f2b84b; --t-dim: #b9978c; --t-num: "Fraunces", Georgia, serif; --t-numw: 400; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(ellipse 9% 7% at 34% 62%, #f2b84b 0 96%, transparent 100%), radial-gradient(ellipse 9% 7% at 66% 44%, #f2b84b 0 96%, transparent 100%), repeating-linear-gradient(transparent 0 8px, rgba(251,238,221,.45) 8px 9px) 0 12px / 100% 46px no-repeat, #2a1216; }
+.th-art { --t-bg: #f6f1e7; --t-fg: #26221d; --t-acc: #e4572e; --t-dim: #6f675c; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: linear-gradient(100deg, transparent 12%, #e4572e 12% 62%, transparent 62%) 0 22% / 100% 16% no-repeat, linear-gradient(80deg, transparent 30%, #17bebb 30% 88%, transparent 88%) 0 52% / 100% 14% no-repeat, linear-gradient(95deg, transparent 8%, #ffc914 8% 50%, transparent 50%) 0 80% / 100% 12% no-repeat, #f6f1e7; }
+.focus.th-math .feb, .focus.th-history .feb, .focus.th-english .feb { text-transform: none; letter-spacing: .02em; font-family: "Fraunces", serif; font-style: italic; font-size: clamp(16px, 2.2vw, 24px); }
+.focus.th-history .ftitle, .focus.th-english .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
+.focus.th-art .fmain { text-shadow: 0 0 16px #f6f1e7, 0 0 5px #f6f1e7; }
+.focus.th-art .ftitle, .focus.th-art .dg { font-weight: 800; }
 .focus.th-forest .ftitle { font-weight: 500; }
 .focus.th-reef .ftitle, .focus.th-reef .dg { font-weight: 800; }
 .focus.th-lake .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
@@ -633,6 +656,22 @@ button { cursor: pointer; }
                 words: { down: 'Counting down to', up: 'Celebrating for', today: 'Tonight’s the night' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
     warp:     { name: 'Hyperspace', blurb: 'Stars streaking past at speed', digit: 'glitch', glyph: '✦',
                 words: { down: 'Arrival in', up: 'In flight for', today: 'Arrived' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
+    plain:    { name: 'Plain', blurb: 'No animation, just the time', digit: 'roll', glyph: '00',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'min', 'sec'] },
+    math:     { name: 'Maths', blurb: 'Graph paper, a sine wave, drifting symbols', digit: 'roll', glyph: 'π',
+                words: { down: 'time remaining until', up: 'time elapsed since', today: 'equals today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    science:  { name: 'Science', blurb: 'Atoms with orbiting electrons, rising bubbles', digit: 'glitch', glyph: '⚛',
+                words: { down: 'Reaction starts in', up: 'Running for', today: 'Experiment live' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
+    history:  { name: 'History', blurb: 'Parchment and a timeline rolling by', digit: 'roll', glyph: 'MM',
+                words: { down: 'not long until', up: 'in the past since', today: 'on this day' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    english:  { name: 'English', blurb: 'Lined paper and floating letters', digit: 'roll', glyph: 'Aa',
+                words: { down: 'the story begins in', up: 'the story so far', today: 'chapter one, today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    geography:{ name: 'Geography', blurb: 'A turning globe and contour lines', digit: 'roll', glyph: '⊕',
+                words: { down: 'Arriving in', up: 'Travelling for', today: 'You are here' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    music:    { name: 'Music', blurb: 'Notes gliding along a waving staff', digit: 'roll', glyph: '♪',
+                words: { down: 'Curtain up in', up: 'Playing for', today: 'On stage tonight' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    art:      { name: 'Art', blurb: 'A brush stroke lands every second', digit: 'roll', glyph: '✎',
+                words: { down: 'Opening in', up: 'On show for', today: 'On show today' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
   };
   let TKEYS = Object.keys(THEMES);
   const GROUPS = [
@@ -640,7 +679,8 @@ button { cursor: pointer; }
     ['Water & weather', ['ocean', 'reef', 'jelly', 'rain', 'storm', 'snow']],
     ['Sky & night', ['space', 'aurora', 'sunset', 'fireworks']],
     ['Retro & tech', ['board', 'terminal', 'arcade', 'circuit', 'blueprint', 'neon', 'warp']],
-    ['Simple & playful', ['minimal', 'chalk', 'party', 'lava', 'vinyl']],
+    ['School subjects', ['math', 'science', 'english', 'history', 'geography', 'music', 'art']],
+    ['Simple & playful', ['plain', 'minimal', 'chalk', 'party', 'lava', 'vinyl']],
   ];
   function themeGroups() {
     const used = new Set(), out = GROUPS.map(([n, ks]) => [n, ks.filter(k => THEMES[k] && used.add(k))]);
@@ -2113,6 +2153,193 @@ button { cursor: pointer; }
         g.globalAlpha = 1;
       },
       finale() { surge = performance.now(); FX.burst('dot', ['#6fd3ff', '#eaf4ff', '#ffd9a8'], 150); },
+    };
+  };
+
+  // Plain: nothing moves and nothing celebrates; the page colour is the whole background.
+  BG.plain = cv => { const K = canvasKit(cv); return { resize() { K.size(); K.g.clearRect(0, 0, K.W, K.H); }, pulse() {}, frame() {}, finale() {} }; };
+
+  // Maths: graph paper with axes, a sine wave travelling along the x-axis, and symbols drifting upwards.
+  BG.math = cv => {
+    const K = canvasKit(cv); let sy = [], amp = -1e9;
+    const S = ['π', '∑', '√x', '∫', 'x²', '∞', 'Δ', 'θ', 'a² + b² = c²', '÷', '≈', 'f(x)', 'y = mx + c', '%', 'sin θ'];
+    const mk = (W, H, any) => ({ x: Math.random() * W, y: any ? Math.random() * H : H + 30, v: .12 + Math.random() * .28, s: 18 + Math.random() * 30, ch: S[Math.random() * S.length | 0], a: .1 + Math.random() * .16 });
+    return {
+      resize() { K.size(); sy = Array.from({ length: Math.round(K.W / 70) + 6 }, () => mk(K.W, K.H, true)); },
+      pulse(kind) { if (kind === 'min') amp = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000, ay = Math.round(H * .8), ax = Math.round(W * .1);
+        g.fillStyle = '#f7f5ec'; g.fillRect(0, 0, W, H);
+        [[24, .1], [120, .2]].forEach(([st, a]) => { g.strokeStyle = `rgba(40,90,170,${a})`; g.lineWidth = 1; g.beginPath(); for (let x = ax % st; x < W; x += st) { g.moveTo(x + .5, 0); g.lineTo(x + .5, H); } for (let y = ay % st; y < H; y += st) { g.moveTo(0, y + .5); g.lineTo(W, y + .5); } g.stroke(); });
+        g.strokeStyle = 'rgba(29,42,68,.55)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(0, ay + .5); g.lineTo(W, ay + .5); g.moveTo(ax + .5, 0); g.lineTo(ax + .5, H); g.stroke();
+        const A = 48 * (1 + (now - amp < 4000 ? Math.sin((now - amp) / 4000 * Math.PI) * .8 : 0));
+        g.strokeStyle = 'rgba(209,70,47,.7)'; g.lineWidth = 2.5; g.beginPath(); for (let x = 0; x <= W; x += 6) { const y = ay - A * Math.sin((x - ax) / 60 - t * 1.4); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+        g.strokeStyle = 'rgba(40,90,170,.45)'; g.lineWidth = 2; g.beginPath(); for (let x = 0; x <= W; x += 6) { const y = ay - A * .6 * Math.cos((x - ax) / 96 - t * .8); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+        g.fillStyle = '#1d2a44'; g.textAlign = 'center';
+        for (const p of sy) { if (!reduce) { p.y -= p.v; if (p.y < -40) Object.assign(p, mk(W, H)); } g.globalAlpha = p.a; g.font = `italic 500 ${p.s}px Fraunces, Georgia, serif`; g.fillText(p.ch, p.x, p.y); }
+        g.globalAlpha = 1;
+      },
+      finale() { amp = performance.now(); FX.burst('confetti', ['#d1462f', '#285aaa', '#1d2a44'], 150); },
+    };
+  };
+
+  // Science: atoms in the corners with electrons circling, bubbles rising between them; electrons race on the minute.
+  BG.science = cv => {
+    const K = canvasKit(cv); let bub = [], at = [], rush = -1e9, ph = 0, last = 0;
+    return {
+      resize() {
+        K.size(); const m = Math.min(K.W, K.H);
+        at = [[.13, .24, .15], [.87, .2, .11], [.18, .82, .1], [.85, .78, .16]].map(([x, y, r], i) => ({ x: K.W * x, y: K.H * y, r: m * r, o: i * .7, n: 2 + i % 2 }));
+        bub = Array.from({ length: Math.round(K.W / 40) }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: 2 + Math.random() * 7, v: .3 + Math.random() * .8, ph: Math.random() * 6.283 }));
+      },
+      pulse(kind) { if (kind === 'min') rush = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
+        if (!reduce) ph += dt * (1 + (now - rush < 4000 ? Math.sin((now - rush) / 4000 * Math.PI) * 5 : 0));
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#11393c'); gr.addColorStop(1, '#081f1f'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(125,255,176,.28)'; g.lineWidth = 1;
+        for (const b of bub) { if (!reduce) { b.y -= b.v; b.x += Math.sin(now / 900 + b.ph) * .3; if (b.y < -12) { b.y = H + 12; b.x = Math.random() * W; } } g.beginPath(); g.arc(b.x, b.y, b.r, 0, 6.283); g.stroke(); }
+        for (const a of at) {
+          g.fillStyle = '#7dffb0'; g.globalAlpha = .8; g.beginPath(); g.arc(a.x, a.y, a.r * .11, 0, 6.283); g.fill();
+          for (let k = 0; k <= a.n; k++) {
+            const rot = a.o + k * Math.PI / (a.n + 1), c = Math.cos(rot), sn = Math.sin(rot), e = ph * (1.1 + k * .35) + k * 2;
+            g.globalAlpha = .4; g.strokeStyle = '#86e0c0'; g.lineWidth = 1.2; g.beginPath(); g.ellipse(a.x, a.y, a.r, a.r * .36, rot, 0, 6.283); g.stroke();
+            const ex = Math.cos(e) * a.r, ey = Math.sin(e) * a.r * .36;
+            g.globalAlpha = 1; g.fillStyle = '#e8fff8'; g.beginPath(); g.arc(a.x + ex * c - ey * sn, a.y + ex * sn + ey * c, 3.2, 0, 6.283); g.fill();
+          }
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { rush = performance.now(); FX.burst('dot', ['#7dffb0', '#e8fff8', '#ffd34d'], 150); },
+    };
+  };
+
+  // History: aged parchment with a timeline of years that rolls slowly past along the bottom, and dust in the light.
+  BG.history = cv => {
+    const K = canvasKit(cv); let dust = [], stains = [];
+    return {
+      resize() {
+        K.size(); let sd = 5; const rn = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+        stains = Array.from({ length: 9 }, () => ({ x: rn() * K.W, y: rn() * K.H, r: 60 + rn() * 180, a: .012 + rn() * .022 }));
+        dust = Array.from({ length: 40 }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H, r: .6 + Math.random() * 1.4, ph: Math.random() * 6.283 }));
+      },
+      pulse() {},
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000;
+        const gr = g.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.hypot(W, H) * .6); gr.addColorStop(0, '#f3e6c8'); gr.addColorStop(.7, '#e4cf9f'); gr.addColorStop(1, '#c9a96c'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        for (const st of stains) { const sg = g.createRadialGradient(st.x, st.y, st.r * .5, st.x, st.y, st.r); sg.addColorStop(0, `rgba(110,70,25,${st.a})`); sg.addColorStop(.85, `rgba(110,70,25,${st.a * 1.8})`); sg.addColorStop(1, 'rgba(110,70,25,0)'); g.fillStyle = sg; g.fillRect(st.x - st.r, st.y - st.r, st.r * 2, st.r * 2); }
+        const ty = Math.round(H * .88), gap = 110, off = t * 9, i0 = Math.floor(off / gap);
+        g.strokeStyle = 'rgba(59,42,23,.6)'; g.fillStyle = 'rgba(59,42,23,.62)'; g.lineWidth = 1.2; g.textAlign = 'center'; g.font = '400 19px "Instrument Serif", Georgia, serif';
+        g.beginPath(); g.moveTo(0, ty + .5); g.lineTo(W, ty + .5);
+        for (let i = 0; i * gap < W + gap * 2; i++) {
+          const x = i * gap - off % gap, yr = 1000 + ((i0 + i) * 25) % 1050;
+          g.moveTo(x, ty - 9); g.lineTo(x, ty + 9); for (let k = 1; k < 5; k++) { g.moveTo(x + k * gap / 5, ty - 4); g.lineTo(x + k * gap / 5, ty + 4); }
+          g.fillText(yr, x, ty - 16);
+        }
+        g.stroke();
+        g.fillStyle = '#fff6dd'; for (const p of dust) { if (!reduce) { p.x += .12; p.y += Math.sin(t * .6 + p.ph) * .15; if (p.x > W + 5) p.x = -5; } g.globalAlpha = .25 + .3 * (.5 + .5 * Math.sin(t + p.ph)); g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill(); }
+        g.globalAlpha = 1;
+      },
+      finale() { FX.burst('confetti', ['#8a2f1b', '#3b2a17', '#c9a96c'], 150); },
+    };
+  };
+
+  // English: a ruled notebook page with a margin, and letters that lift off the lines and float away.
+  BG.english = cv => {
+    const K = canvasKit(cv); let ls = [];
+    const CH = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz&?!;,”“';
+    const mk = (W, H, any) => ({ x: W * .1 + Math.random() * W * .88, y: any ? Math.random() * H : H + 30, v: .1 + Math.random() * .3, s: 20 + Math.random() * 44, ch: CH[Math.random() * CH.length | 0], a: .08 + Math.random() * .16, r: (Math.random() - .5) * .7, vr: (Math.random() - .5) * .004, it: Math.random() < .35 });
+    return {
+      resize() { K.size(); ls = Array.from({ length: Math.round(K.W / 46) + 8 }, () => mk(K.W, K.H, true)); },
+      pulse(kind) { if (kind === 'sec' && !reduce && ls.length < 90) ls.push(mk(K.W, K.H)); },
+      frame() {
+        const g = K.g, W = K.W, H = K.H;
+        g.fillStyle = '#fbfaf4'; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(60,110,190,.2)'; g.lineWidth = 1; g.beginPath(); for (let y = 70; y < H; y += 34) { g.moveTo(0, y + .5); g.lineTo(W, y + .5); } g.stroke();
+        const mx = Math.round(Math.max(36, W * .07)); g.strokeStyle = 'rgba(200,50,30,.45)'; g.beginPath(); g.moveTo(mx + .5, 0); g.lineTo(mx + .5, H); g.stroke();
+        g.fillStyle = '#22252b'; g.textAlign = 'center';
+        for (let i = ls.length - 1; i >= 0; i--) {
+          const p = ls[i]; if (!reduce) { p.y -= p.v; p.r += p.vr; if (p.y < -50) { if (ls.length > 40) { ls.splice(i, 1); continue; } Object.assign(p, mk(W, H)); } }
+          g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.globalAlpha = p.a; g.font = `${p.it ? 'italic ' : ''}400 ${p.s}px "Instrument Serif", Georgia, serif`; g.fillText(p.ch, 0, 0); g.restore();
+        }
+      },
+      finale() { FX.burst('confetti', ['#c8321e', '#22252b', '#3c6ebe'], 150); },
+    };
+  };
+
+  // Geography: a wireframe globe turning slowly in one corner, with map contour lines in the other.
+  BG.geography = cv => {
+    const K = canvasKit(cv); let spin = -1e9, rot = 0, last = 0;
+    return {
+      resize() { K.size(); },
+      pulse(kind) { if (kind === 'min') spin = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
+        if (!reduce) rot += dt * .12 * (1 + (now - spin < 4000 ? Math.sin((now - spin) / 4000 * Math.PI) * 9 : 0));
+        const gr = g.createLinearGradient(0, 0, W, H); gr.addColorStop(0, '#0b3050'); gr.addColorStop(1, '#134a70'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(255,209,102,.2)'; g.lineWidth = 1.2; const ox = W * .16, oy = H * .3;
+        for (let k = 1; k <= 7; k++) { g.beginPath(); for (let a = 0; a <= 6.3; a += .1) { const r = k * Math.min(W, H) * .045 * (1 + .14 * Math.sin(3 * a + k * .6) + .08 * Math.sin(5 * a + k)); a ? g.lineTo(ox + Math.cos(a) * r * 1.3, oy + Math.sin(a) * r) : g.moveTo(ox + Math.cos(a) * r * 1.3, oy + Math.sin(a) * r); } g.stroke(); }
+        const R = Math.min(W, H) * .44, cx = W * .8, cy = H * .74;
+        const sea = g.createRadialGradient(cx - R * .3, cy - R * .3, 0, cx, cy, R); sea.addColorStop(0, 'rgba(60,140,200,.5)'); sea.addColorStop(1, 'rgba(20,70,110,.5)'); g.fillStyle = sea; g.beginPath(); g.arc(cx, cy, R, 0, 6.283); g.fill();
+        g.strokeStyle = 'rgba(241,248,255,.3)'; g.lineWidth = 1;
+        for (let i = 0; i < 12; i++) { const l = i * Math.PI / 6 + rot, sn = Math.sin(l); if (Math.cos(l) <= 0) continue; g.beginPath(); g.ellipse(cx, cy, Math.abs(sn) * R, R, 0, -Math.PI / 2, Math.PI / 2, sn < 0); g.stroke(); }
+        g.beginPath(); for (let p = -60; p <= 60; p += 30) { const y = cy - R * Math.sin(p * Math.PI / 180), hw = R * Math.cos(p * Math.PI / 180); g.moveTo(cx - hw, y); g.lineTo(cx + hw, y); } g.stroke();
+        g.strokeStyle = 'rgba(241,248,255,.55)'; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cy, R, 0, 6.283); g.stroke();
+      },
+      finale() { spin = performance.now(); FX.burst('confetti', ['#ffd166', '#f1f8ff', '#3c8cc8'], 150); },
+    };
+  };
+
+  // Music: two staves that wave gently while notes glide along them; a new note arrives every second.
+  BG.music = cv => {
+    const K = canvasKit(cv); let notes = [];
+    const mk = (W, any) => ({ x: any ? Math.random() * W : W + 30, st: Math.random() < .5 ? 0 : 1, li: Math.random() * 9 | 0, v: .5 + Math.random() * .5, fl: Math.random() < .4 });
+    return {
+      resize() { K.size(); notes = Array.from({ length: Math.round(K.W / 90) + 4 }, () => mk(K.W, true)); },
+      pulse(kind) { if (kind === 'sec' && !reduce && notes.length < 60) notes.push(mk(K.W)); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000, sp = Math.max(9, Math.min(14, H / 60));
+        const base = st => H * (st ? .82 : .1), wave = (x, st) => Math.sin(x / 170 + t * .7 + st * 2) * 9;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#31161b'); gr.addColorStop(1, '#1f0d10'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(251,238,221,.3)'; g.lineWidth = 1;
+        for (let st = 0; st < 2; st++) for (let i = 0; i < 5; i++) { g.beginPath(); for (let x = 0; x <= W + 12; x += 12) { const y = base(st) + i * sp + wave(x, st); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
+        g.fillStyle = '#f2b84b'; g.strokeStyle = '#f2b84b'; g.lineWidth = 1.6;
+        for (let i = notes.length - 1; i >= 0; i--) {
+          const n = notes[i]; if (!reduce) { n.x -= n.v; if (n.x < -30) { if (notes.length > 24) { notes.splice(i, 1); continue; } Object.assign(n, mk(W)); } }
+          const y = base(n.st) + n.li * sp / 2 + wave(n.x, n.st), rx = sp * .62, up = n.li > 3, sx = n.x + (up ? rx * .92 : -rx * .92), ey = y + (up ? -sp * 3.2 : sp * 3.2);
+          g.globalAlpha = .85; g.beginPath(); g.ellipse(n.x, y, rx, sp * .44, -.35, 0, 6.283); g.fill();
+          g.beginPath(); g.moveTo(sx, y); g.lineTo(sx, ey); if (n.fl) g.quadraticCurveTo(sx + sp * .9, ey + (up ? sp * .6 : -sp * .6), sx + sp * .7, ey + (up ? sp * 1.5 : -sp * 1.5)); g.stroke();
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { FX.burst('confetti', ['#f2b84b', '#fbeedd', '#e0563a'], 150); },
+    };
+  };
+
+  // Art: a canvas where a new brush stroke is painted every second and the oldest ones fade away.
+  BG.art = cv => {
+    const K = canvasKit(cv); let st = [];
+    const COL = ['#e4572e', '#17bebb', '#ffc914', '#76b041', '#3d5a80'];
+    function add(now, done) {
+      const W = K.W, H = K.H, x = Math.random() * W, y = Math.random() * H, a = Math.random() * 6.283, L = 140 + Math.random() * Math.min(W, 520);
+      const p = [[x, y]]; for (let i = 1; i < 4; i++) p.push([x + Math.cos(a) * L * i / 3 + (Math.random() - .5) * L * .3, y + Math.sin(a) * L * i / 3 + (Math.random() - .5) * L * .3]);
+      st.push({ p, c: COL[Math.random() * COL.length | 0], w: 12 + Math.random() * 26, t0: done ? -1e9 : now, len: L * 1.25, out: 0 });
+    }
+    return {
+      resize() { K.size(); st = []; for (let i = 0; i < 9; i++) add(0, true); },
+      pulse(kind) { if (kind === 'sec' && !reduce) { const now = performance.now(); add(now); if (st.length > 16) st.filter(s => !s.out)[0].out = now; } },
+      frame(now) {
+        const g = K.g; g.fillStyle = '#f6f1e7'; g.fillRect(0, 0, K.W, K.H);
+        g.lineCap = 'round';
+        st = st.filter(s => !s.out || now - s.out < 1500);
+        for (const s of st) {
+          const gp = Math.min(1, (now - s.t0) / 700), [a, b, c, d] = s.p;
+          g.globalAlpha = .42 * (s.out ? 1 - (now - s.out) / 1500 : 1); g.strokeStyle = s.c; g.lineWidth = s.w; g.setLineDash([s.len * gp, 1e5]);
+          g.beginPath(); g.moveTo(a[0], a[1]); g.bezierCurveTo(b[0], b[1], c[0], c[1], d[0], d[1]); g.stroke();
+        }
+        g.setLineDash([]); g.globalAlpha = 1;
+      },
+      finale() { const now = performance.now(); for (let i = 0; i < 8; i++) add(now + i * 90); FX.burst('confetti', COL, 160); },
     };
   };
 
