@@ -204,6 +204,20 @@ button { cursor: pointer; }
 #cePrev h2 { font-size: clamp(20px, 4vw, 26px); white-space: nowrap; }
 #cePrev .when { white-space: nowrap; }
 
+/* sheets never scroll sideways; grouped theme pickers; tags; milestones */
+.sheet { grid-template-columns: minmax(0, 1fr); }
+.sheet .tread { font-size: clamp(38px, 12vw, 84px); }
+.tgh { grid-column: 1 / -1; font: 700 10.5px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 8px 2px 0; }
+.tgh:first-child { padding-top: 0; }
+.tpw { position: relative; display: grid; }
+.tped { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 3px; background: rgba(12,14,16,.74); color: #fff; font: 600 11px/1 var(--f-ui); padding: 5px 7px; }
+.tmenu .tgh { padding: 10px 6px 4px; }
+.tmw { position: relative; display: grid; }
+.tmw > button:first-child { padding-right: 58px; }
+.tmenu button.ted { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: block; padding: 6px 8px; border: 1px solid var(--rule); background: var(--panel); font-size: 12px; font-weight: 600; }
+.tagbar { padding: 10px 0 6px; }
+.fprog b { position: absolute; top: -3px; bottom: -3px; width: 1px; background: color-mix(in srgb, var(--t-fg) 50%, transparent); }
+
 /* focus extras */
 .fctl { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .fctl .ib { padding: 11px 18px; font-size: 15px; }
@@ -393,6 +407,7 @@ button { cursor: pointer; }
 
   <section class="sec" id="mineSec">
     <div class="sechead"><h3>Your countdowns</h3><span>Saved in this browser</span></div>
+    <div class="chips tagbar" id="tagbar" hidden></div>
     <div id="mine"></div>
   </section>
 
@@ -433,6 +448,7 @@ button { cursor: pointer; }
         <div class="cal" id="cal"></div>
         <div class="calside">
           <label class="field"><span>Time</span><input type="time" id="fTime" value="00:00"></label>
+          <label class="field"><span>Time zone</span><select id="fTz"></select></label>
           <div class="holl" id="holl"></div>
         </div>
       </div>
@@ -440,6 +456,7 @@ button { cursor: pointer; }
     <div class="field"><span>Theme</span><div class="tpick" id="tpick"></div></div>
     <div class="field"><span>Repeat</span><div class="reprow"><select id="fRepeat"><option value="none">Doesn’t repeat</option><option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option><option value="days">Every few days…</option></select><input type="number" id="fEvery" min="1" max="365" value="14" aria-label="Number of days" hidden></div></div>
     <label class="field"><span>Note or link (optional)</span><input type="text" id="fNote" maxlength="200" placeholder="Gate B12, bring passport · https://…" autocomplete="off"></label>
+    <div class="field"><span>Tags (optional)</span><input type="text" id="fTags" maxlength="80" placeholder="family, work, travel" autocomplete="off"><div class="chips" id="tagSug"></div></div>
     <label class="check" id="shareRow" hidden><input type="checkbox" id="fShared"><span>Share with everyone<small>Adds it to the shared list that everyone with this app's link can see.</small></span></label>
     <div class="err" id="ferr" hidden></div>
     <div class="acts">
@@ -453,7 +470,7 @@ button { cursor: pointer; }
 <div class="scrim" id="tscrim" hidden>
   <div class="sheet" id="tsheet">
     <h2 id="tsTitle">New timer</h2>
-    <div id="tsDur" style="display:grid;gap:14px">
+    <div id="tsDur" style="display:grid;grid-template-columns:minmax(0,1fr);gap:14px">
       <div class="tread" id="tmRead">00:10:00</div>
       <div class="chips" id="tmPresets"></div>
       <div class="trow">
@@ -595,6 +612,20 @@ button { cursor: pointer; }
                 words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
   };
   let TKEYS = Object.keys(THEMES);
+  const GROUPS = [
+    ['Nature', ['nature', 'forest', 'lake', 'sakura', 'dunes', 'clouds']],
+    ['Water & weather', ['ocean', 'reef', 'rain', 'snow']],
+    ['Sky & night', ['space', 'aurora', 'sunset']],
+    ['Retro & tech', ['board', 'terminal', 'arcade', 'circuit', 'blueprint', 'neon']],
+    ['Simple & playful', ['minimal', 'chalk', 'party', 'lava', 'vinyl']],
+  ];
+  function themeGroups() {
+    const used = new Set(), out = GROUPS.map(([n, ks]) => [n, ks.filter(k => THEMES[k] && used.add(k))]);
+    const rest = TKEYS.filter(k => !used.has(k) && !THEMES[k].custom), cu = TKEYS.filter(k => THEMES[k].custom);
+    if (rest.length) out.push(['More', rest]);
+    if (cu.length) out.push(['Your themes', cu]);
+    return out;
+  }
 
   /* ================= time maths ================= */
   // Repeats: on reaching the date a repeating countdown celebrates for a while, then rolls to its next occurrence.
@@ -602,27 +633,50 @@ button { cursor: pointer; }
   const unrep = c => typeof c === 'string' && c[0] === 'd' ? { repeat: 'days', every: clamp(+c.slice(1) || 1, 1, 365) } : { repeat: ['none', 'yearly', 'monthly', 'weekly'][c] || 'none', every: 1 };
   const everyN = cd => clamp(cd.every | 0 || 1, 1, 365);
   const repeatLabel = cd => ({ yearly: 'Every year', monthly: 'Every month', weekly: 'Every week', days: everyN(cd) === 1 ? 'Every day' : 'Every ' + everyN(cd) + ' days' })[cd.repeat] || '';
+  // A countdown can be pinned to a time zone: its date and time are wall-clock time there.
+  // "Wall" values are that wall-clock time stored as if it were UTC, so date maths stays simple.
+  const tzFmt = {};
+  function validTz(z) {
+    if (!z || typeof z !== 'string') return false;
+    if (tzFmt[z]) return true;
+    try { tzFmt[z] = new Intl.DateTimeFormat('en-US', { timeZone: z, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }); return true; } catch (e) { return false; }
+  }
+  function toWall(t, tz) {
+    if (!validTz(tz)) return t - new Date(t).getTimezoneOffset() * 60000;
+    const p = {}; tzFmt[tz].formatToParts(new Date(t)).forEach(x => { p[x.type] = +x.value; });
+    return Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second);
+  }
+  function fromWall(w, tz) {
+    if (!validTz(tz)) { const d = new Date(w); return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()).getTime(); }
+    let t = w - (toWall(w, tz) - w); t = w - (toWall(t, tz) - t); return t;
+  }
+  const tzCity = z => z.split('/').pop().replace(/_/g, ' ');
+  const fmtInTz = (t, tz) => new Intl.DateTimeFormat(undefined, { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(t)) + ' in ' + tzCity(tz);
   function shift(d, rp, n, dir) {
-    if (rp === 'yearly') d.setFullYear(d.getFullYear() + dir);
-    else if (rp === 'monthly') d.setMonth(d.getMonth() + dir);
-    else d.setDate(d.getDate() + (rp === 'weekly' ? 7 : n) * dir);
+    if (rp === 'yearly') d.setUTCFullYear(d.getUTCFullYear() + dir);
+    else if (rp === 'monthly') d.setUTCMonth(d.getUTCMonth() + dir);
+    else d.setUTCDate(d.getUTCDate() + (rp === 'weekly' ? 7 : n) * dir);
   }
   function occ(cd, now) {
     let t = cd.target, prev;
     const rp = REPEATS.includes(cd.repeat) ? cd.repeat : 'none', n = everyN(cd);
     if (rp !== 'none') {
-      const win = rp === 'yearly' || rp === 'monthly' ? DAY : 36e5, d = new Date(t);
+      const win = rp === 'yearly' || rp === 'monthly' ? DAY : 36e5, tz = cd.tz, d = new Date(toWall(t, tz));
       if ((rp === 'weekly' || rp === 'days') && t + win <= now) { // jump most of the way, then step
         const stepD = rp === 'weekly' ? 7 : n, k = Math.floor((now - win - t) / (stepD * DAY));
-        if (k > 0) { d.setDate(d.getDate() + k * stepD); t = d.getTime(); }
+        if (k > 0) { d.setUTCDate(d.getUTCDate() + k * stepD); t = fromWall(d.getTime(), tz); }
       }
       let guard = 0;
-      while (t + win <= now && guard++ < 1200) { shift(d, rp, n, 1); t = d.getTime(); }
-      const p = new Date(t); shift(p, rp, n, -1); prev = p.getTime();
+      while (t + win <= now && guard++ < 1200) { shift(d, rp, n, 1); t = fromWall(d.getTime(), tz); }
+      const p = new Date(d.getTime()); shift(p, rp, n, -1); prev = fromWall(p.getTime(), tz);
     } else prev = Math.min(cd.createdAt || t - 30 * DAY, t - 60e3);
     const mode = now < t ? 'down' : (rp !== 'none' ? 'today' : 'up');
     return { t, prev, mode, prog: clamp((now - prev) / (t - prev), 0, 1) };
   }
+  // milestones on the way down: a toast when each is crossed, ticks on the progress bar
+  const MILES = [[100 * DAY, '100 days'], [30 * DAY, '30 days'], [7 * DAY, '1 week'], [DAY, '1 day'], [36e5, '1 hour'], [6e5, '10 minutes']];
+  const shortDur = ms => { const p = split(ms); return p.d ? p.d + 'd ' + p.h + 'h' : p.h ? p.h + 'h ' + p.m + 'm' : p.m ? p.m + 'm' : p.s + 's'; };
+  const cleanTags = a => Array.isArray(a) ? [...new Set(a.filter(x => typeof x === 'string').map(x => x.trim().toLowerCase().slice(0, 20)).filter(Boolean))].slice(0, 6) : [];
   function split(ms) {
     const s = Math.floor(Math.abs(ms) / 1000);
     return { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60, total: s };
@@ -670,18 +724,20 @@ button { cursor: pointer; }
   const canLink = (() => { try { return window.self === window.top && /^https?:$/.test(location.protocol); } catch (e) { return false; } })();
   const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
-  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, THEMES[cd.theme] && THEMES[cd.theme].custom ? 'minimal' : cd.theme, cd.repeat === 'days' ? 'd' + everyN(cd) : (RCODE[cd.repeat] || 0), cd.note || '']));
+  const linkFor = cd => location.origin + location.pathname + '#s-' + b64e(JSON.stringify([cd.title, cd.target, THEMES[cd.theme] && THEMES[cd.theme].custom ? 'minimal' : cd.theme, cd.repeat === 'days' ? 'd' + everyN(cd) : (RCODE[cd.repeat] || 0), cd.note || '', cd.tz || '']));
   function readLink(code) {
     try {
       const a = JSON.parse(b64d(code));
       if (typeof a[0] !== 'string' || !isFinite(a[1]) || !THEMES[a[2]]) return null;
-      return { id: 'link', linked: true, title: a[0].slice(0, 80), target: +a[1], theme: a[2], ...unrep(a[3]), note: typeof a[4] === 'string' ? a[4].slice(0, 200) : '', createdAt: Date.now() };
+      return { id: 'link', linked: true, title: a[0].slice(0, 80), target: +a[1], theme: a[2], ...unrep(a[3]), note: typeof a[4] === 'string' ? a[4].slice(0, 200) : '', tz: validTz(a[5]) ? a[5] : '', createdAt: Date.now() };
     } catch (e) { return null; }
   }
   const canEditShared = c => sharedOK && !sharedRO && (me.owner || (c.createdBy && c.createdBy === me.id));
 
   /* ================= list rendering ================= */
   const timers = []; // [el, cd]
+  let tagFilter = '';
+  const allTags = () => [...new Set(mine.flatMap(c => cleanTags(c.tags)))].sort();
   function swatch(theme, size) {
     const s = document.createElement('span'); dress(s, 'sw', theme);
     const g = document.createElement('span'); g.textContent = THEMES[theme].glyph; s.appendChild(g); return s;
@@ -705,7 +761,9 @@ button { cursor: pointer; }
     const w = document.createElement('span'); w.textContent = fmtShort(occ(cd, Date.now()).t); meta.appendChild(w);
     const th = document.createElement('span'); th.textContent = THEMES[cd.theme].name; meta.appendChild(th);
     if (repeatLabel(cd)) { const r = document.createElement('span'); r.textContent = repeatLabel(cd); meta.appendChild(r); }
+    if (validTz(cd.tz)) { const z = document.createElement('span'); z.textContent = tzCity(cd.tz) + ' time'; meta.appendChild(z); }
     if (cd.example) { const e = document.createElement('span'); e.className = 'tag'; e.textContent = 'Example'; meta.appendChild(e); }
+    cleanTags(cd.tags).forEach(t => { const e = document.createElement('span'); e.className = 'tag'; e.textContent = t; meta.appendChild(e); });
     if (cd.shared) { const by = document.createElement('span'); by.className = 'by'; by.dataset.uid = cd.createdBy || ''; meta.appendChild(by); }
     mid.appendChild(meta); b.appendChild(mid);
     const tm = document.createElement('div'); tm.className = 'tm'; b.appendChild(tm);
@@ -718,8 +776,14 @@ button { cursor: pointer; }
     const m = $('mine'); m.textContent = '';
     if (!mine.length) m.appendChild(emptyEl('Nothing here yet. Press <b>New countdown</b> to add a birthday, a launch, a trip, anything with a date.'));
     { // one-off countdowns that have passed are filed under Finished
-      let cut = false; const nowL = Date.now();
-      sortList(mine).forEach(c => {
+      let cut = false; const nowL = Date.now(), tags = allTags(), tb = $('tagbar');
+      if (!tags.includes(tagFilter)) tagFilter = '';
+      tb.textContent = ''; tb.hidden = !tags.length;
+      [''].concat(tags).forEach(t => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = t || 'All'; b.setAttribute('aria-pressed', String(t === tagFilter));
+        b.onclick = () => { tagFilter = t; renderList(); }; tb.appendChild(b);
+      });
+      sortList(tagFilter ? mine.filter(c => cleanTags(c.tags).includes(tagFilter)) : mine).forEach(c => {
         if (!cut && occ(c, nowL).mode === 'up') { cut = true; const h = document.createElement('div'); h.className = 'subhead'; h.textContent = 'Finished'; m.appendChild(h); }
         m.appendChild(rowEl(c));
       });
@@ -783,20 +847,29 @@ button { cursor: pointer; }
   let editing = null, pickTheme = 'minimal', delArmed = false;
   function fillPicker(tp, cur, set) {
     tp.textContent = '';
-    const press = k => tp.querySelectorAll('.tp').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
-    TKEYS.forEach(k => {
-      const b = document.createElement('button'); b.type = 'button'; dress(b, 'tp', k); b.dataset.k = k;
-      b.setAttribute('aria-pressed', String(k === cur));
-      const pv = document.createElement('span'); pv.className = 'pv'; const g = document.createElement('span'); g.textContent = THEMES[k].glyph; pv.appendChild(g);
-      const n = document.createElement('b'); n.textContent = THEMES[k].name;
-      b.append(pv, n);
-      b.addEventListener('click', () => { set(k); press(k); });
-      tp.appendChild(b);
+    const press = k => { cur = k; tp.querySelectorAll('.tp').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k))); };
+    // after the theme editor closes: select the saved theme, or fall back if the chosen one was deleted
+    const after = id => { if (id) { cur = id; set(id); } else if (!THEMES[cur]) { cur = 'minimal'; set(cur); } fillPicker(tp, cur, set); };
+    themeGroups().forEach(([name, keys]) => {
+      const h = document.createElement('span'); h.className = 'tgh'; h.textContent = name; tp.appendChild(h);
+      keys.forEach(k => {
+        const b = document.createElement('button'); b.type = 'button'; dress(b, 'tp', k); b.dataset.k = k;
+        b.setAttribute('aria-pressed', String(k === cur));
+        const pv = document.createElement('span'); pv.className = 'pv'; const g = document.createElement('span'); g.textContent = THEMES[k].glyph; pv.appendChild(g);
+        const n = document.createElement('b'); n.textContent = THEMES[k].name;
+        b.append(pv, n);
+        b.addEventListener('click', () => { set(k); press(k); });
+        if (!THEMES[k].custom) return tp.appendChild(b);
+        const w = document.createElement('div'); w.className = 'tpw';
+        const e = document.createElement('button'); e.type = 'button'; e.className = 'tped'; e.textContent = 'Edit'; e.setAttribute('aria-label', 'Edit the theme ' + THEMES[k].name);
+        e.addEventListener('click', () => openThemeEditor(THEMES[k].custom, after));
+        w.append(b, e); tp.appendChild(w);
+      });
     });
     const add = document.createElement('button'); add.type = 'button'; add.className = 'tp tpadd';
     const pv = document.createElement('span'); pv.className = 'pv'; const g = document.createElement('span'); g.textContent = '+'; pv.appendChild(g);
     const n = document.createElement('b'); n.textContent = 'Your own…'; add.append(pv, n);
-    add.addEventListener('click', () => openThemeEditor(null, id => { set(id); fillPicker(tp, id, set); }));
+    add.addEventListener('click', () => openThemeEditor(null, after));
     tp.appendChild(add);
   }
   function buildPicker() { fillPicker($('tpick'), pickTheme, k => { pickTheme = k; themeTouched = true; }); }
@@ -871,15 +944,37 @@ button { cursor: pointer; }
     });
   }
   function syncEvery() { $('fEvery').hidden = $('fRepeat').value !== 'days'; }
-  function toInputs(t) {
-    const d = new Date(t);
-    return { date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
+  function toInputs(t, tz) {
+    const d = new Date(toWall(t, tz));
+    return { date: `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`, time: `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}` };
   }
+  const localTz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })();
+  const tzOpt = (v, label) => { const o = document.createElement('option'); o.value = v; o.textContent = label; $('fTz').appendChild(o); };
+  (() => {
+    tzOpt('', 'My time zone' + (localTz ? ' (' + localTz.replace(/_/g, ' ') + ')' : ''));
+    let zs = [];
+    try { zs = Intl.supportedValuesOf('timeZone'); } catch (e) { zs = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Moscow', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland']; }
+    if (!zs.includes('UTC')) zs = ['UTC'].concat(zs);
+    zs.filter(validTz).forEach(z => tzOpt(z, z.replace(/_/g, ' ')));
+  })();
+  const parseTags = v => cleanTags(String(v).split(','));
+  function tagSug() {
+    const have = parseTags($('fTags').value), el = $('tagSug'); el.textContent = '';
+    allTags().forEach(t => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', String(have.includes(t)));
+      b.onclick = () => { const cur = parseTags($('fTags').value); $('fTags').value = (cur.includes(t) ? cur.filter(x => x !== t) : cur.concat(t)).join(', '); tagSug(); };
+      el.appendChild(b);
+    });
+  }
+  $('fTags').addEventListener('input', tagSug);
   function openEditor(cd) {
     editing = cd || null; delArmed = false;
     $('sheetTitle').textContent = cd ? 'Edit countdown' : 'New countdown';
     const base = cd ? cd.target : Date.now() + 14 * DAY;
-    const v = toInputs(cd ? cd.target : new Date(new Date(base).setHours(0, 0, 0, 0)).getTime());
+    const tz = cd && validTz(cd.tz) ? cd.tz : '';
+    const v = toInputs(cd ? cd.target : new Date(new Date(base).setHours(0, 0, 0, 0)).getTime(), tz);
+    if (tz && ![...$('fTz').options].some(o => o.value === tz)) tzOpt(tz, tz.replace(/_/g, ' '));
+    $('fTz').value = tz; $('fTags').value = cleanTags(cd && cd.tags).join(', '); tagSug();
     $('fTitle').value = cd ? cd.title : '';
     $('fDate').value = v.date; $('fTime').value = v.time;
     $('fRepeat').value = cd && REPEATS.includes(cd.repeat) ? cd.repeat : 'none'; $('fEvery').value = (cd && cd.every) || 14; syncEvery();
@@ -905,10 +1000,11 @@ button { cursor: pointer; }
     const dv = $('fDate').value, tv = $('fTime').value || '00:00';
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dv)) return showErr('Pick a date.');
     const [Y, M, D] = dv.split('-').map(Number), [hh, mm] = tv.split(':').map(Number);
-    const target = new Date(Y, M - 1, D, hh || 0, mm || 0, 0).getTime();
+    const tz = validTz($('fTz').value) ? $('fTz').value : '';
+    const target = fromWall(Date.UTC(Y, M - 1, D, hh || 0, mm || 0, 0), tz);
     if (!isFinite(target)) return showErr('That date is not valid.');
     const wantShared = !$('shareRow').hidden && $('fShared').checked;
-    const body = { title, target, theme: pickTheme, repeat: $('fRepeat').value, every: clamp($('fEvery').value | 0 || 1, 1, 365), note: $('fNote').value.trim().slice(0, 200) };
+    const body = { title, target, theme: pickTheme, repeat: $('fRepeat').value, every: clamp($('fEvery').value | 0 || 1, 1, 365), note: $('fNote').value.trim().slice(0, 200), tz, tags: parseTags($('fTags').value) };
     const old = editing;
     const id = old ? old.id : uid();
     const createdAt = old ? (old.createdAt || Date.now()) : Date.now();
@@ -1615,12 +1711,13 @@ button { cursor: pointer; }
   };
 
   // Lava lamp: wax blobs that rise, sink, stretch and merge, computed as a metaball field
-  // on a small grid and scaled up; hotter (denser) wax glows yellow. They churn every minute.
+  // on a half-size grid and scaled up; hotter (denser) wax glows yellow. They churn every minute.
   BG.lava = cv => {
     const K = canvasKit(cv); let blobs = [], off = null, og = null, im = null, w = 0, h = 0, stir = -1e9, phase = 0, lastN = 0;
     return {
       resize() {
-        K.size(); w = Math.max(40, Math.ceil(K.W / 7)); h = Math.max(40, Math.ceil(K.H / 7));
+        K.size(); const sc = Math.max(2.5, Math.sqrt(K.W * K.H / 230000)); // fine enough that the wax edges stay smooth
+        w = Math.max(40, Math.ceil(K.W / sc)); h = Math.max(40, Math.ceil(K.H / sc));
         off = document.createElement('canvas'); off.width = w; off.height = h; og = off.getContext('2d'); im = og.createImageData(w, h);
         const m = Math.min(w, h);
         blobs = Array.from({ length: 9 }, () => ({ x: w * (.1 + Math.random() * .8), r: m * (.07 + Math.random() * .075), ph: Math.random() * 6.283, sp: .05 + Math.random() * .07, dx: Math.random() * 6.283 }));
@@ -2026,7 +2123,8 @@ button { cursor: pointer; }
     const id = ceEdit.id; customs = customs.filter(x => x.id !== id); saveCustoms(); syncCustoms();
     mine.forEach(c => { if (c.theme === id) c.theme = 'minimal'; }); saveMine();
     tools.timers.concat(tools.sws).forEach(t => { if (t.theme === id) t.theme = 'minimal'; }); saveTools();
-    closeThemeEditor(); renderList(); renderTools(); if (focusId) openFocus(focusId);
+    const done = ceDone; closeThemeEditor(); renderList(); renderTools(); if (focusId) openFocus(focusId);
+    if (done) done(null);
   });
   function importThemes(list) {
     if (!Array.isArray(list)) return;
@@ -2112,11 +2210,16 @@ button { cursor: pointer; }
   }
 
   // one watcher for every zero crossing, whether or not that countdown is on screen
-  const seen = new Map();
+  const seen = new Map(), remSeen = new Map();
   function watch() {
     const now = Date.now();
     for (const cd of all()) {
-      const m = occ(cd, now).mode, was = seen.get(cd.id); seen.set(cd.id, m);
+      const o = occ(cd, now), m = o.mode, was = seen.get(cd.id); seen.set(cd.id, m);
+      const rem = o.t - now, pr = remSeen.get(cd.id); remSeen.set(cd.id, m === 'down' ? rem : null);
+      if (m === 'down' && pr != null && pr > rem && pr - rem < 60000) {
+        const hit = MILES.find(([ms]) => pr > ms && rem <= ms);
+        if (hit) { toast(cd.title + ': ' + hit[1] + ' to go'); notify(cd.title + ': ' + hit[1] + ' to go'); if (focusId === cd.id && bgi) bgi.pulse('min'); }
+      }
       if (was === 'down' && m !== 'down') {
         chime(cd.theme, 1); notify(cd.title + ' is here');
         if (focusId === cd.id && bgi) bgi.finale(); else toast(cd.title + ' has arrived');
@@ -2390,7 +2493,7 @@ button { cursor: pointer; }
   function cleanItem(v) {
     if (!v || typeof v.title !== 'string' || !isFinite(v.target) || !THEMES[v.theme]) return null;
     return { id: typeof v.id === 'string' && /^[a-z0-9]{4,24}$/i.test(v.id) ? v.id : uid(), title: v.title.slice(0, 80), target: +v.target, theme: v.theme,
-      repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', createdAt: +v.createdAt || Date.now() };
+      repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', tz: validTz(v.tz) ? v.tz : '', tags: cleanTags(v.tags), createdAt: +v.createdAt || Date.now() };
   }
   $('expBtn').addEventListener('click', async () => {
     const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs }, null, 1);
@@ -2419,6 +2522,7 @@ button { cursor: pointer; }
     if (!keep) previewTheme = null;
     const theme = previewTheme || cd.theme;
     dress(F, 'focus', theme); F._fg = null;
+    F._ms = null; $('fprog').parentElement.querySelectorAll('b').forEach(x => x.remove());
     F.hidden = false; $('shell').setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden';
     $('ftitle').textContent = cd.title;
@@ -2458,8 +2562,13 @@ button { cursor: pointer; }
     info = { prog: o.prog, mode: o.mode };
     $('feb').textContent = T.words[o.mode];
     $('fmeta').innerHTML = '';
-    const b = document.createElement('b'); b.textContent = fmtWhen(o.t); $('fmeta').append(b, repeatLabel(cd) ? ' · ' + repeatLabel(cd).toLowerCase() : '', cd.shared ? ' · shared' : '');
-    $('falt').textContent = altUnits(o, now); $('falt').hidden = !$('falt').textContent;
+    const b = document.createElement('b'); b.textContent = fmtWhen(o.t); $('fmeta').append(b, repeatLabel(cd) ? ' · ' + repeatLabel(cd).toLowerCase() : '', validTz(cd.tz) ? ' · ' + fmtInTz(o.t, cd.tz) : '', cd.shared ? ' · shared' : '');
+    const rem = o.t - now, nm = o.mode === 'down' ? MILES.find(([ms]) => rem > ms) : null;
+    $('falt').textContent = [altUnits(o, now), nm ? 'Next milestone: ' + nm[1] + ' to go, in ' + shortDur(rem - nm[0]) : ''].filter(Boolean).join('  ·  '); $('falt').hidden = !$('falt').textContent;
+    if (F._ms !== o.t + ':' + o.prev) { // a tick on the bar for each milestone of this wait
+      F._ms = o.t + ':' + o.prev; const bar = $('fprog').parentElement; bar.querySelectorAll('b').forEach(x => x.remove());
+      if (o.mode === 'down') MILES.forEach(([ms]) => { const x = (o.t - ms - o.prev) / (o.t - o.prev); if (x > .004 && x < .996) { const b = document.createElement('b'); b.style.left = (x * 100).toFixed(2) + '%'; bar.appendChild(b); } });
+    }
     $('fprog').style.width = (o.prog * 100).toFixed(3) + '%';
     $('fpl1').textContent = repeatLabel(cd) ? 'Last time' : 'Created';
     $('fpl2').textContent = o.mode === 'down' ? (o.prog * 100).toFixed(1) + '% of the wait done' : 'Arrived';
@@ -2477,17 +2586,24 @@ button { cursor: pointer; }
     const m = $('tmenu'); m.textContent = '';
     const cd = find(focusId); if (!cd) return;
     const cur = previewTheme || cd.theme;
-    TKEYS.forEach(k => {
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', String(k === cur));
-      b.appendChild(swatch(k));
-      const n = document.createElement('span'); n.textContent = THEMES[k].name; b.appendChild(n);
-      const s = document.createElement('small'); s.textContent = THEMES[k].blurb; b.appendChild(s);
-      b.addEventListener('click', () => setFocusTheme(k));
-      m.appendChild(b);
+    const pick = id => { if (id) setFocusTheme(id); };
+    themeGroups().forEach(([name, keys]) => {
+      const h = document.createElement('span'); h.className = 'tgh'; h.textContent = name; m.appendChild(h);
+      keys.forEach(k => {
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', String(k === cur));
+        b.appendChild(swatch(k));
+        const n = document.createElement('span'); n.textContent = THEMES[k].name; b.appendChild(n);
+        const s = document.createElement('small'); s.textContent = THEMES[k].blurb; b.appendChild(s);
+        b.addEventListener('click', () => setFocusTheme(k));
+        if (!THEMES[k].custom) return m.appendChild(b);
+        const w = document.createElement('div'); w.className = 'tmw';
+        const e = document.createElement('button'); e.type = 'button'; e.className = 'ted'; e.textContent = 'Edit'; e.setAttribute('aria-label', 'Edit the theme ' + THEMES[k].name);
+        e.addEventListener('click', ev => { ev.stopPropagation(); m.hidden = true; openThemeEditor(THEMES[k].custom, pick); });
+        w.append(b, e); m.appendChild(w);
+      });
     });
-    const add = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.style.cssText = 'grid-column:1 / -1;display:block;padding:10px 8px;font-weight:600'; b.textContent = label; b.onclick = () => { m.hidden = true; fn(); }; m.appendChild(b); };
-    if (THEMES[cur] && THEMES[cur].custom) add('Edit this theme…', () => openThemeEditor(THEMES[cur].custom, id => setFocusTheme(id)));
-    add('+ Create your own theme…', () => openThemeEditor(null, id => setFocusTheme(id)));
+    const add = document.createElement('button'); add.type = 'button'; add.style.cssText = 'grid-column:1 / -1;display:block;padding:10px 8px;font-weight:600'; add.textContent = '+ Create your own theme…';
+    add.onclick = () => { m.hidden = true; openThemeEditor(null, pick); }; m.appendChild(add);
   }
   async function setFocusTheme(k) {
     const cd = find(focusId); if (!cd) return;
@@ -2515,7 +2631,7 @@ button { cursor: pointer; }
     const cd = find(focusId); if (!cd) return;
     if (cd.kind) return openToolSheet(cd.kind, cd.tool);
     if (!cd.linked) return openEditor(cd);
-    const item = { id: uid(), title: cd.title, target: cd.target, theme: previewTheme || cd.theme, repeat: cd.repeat, every: cd.every || 1, note: cd.note || '', createdAt: Date.now() };
+    const item = { id: uid(), title: cd.title, target: cd.target, theme: previewTheme || cd.theme, repeat: cd.repeat, every: cd.every || 1, note: cd.note || '', tz: cd.tz || '', tags: [], createdAt: Date.now() };
     mine.push(item); saveMine(); linked = null; renderList(); openFocus(item.id);
   });
   $('shareBtn').addEventListener('click', async () => {
