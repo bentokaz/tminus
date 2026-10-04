@@ -1724,11 +1724,11 @@ body { -webkit-tap-highlight-color: transparent; }
       },
       // a word lands on the screen like a stamp (or is typed, flickers on, or glitches in)
       banner(p, t, o, st, timer) {
-        const txt = (timer && o.t2) || o.text, e = 1 - ez((p - .8) / .2), inn = o.type ? 1 : ez(p / .1), fs = Math.min(W * .9 / (txt.length * .6), H * .2);
+        const txt = (timer && o.t2) || o.text, e = 1 - ez((p - .8) / .2), inn = o.type ? 1 : ez(p / .1), fs = Math.min(W * .9 / (txt.length * .6), H * .2) * (o.k || 1);
         if (o.dim !== 0) { g.globalAlpha = .4 * e * inn; g.fillStyle = '#000'; g.fillRect(0, 0, W, H); }
         if (o.glitch) { g.fillStyle = o.c; for (let i = 0; i < 7; i++) { g.globalAlpha = .1 * e; g.fillRect(0, R() * H, W, 2 + R() * 14); } }
         if (o.rain && !st.r) { st.r = 1; add(90, () => ({ k: 'char', ch: o.rain[R() * o.rain.length | 0], font: '500 ' + (18 + R() * 26 | 0) + 'px ' + o.font, x: R() * W, y: -R() * H, vy: 3 + R() * 5, c: o.rainC || o.c, life: 4 })); }
-        g.save(); g.translate(W / 2, H * .5); g.rotate(o.rot || 0); const sc = mixn(o.type ? 1 : 3.4, 1, inn) * (1 + .05 * Math.sin(Math.min(1, p / .22) * Math.PI)); g.scale(sc, sc);
+        g.save(); g.translate(W / 2, H * (o.y || .5)); g.rotate(o.rot || 0); const sc = mixn(o.type ? 1 : 3.4, 1, inn) * (1 + .05 * Math.sin(Math.min(1, p / .22) * Math.PI)); g.scale(sc, sc);
         g.font = (o.w || 700) + ' ' + fs + 'px ' + o.font; g.textAlign = 'left'; g.textBaseline = 'middle';
         const tw = g.measureText(txt).width, shown = o.type ? txt.slice(0, Math.ceil(txt.length * ez(p / .4))) : txt, bx = -tw / 2 - fs * .4, bw = tw + fs * .8;
         if (o.plate) { g.globalAlpha = .9 * e * inn; g.fillStyle = o.plate; g.fillRect(bx, -fs * .78, bw, fs * 1.56); }
@@ -1870,6 +1870,141 @@ body { -webkit-tap-highlight-color: transparent; }
       clear() { parts = []; sc = null; },
     };
   })();
+
+  // Things that happen now and then while a countdown is just counting: a boat passing over the reef, a whale in
+  // the deep, a shooting star, a paper plane across the classroom themes. They are drawn on the background
+  // canvas, behind the clock. Each theme lists the events it can have; one is picked at random every so often.
+  // A few themes also borrow a standing feature from another (fireflies, twinkling stars, thin cloud).
+  const EV = (() => {
+    const R = Math.random; let ev = null, next = 0, amb = null, ambFor = '';
+    const SPR = {
+      boat(g, s) { g.beginPath(); g.moveTo(-s, 0); g.lineTo(s, 0); g.lineTo(s * .7, s * .35); g.lineTo(-s * .7, s * .35); g.fill(); g.fillRect(-s * .05, -s * 1.1, s * .08, s * 1.1); g.beginPath(); g.moveTo(s * .08, -s * 1.05); g.lineTo(s * .75, -s * .15); g.lineTo(s * .08, -s * .15); g.fill(); },
+      hull(g, s, o, t) { g.beginPath(); g.ellipse(0, 0, s * 1.6, s * .4, 0, 0, Math.PI); g.fill(); g.fillStyle = 'rgba(230,250,255,.5)'; for (let i = 0; i < 7; i++) { g.beginPath(); g.arc(-s * 1.7 - i * s * .32, s * .12 + Math.sin(t * 5 + i) * 5, 3 + i * .8, 0, 6.283); g.fill(); } },
+      whale(g, s, o, t) { const w = Math.sin(t * 2) * .3 * s; g.beginPath(); g.ellipse(0, 0, s * 1.5, s * .5, 0, 0, 6.283); g.fill(); g.beginPath(); g.moveTo(-s * 1.35, 0); g.quadraticCurveTo(-s * 2, w, -s * 2.4, -s * .5 + w); g.lineTo(-s * 2.1, w); g.lineTo(-s * 2.4, s * .5 + w); g.quadraticCurveTo(-s * 2, w, -s * 1.35, 0); g.fill(); g.beginPath(); g.moveTo(s * .2, s * .4); g.lineTo(-s * .3, s); g.lineTo(-s * .4, s * .4); g.fill(); },
+      birds(g, s, o, t) { g.lineWidth = Math.max(1.5, s * .09); g.strokeStyle = g.fillStyle; g.lineCap = 'round'; g.lineJoin = 'round'; for (let i = 0; i < 7; i++) { const r = Math.ceil(i / 2), x = -r * s * .9, y = (i % 2 ? 1 : -1) * r * s * .5, f = Math.sin(t * 7 + i) * s * .22; g.beginPath(); g.moveTo(x - s * .35, y - f); g.lineTo(x, y + s * .08); g.lineTo(x + s * .35, y - f); g.stroke(); } },
+      plane(g, s) { const a = g.globalAlpha; g.globalAlpha = a * .3; g.fillRect(-s * 16, -s * .07, s * 16, s * .14); g.globalAlpha = a; g.beginPath(); g.ellipse(0, 0, s, s * .15, 0, 0, 6.283); g.fill(); for (const k of [1, -1]) { g.beginPath(); g.moveTo(s * .2, 0); g.lineTo(-s * .45, k * s * .8); g.lineTo(-s * .15, 0); g.fill(); } g.beginPath(); g.moveTo(-s * .75, 0); g.lineTo(-s * 1.05, -s * .4); g.lineTo(-s * .9, 0); g.fill(); },
+      ufo(g, s, o, t) { const a = g.globalAlpha; g.globalAlpha = a * .18; g.beginPath(); g.moveTo(-s * .3, s * .2); g.lineTo(s * .3, s * .2); g.lineTo(s * 1.1, s * 4); g.lineTo(-s * 1.1, s * 4); g.fill(); g.globalAlpha = a; g.beginPath(); g.ellipse(0, -s * .2, s * .45, s * .42, 0, Math.PI, 0); g.fill(); g.beginPath(); g.ellipse(0, 0, s * 1.1, s * .3, 0, 0, 6.283); g.fill(); g.fillStyle = o.c2 || '#fff'; for (let i = 0; i < 5; i++) if ((i + (t * 4 | 0)) % 2) { g.beginPath(); g.arc((i - 2) * s * .4, s * .06, s * .08, 0, 6.283); g.fill(); } },
+      balloon(g, s, o) { g.beginPath(); g.arc(0, -s, s, 0, 6.283); g.fill(); g.beginPath(); g.moveTo(-s * .78, -s * .38); g.lineTo(-s * .2, s * .55); g.lineTo(s * .2, s * .55); g.lineTo(s * .78, -s * .38); g.fill(); g.fillRect(-s * .2, s * .72, s * .4, s * .3); g.fillStyle = o.c2 || '#fff'; g.beginPath(); g.ellipse(0, -s, s * .34, s, 0, 0, 6.283); g.fill(); },
+      train(g, s, o) { for (let i = 0; i < 7; i++) { g.fillStyle = o.c; g.fillRect(-i * s * 2.2, -s * .55, s * 2.05, s * .55); g.fillStyle = o.c2; for (let k = 0; k < 4; k++) g.fillRect(-i * s * 2.2 + s * .2 + k * s * .45, -s * .42, s * .3, s * .2); } g.fillStyle = o.c; g.beginPath(); g.moveTo(s * 2.05, -s * .55); g.quadraticCurveTo(s * 2.9, -s * .5, s * 3, 0); g.lineTo(s * 2.05, 0); g.fill(); const hl = g.createLinearGradient(s * 3, 0, s * 7, 0); hl.addColorStop(0, o.c2); hl.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha *= .5; g.fillStyle = hl; g.beginPath(); g.moveTo(s * 3, -s * .2); g.lineTo(s * 7, -s * .7); g.lineTo(s * 7, s * .1); g.fill(); },
+      paper(g, s) { const a = g.globalAlpha; g.beginPath(); g.moveTo(s, 0); g.lineTo(-s, -s * .5); g.lineTo(-s * .6, 0); g.lineTo(-s, s * .5); g.closePath(); g.fill(); g.globalAlpha = a * .45; g.fillStyle = '#000'; g.beginPath(); g.moveTo(s, 0); g.lineTo(-s * .6, 0); g.lineTo(-s * .78, s * .44); g.fill(); },
+      sat(g, s, o, t) { g.fillRect(-s * .2, -s * .2, s * .4, s * .4); g.fillRect(-s * .95, -s * .12, s * .65, s * .24); g.fillRect(s * .3, -s * .12, s * .65, s * .24); if (Math.sin(t * 6) > 0) { g.fillStyle = '#ff5a4d'; g.beginPath(); g.arc(0, -s * .32, s * .14, 0, 6.283); g.fill(); } },
+    };
+    const SHAPES = [
+      Array.from({ length: 6 }, (_, i) => [Math.cos(-Math.PI / 2 + i * 4 * Math.PI / 5), Math.sin(-Math.PI / 2 + i * 4 * Math.PI / 5)]), // star
+      Array.from({ length: 44 }, (_, i) => [Math.cos(i * .45) * i / 44, Math.sin(i * .45) * i / 44]), // spiral
+      Array.from({ length: 31 }, (_, i) => [Math.cos(i / 30 * 6.283), Math.sin(i / 30 * 6.283)]), // circle
+      [[-1, .8], [1, .8], [0, -.9], [-1, .8]], [[-1, 0], [1, 0], [.6, -.3], [1, 0], [.6, .3]], // triangle, arrow
+    ];
+    const T = {
+      // something crosses the screen: a boat, a whale, birds, a plane...
+      cross(g, W, H, p, t, o, st) {
+        if (st.dir == null) { st.dir = o.dir || (R() < .5 ? 1 : -1); st.y = H * (o.y[0] + R() * (o.y[1] - o.y[0])); st.s = Math.min(W, H) * (o.s || .04); }
+        const m = st.s * 5, x = st.dir > 0 ? -m + (W + m * 2) * p : W + m - (W + m * 2) * p;
+        g.translate(x, st.y + Math.sin(t * (o.bob || 1)) * st.s * (o.bobA == null ? .15 : o.bobA) + (o.climb || 0) * p * H); g.scale(st.dir, 1);
+        g.globalAlpha = (o.a || .85) * Math.min(1, p * 10, (1 - p) * 10); g.fillStyle = o.c; SPR[o.spr](g, st.s, o, t);
+      },
+      shoot(g, W, H, p, t, o, st) {
+        if (!st.s) st.s = Array.from({ length: o.n || 1 }, (_, i) => ({ x: W * (.25 + R() * .7), y: H * (.04 + R() * .28), d: i * .35 + R() * .2, a: .35 + R() * .4 }));
+        g.lineCap = 'round';
+        for (const q of st.s) {
+          const u = (t - q.d) / .9; if (u <= 0 || u >= 1) continue;
+          const L = W * .32, hx = q.x - Math.cos(q.a) * L * u, hy = q.y + Math.sin(q.a) * L * u, tx = hx + Math.cos(q.a) * 130, ty = hy - Math.sin(q.a) * 130;
+          const gr = g.createLinearGradient(hx, hy, tx, ty); gr.addColorStop(0, 'rgba(255,255,255,' + (1 - u) + ')'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+          g.strokeStyle = gr; g.lineWidth = 2.5; g.beginPath(); g.moveTo(hx, hy); g.lineTo(tx, ty); g.stroke();
+        }
+      },
+      flash(g, W, H, p, t, o) { // sheet lightning far off
+        const f = Math.max(0, Math.sin(t * 19)) * Math.max(0, 1 - t / .8) + (t > 1.2 && t < 1.8 ? Math.max(0, Math.sin(t * 26)) * .6 : 0);
+        g.globalAlpha = Math.min(.4, f * .4); g.fillStyle = o.c || '#dfe8ff'; g.fillRect(0, 0, W, H);
+      },
+      sweep(g, W, H, p, t, o) { // a band of light passes over
+        const L = o.v ? H : W, x = -L * .3 + L * 1.6 * p, gr = o.v ? g.createLinearGradient(0, x - 120, 0, x + 120) : g.createLinearGradient(x - 160, 0, x + 160, 0);
+        gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(.5, o.c); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.globalAlpha = o.a || .2; g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        if (o.glitch) { g.fillStyle = o.c; for (let i = 0; i < 5; i++) g.fillRect(0, R() * H, W, 1 + R() * 6); }
+      },
+      doodle(g, W, H, p, t, o, st) { // something is sketched in a corner, then fades
+        if (!st.sh) { st.sh = SHAPES[R() * SHAPES.length | 0]; st.x = W * (R() < .5 ? .1 + R() * .1 : .8 + R() * .1); st.y = H * (.2 + R() * .55); st.s = Math.min(W, H) * .085; st.r = (R() - .5) * .5; }
+        const n = Math.max(2, Math.ceil(st.sh.length * Math.min(1, p / .45)));
+        g.translate(st.x, st.y); g.rotate(st.r); g.globalAlpha = Math.min(1, (1 - p) * 4); g.strokeStyle = o.c; g.lineWidth = o.w || 3; g.lineCap = 'round'; g.lineJoin = 'round';
+        g.beginPath(); st.sh.slice(0, n).forEach(([x, y], i) => i ? g.lineTo(x * st.s, y * st.s) : g.moveTo(x * st.s, y * st.s)); g.stroke();
+      },
+      rise(g, W, H, p, t, o, st) { // long arms reach up from below and sink back
+        if (!st.x) st.x = [.12 + R() * .2, .62 + R() * .25].map(v => v * W);
+        const top = H * .58 * Math.sin(Math.min(1, p) * Math.PI); g.strokeStyle = o.c; g.lineCap = 'round'; g.globalAlpha = o.a || .6;
+        st.x.forEach((x0, k) => { for (let i = 0; i < 3; i++) { let px = x0 + i * 40 - 40, py = H + 10; for (let y = 14; y <= top; y += 14) { const u = y / Math.max(1, top), x = x0 + i * 40 - 40 + Math.sin(y / 70 + t * 2 + i + k * 2) * 44 * u; g.lineWidth = 26 * (1 - u) + 4; g.beginPath(); g.moveTo(px, py); g.lineTo(x, H - y); g.stroke(); px = x; py = H - y; } } });
+      },
+    };
+    const paper = c => ['cross', { spr: 'paper', y: [.12, .4], s: .03, c, dur: 8000, bob: 2, bobA: .5, climb: -.06 }];
+    const MAP = {
+      board: [['cross', { spr: 'train', y: [.93, .93], s: .034, c: '#0d1012', c2: '#ffd23f', a: 1, bobA: 0, dur: 5200, dir: 1 }]],
+      minimal: [['sweep', { c: 'rgba(226,85,43,.6)', a: .16, dur: 3000 }]],
+      terminal: [['sweep', { c: '#5dff8f', a: .2, glitch: 1, v: 1, dur: 2600 }]],
+      space: [['shoot', { n: 3, dur: 2800 }], ['cross', { spr: 'sat', y: [.1, .3], s: .02, c: '#cfd8e6', dur: 15000, bobA: 0 }], ['cross', { spr: 'ufo', y: [.12, .26], s: .034, c: '#9fb4d6', c2: '#6fe0ff', dur: 9000 }]],
+      nature: [['cross', { spr: 'birds', y: [.12, .3], s: .02, c: '#2c3a2c', dur: 12000 }], ['cross', { spr: 'balloon', y: [.16, .3], s: .034, c: '#e2552b', c2: '#ffd27a', dur: 28000, bob: .6 }]],
+      ocean: [['cross', { spr: 'boat', y: [.3, .36], s: .04, c: '#0b2a3a', dur: 24000, bob: 1.6 }], ['cross', { spr: 'whale', y: [.6, .8], s: .07, c: '#06283a', a: .45, dur: 22000 }]],
+      arcade: [['cross', { spr: 'ufo', y: [.1, .2], s: .034, c: '#ff4d6d', c2: '#ffe14d', dur: 7000, bobA: 0 }]],
+      blueprint: [['doodle', { c: 'rgba(255,255,255,.7)', w: 2, dur: 7000 }], ['sweep', { c: 'rgba(255,255,255,.6)', a: .12, dur: 3000 }]],
+      snow: [['shoot', { n: 1, dur: 2400 }], ['cross', { spr: 'birds', y: [.1, .25], s: .016, c: '#dfeaff', a: .6, dur: 14000 }]],
+      sunset: [['cross', { spr: 'plane', y: [.08, .2], s: .02, c: '#fff1e0', dur: 16000, bobA: 0 }], ['cross', { spr: 'birds', y: [.15, .3], s: .018, c: '#2a1430', dur: 12000 }]],
+      aurora: [['shoot', { n: 2, dur: 2800 }], ['cross', { spr: 'sat', y: [.08, .25], s: .018, c: '#cfd8e6', dur: 15000, bobA: 0 }]],
+      neon: [['sweep', { c: '#ff4fa3', a: .18, dur: 2200 }], ['flash', { c: '#ff4fa3', dur: 2000 }]],
+      rain: [['flash', { c: '#dfe8ff', dur: 2200 }]],
+      chalk: [['doodle', { c: 'rgba(255,255,255,.75)', w: 3, dur: 8000 }]],
+      party: [['cross', { spr: 'balloon', y: [.5, .8], s: .04, c: '#ff5d7a', c2: '#ffcf4a', dur: 14000, climb: -.3, bob: 1 }]],
+      lava: [['rise', { c: '#ffb347', a: .4, dur: 8000 }]],
+      vinyl: [['sweep', { c: 'rgba(243,234,217,.7)', a: .14, dur: 3200 }]],
+      dunes: [['cross', { spr: 'birds', y: [.1, .25], s: .02, c: '#5a3a22', dur: 13000 }], ['cross', { spr: 'balloon', y: [.14, .28], s: .03, c: '#b5461f', c2: '#fff1c9', dur: 30000, bob: .6 }]],
+      circuit: [['sweep', { c: '#ffd34d', a: .18, glitch: 1, dur: 2400 }]],
+      clouds: [['cross', { spr: 'plane', y: [.08, .2], s: .022, c: '#ffffff', dur: 15000, bobA: 0 }], ['cross', { spr: 'balloon', y: [.2, .4], s: .04, c: '#e2552b', c2: '#ffffff', dur: 28000, bob: .6 }], ['cross', { spr: 'birds', y: [.12, .3], s: .02, c: '#0f2a44', dur: 12000 }]],
+      forest: [['cross', { spr: 'birds', y: [.06, .18], s: .018, c: '#0c2318', dur: 11000 }]],
+      reef: [['cross', { spr: 'hull', y: [0, 0], s: .09, c: '#04222f', a: .9, dur: 16000, bobA: 0 }], ['cross', { spr: 'whale', y: [.3, .6], s: .08, c: '#052c40', a: .5, dur: 24000 }]],
+      lake: [['cross', { spr: 'birds', y: [.1, .28], s: .018, c: '#31476a', dur: 12000 }], ['cross', { spr: 'boat', y: [.6, .64], s: .03, c: '#16243a', dur: 32000, bob: 1.2 }]],
+      sakura: [['cross', { spr: 'birds', y: [.1, .28], s: .018, c: '#4a2a2f', dur: 12000 }]],
+      campfire: [['shoot', { n: 2, dur: 2800 }]],
+      storm: [['flash', { c: '#dfe8ff', dur: 2200 }]],
+      jelly: [['rise', { c: '#3a5aa8', a: .5, dur: 9000 }], ['cross', { spr: 'whale', y: [.3, .7], s: .09, c: '#0a1a4a', a: .65, dur: 24000 }]],
+      fireworks: [['shoot', { n: 1, dur: 2400 }], ['cross', { spr: 'plane', y: [.06, .15], s: .014, c: '#c9cfe8', dur: 18000, bobA: 0 }]],
+      warp: [['cross', { spr: 'ufo', y: [.2, .8], s: .03, c: '#9fb4d6', c2: '#6fd3ff', dur: 5000 }], ['shoot', { n: 4, dur: 3200 }]],
+      math: [paper('#1d2a44'), ['doodle', { c: 'rgba(29,42,68,.6)', w: 2.5, dur: 8000 }]],
+      science: [paper('#e8fff8'), ['sweep', { c: '#7dffb0', a: .12, dur: 3000 }]],
+      history: [paper('#3b2a17')], english: [paper('#22252b')], music: [paper('#fbeedd')], art: [paper('#26221d')],
+      geography: [paper('#f1f8ff'), ['cross', { spr: 'plane', y: [.1, .3], s: .022, c: '#f1f8ff', dur: 15000, bobA: 0 }]],
+    };
+    const AMBIENT = { campfire: 'fireflies', fireworks: 'twinkle', sunset: 'twinkle', snow: 'twinkle', aurora: 'twinkle', dunes: 'wisps', sakura: 'wisps' };
+    function ambient(g, W, H, now, theme) {
+      const kind = AMBIENT[theme]; if (!kind) return;
+      if (ambFor !== theme + W + H) { ambFor = theme + W + H; amb = Array.from({ length: kind === 'wisps' ? 4 : kind === 'twinkle' ? 46 : 16 }, () => ({ x: R() * W, y: R(), ph: R() * 6.283, r: R() })); }
+      const t = now / 1000;
+      for (const a of amb) {
+        if (kind === 'fireflies') { g.globalAlpha = Math.max(0, Math.sin(t * 1.3 + a.ph)) * .9; g.fillStyle = '#ffe98a'; g.beginPath(); g.arc(a.x + Math.sin(t * .3 + a.ph) * 46, H * (.45 + a.y * .4) + Math.cos(t * .4 + a.ph) * 26, 1.6 + a.r, 0, 6.283); g.fill(); }
+        else if (kind === 'twinkle') { g.globalAlpha = (.5 + .5 * Math.sin(t * 1.7 + a.ph)) * .75; g.fillStyle = '#fff'; g.beginPath(); g.arc(a.x, H * a.y * .42, .7 + a.r, 0, 6.283); g.fill(); }
+        else { g.globalAlpha = .16; g.fillStyle = '#fff'; g.beginPath(); g.ellipse((a.x + t * (6 + a.r * 8)) % (W + 500) - 250, H * (.06 + a.y * .22), 170 + a.r * 160, 9 + a.r * 8, 0, 0, 6.283); g.fill(); }
+      }
+      g.globalAlpha = 1;
+    }
+    return {
+      reset() { ev = null; next = performance.now() + 9000 + R() * 14000; },
+      trigger(theme) { const list = MAP[theme]; if (!list || reduce) return; const [type, o] = list[R() * list.length | 0]; ev = { f: T[type], o, t0: performance.now(), dur: o.dur || 9000, st: {} }; },
+      draw(g, now, theme) {
+        if (reduce) return;
+        const W = innerWidth, H = innerHeight;
+        g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.shadowBlur = 0; g.setLineDash([]);
+        ambient(g, W, H, now, theme);
+        if (!ev && now > next) { this.trigger(theme); next = now + 30000 + R() * 45000; }
+        if (!ev) return;
+        const t = (now - ev.t0) / 1000, p = t * 1000 / ev.dur;
+        if (p >= 1) { ev = null; return; }
+        g.save(); ev.f(g, W, H, p, t, ev.o, ev.st); g.restore(); g.globalAlpha = 1;
+      },
+    };
+  })();
+  // a milestone on the way down: the theme's own event, its minute pulse, and the milestone named in the theme's type
+  function playMilestone(label) {
+    if (!bgi) return; bgi.pulse('min'); if (reduce || F._th === 'plain') return;
+    EV.trigger(F._th);
+    const cs = getComputedStyle(F), v = n => cs.getPropertyValue(n).trim();
+    FX.scene('banner', { text: label + ' to go', font: v('--t-head') || 'sans-serif', w: 700, c: v('--t-acc') || '#fff', plate: v('--t-bg') || '#000', box: 1, dim: 0, noflash: 1, dur: 3600, y: .8, k: .5 });
+  }
 
   // which ending each theme plays at zero: [scene, options, keep the theme's own burst too]
   const FIN = {
@@ -3377,7 +3512,7 @@ body { -webkit-tap-highlight-color: transparent; }
       const rem = o.t - now, pr = remSeen.get(cd.id); remSeen.set(cd.id, m === 'down' ? rem : null);
       if (m === 'down' && pr != null && pr > rem && pr - rem < 60000) {
         const hit = MILES.find(([ms]) => pr > ms && rem <= ms);
-        if (hit) { toast(cd.title + ': ' + hit[1] + ' to go'); notify(cd.title + ': ' + hit[1] + ' to go'); if (focusId === cd.id && bgi) bgi.pulse('min'); }
+        if (hit) { toast(cd.title + ': ' + hit[1] + ' to go'); notify(cd.title + ': ' + hit[1] + ' to go'); if (focusId === cd.id && bgi) playMilestone(hit[1]); }
       }
       if (was === 'down' && m !== 'down') {
         chime(cd.theme, 1); notify(cd.title + ' is here');
@@ -3743,7 +3878,7 @@ body { -webkit-tap-highlight-color: transparent; }
     lastSec = -1; lastMode = null;
     FX.clear();
     const cv = $('bg'); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
-    bgi = BG[theme](cv);
+    bgi = BG[theme](cv); EV.reset();
     focusTick(true);
     bgi.resize(); // the view is visible now, so layout is real
     cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
@@ -3782,11 +3917,11 @@ body { -webkit-tap-highlight-color: transparent; }
     lastMode = o.mode;
     if (p.total !== lastSec) { if (lastSec >= 0 && bgi) { bgi.pulse('sec'); if (p.s === 0) bgi.pulse('min'); } lastSec = p.total; }
   }
-  let lastFrame = 0;
+  let lastFrame = 0; const bgCtx = $('bg').getContext('2d');
   function loop(now) {
     raf = requestAnimationFrame(loop);
     if (!bgi || now - lastFrame < 32) return;
-    lastFrame = now; bgi.frame(now, info);
+    lastFrame = now; bgi.frame(now, info); EV.draw(bgCtx, now, F._th);
   }
   function buildThemeMenu() {
     const m = $('tmenu'); m.textContent = '';
@@ -4123,6 +4258,8 @@ body { -webkit-tap-highlight-color: transparent; }
 
     sec('The open view');
     btn('End animation', needOpen(() => { playFinale(); chime(previewTheme || find(focusId).theme, 1); }));
+    btn('Random event', needOpen(() => EV.trigger(F._th)));
+    btn('Milestone moment', needOpen(() => playMilestone('1 week')));
     btn('Second pulse', needOpen(() => bgi.pulse('sec')));
     btn('Minute pulse', needOpen(() => bgi.pulse('min')));
     btn('Tour: every theme + its ending', () => {
