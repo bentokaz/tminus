@@ -437,7 +437,10 @@ button { cursor: pointer; }
 .search input, .tsearch { width: 100%; padding: 10px 12px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); color: var(--ink); font: 400 15px/1.3 var(--f-ui); }
 .search input:focus, .tsearch:focus { outline: none; border-color: var(--ink); }
 .search { max-width: 420px; }
-#newBtn { width: 188px; justify-content: center; }
+#newBtn { width: auto; margin-left: 4px; padding: 7px 13px 7px 10px; border-radius: 4px; background: var(--ink); color: var(--bg); font-weight: 600; font-size: 14px; }
+#newBtn:hover { background: var(--accent); color: var(--accent-ink); }
+#newBtn .nb-long { display: none; }
+.tabs #newBtn svg { display: block; width: 14px; height: 14px; }
 .tsearch { grid-column: 1 / -1; }
 .tmenu .tsearch { margin-bottom: 2px; }
 .tmenu { text-shadow: none; }
@@ -464,7 +467,7 @@ button { cursor: pointer; }
 @keyframes doneHero { 50% { outline-color: transparent; } }
 .tabs button { position: relative; }
 .tabs button.alert::after { content: ""; position: absolute; top: 4px; right: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
-@media (prefers-reduced-motion: reduce) { .focus.done .fdone, .focus.done .fclock, .hero.done { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .focus.done .fdone, .focus.done .fclock, .hero.done, .focus.tin .fmain, .focus.tin #bg { animation: none; } }
 /* classroom tools */
 /* Classroom: no boxes. A wide working column and a narrow side column, ruled like the lists,
    with big numerals doing the talking. Almost everything is one tap; typing is optional. */
@@ -547,6 +550,30 @@ body:not(.school) #tabs [data-tab="class"] { display: none; }
 .focus.present.awake { cursor: auto; }
 .focus.present .fmeta { font-size: clamp(16px, 2.2vw, 28px); }
 .focus.present .falt { font-size: clamp(14px, 1.8vw, 22px); }
+/* changing theme slides the old world out and the new one in */
+.focus.tout .fmain, .focus.tout #bg { transition: opacity .13s, transform .13s; opacity: 0; transform: translateX(calc(var(--dir, 0) * -7%)); }
+.focus.tin .fmain, .focus.tin #bg { animation: thIn .4s cubic-bezier(.2, .8, .2, 1); }
+@keyframes thIn { from { opacity: 0; transform: translateX(calc(var(--dir, 0) * 7%)) scale(.985); } }
+/* first run: one question and two buttons; the rest arrives as it is needed */
+#welcome { padding: clamp(24px, 9vh, 96px) 0 clamp(24px, 6vh, 64px); display: grid; gap: 18px; justify-items: start; }
+#welcome h1 { margin: 0; font: 800 clamp(38px, 8vw, 84px)/.95 var(--f-ui); letter-spacing: -.04em; max-width: 11ch; text-wrap: balance; }
+#welcome h1 i { font-style: normal; color: var(--accent); }
+#welcome p { margin: 0; max-width: 44ch; color: var(--ink-2); font-size: 16px; }
+#welcome .btn { padding: 14px 20px; font-size: 16px; }
+.fresh .tabs, .fresh .search, .fresh #hero, .fresh #tab-cd > .sec, .fresh .foot, .fresh #bkBar { display: none !important; }
+/* backup reminder */
+.bkbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--accent); border-left-width: 5px; border-radius: 5px; font-size: 14px; line-height: 1.45; }
+.bkbar > span:first-child { flex: 1 1 280px; }
+.bkbar b { font-weight: 700; }
+#bkStat { font: 500 12px/1 var(--f-num); color: var(--ink-3); align-self: center; }
+#bkStat.warn { color: var(--accent); }
+.foot #expBtn { color: var(--ink); font-weight: 600; }
+.sgroup { display: grid; gap: 18px; }
+/* classroom: one tool on screen at a time */
+.kl { display: block; max-width: 760px; }
+.kmain, .kside { display: contents; }
+.ktabs { margin-bottom: 26px; }
+.ktabs button { padding: 10px 14px; font: 600 14px/1 var(--f-ui); }
 .tabs svg, .fbar, .ib .lbl-m { display: none; }
 button { touch-action: manipulation; }
 body { -webkit-tap-highlight-color: transparent; }
@@ -562,10 +589,9 @@ body { -webkit-tap-highlight-color: transparent; }
   .tabs svg { display: block; width: 24px; height: 24px; }
   .tabs button[aria-pressed="true"] { background: none; color: var(--ink); }
   .tabs button[aria-pressed="true"] svg { color: var(--accent); }
-  #newBtn { position: fixed; z-index: 21; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); min-height: 54px; padding: 0 20px 0 16px; font-size: 16px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.22); }
-  #newBtn svg { width: 20px; height: 20px; }
-  #newBtn .nb-long { display: none; }
-  #newBtn { width: auto; }
+  .tabs #newBtn { flex: 0 0 auto; display: inline-flex; justify-content: center; width: 56px; min-height: 54px; margin-left: 6px; padding: 0; border-radius: 6px; color: var(--bg); }
+  .tabs #newBtn svg { display: block; width: 22px; height: 22px; color: inherit; }
+  #newBtn > span { display: none; }
 
   .search { max-width: none; }
   #schoolBtn { position: absolute; left: auto; bottom: auto; right: 16px; top: calc(env(safe-area-inset-top, 0px) + 8px); width: 44px; height: 44px; }
@@ -637,12 +663,18 @@ body { -webkit-tap-highlight-color: transparent; }
 <div class="shell" id="shell">
   <header class="top">
     <div class="brand"><b>T<i>−</i>Minus</b><span id="nowline">—</span></div>
-    <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/></svg>Countdowns</button><button type="button" data-tab="timer" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 4h10M7 20h10M8 4c0 4.500 4 5.500 4 8s-4 3.500-4 8M16 4c0 4.500-4 5.500-4 8s4 3.500 4 8"/></svg>Timer</button><button type="button" data-tab="sw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.500" r="6.500"/><path d="M12 13.500V10M10 3.500h4M12 3.500V7M17.500 8l1.300-1.300"/></svg>Stopwatch</button><button type="button" data-tab="class" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 9.500 12 5l9 4.500-9 4.500z"/><path d="M7 11.800V16c0 1.200 2.200 2.500 5 2.500s5-1.300 5-2.500v-4.200M21 9.500V15"/></svg>Classroom</button></nav>
-    <button class="btn primary" id="newBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long" id="nbLong"> countdown</span></span></button>
+    <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/></svg>Countdowns</button><button type="button" data-tab="timer" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 4h10M7 20h10M8 4c0 4.500 4 5.500 4 8s-4 3.500-4 8M16 4c0 4.500-4 5.500-4 8s4 3.500 4 8"/></svg>Timer</button><button type="button" data-tab="sw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.500" r="6.500"/><path d="M12 13.500V10M10 3.500h4M12 3.500V7M17.500 8l1.300-1.300"/></svg>Stopwatch</button><button type="button" data-tab="class" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 9.500 12 5l9 4.500-9 4.500z"/><path d="M7 11.800V16c0 1.200 2.200 2.500 5 2.500s5-1.300 5-2.500v-4.200M21 9.500V15"/></svg>Classroom</button><button class="btn primary" id="newBtn" type="button" aria-label="New"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long" id="nbLong"> countdown</span></span></button></nav>
   </header>
+  <div class="bkbar" id="bkBar" hidden><span id="bkMsg"></span><span style="display:flex;gap:8px"><button class="btn primary" type="button" id="bkGo">Save a backup now</button><button class="btn ghost" type="button" id="bkLater">Later</button></span></div>
   <div class="search"><input type="search" id="q" placeholder="Search countdowns, timers and stopwatches" aria-label="Search countdowns, timers and stopwatches" autocomplete="off"></div>
 
   <div id="tab-cd">
+  <div id="welcome" hidden>
+    <h1>What are you waiting <i>for?</i></h1>
+    <p>Count down to a date, or start a timer. More appears when you need it.</p>
+    <div class="krow"><button class="btn primary" type="button" id="wNew">Count down to a date</button><button class="btn" type="button" id="wTimer">Start a timer</button></div>
+    <button class="linkish" type="button" id="wEx">Show me some examples first</button>
+  </div>
   <button class="hero" id="hero" type="button" hidden></button>
 
   <section class="sec" id="mineSec">
@@ -676,13 +708,14 @@ body { -webkit-tap-highlight-color: transparent; }
 
   <section class="tool" id="tab-class" hidden>
     <button class="hero" id="kNow" type="button" hidden></button>
+    <div class="chips ktabs" id="kTabs"></div>
     <div class="kl">
       <div class="kmain">
         <section class="sec">
           <div class="sechead"><h3>Quick timer</h3><span>Tap a number to start it full screen</span></div>
           <div class="qt" id="qt"></div>
           <div class="kown"><b>Any length</b><input class="knum" type="number" id="qtMin" min="0" max="600" value="7" inputmode="numeric" aria-label="Minutes">min<input class="knum" type="number" id="qtSec" min="0" max="59" value="0" inputmode="numeric" aria-label="Seconds">sec<button class="btn primary" type="button" id="qtGo">Start</button></div>
-          <div class="kline"><label class="check"><input type="checkbox" id="qtTraffic" checked><span>Green, amber, red frame</span></label><input type="text" id="qtTask" maxlength="140" placeholder="Task to show under the clock (optional)" aria-label="Task to show under the clock" autocomplete="off"></div>
+          <details class="kmore"><summary>Options: colour frame, task text</summary><div class="kline"><label class="check"><input type="checkbox" id="qtTraffic" checked><span>Green, amber, red frame</span></label><input type="text" id="qtTask" maxlength="140" placeholder="Task to show under the clock (optional)" aria-label="Task to show under the clock" autocomplete="off"></div></details>
         </section>
         <section class="sec">
           <div class="sechead"><h3>Sequence</h3><span id="sqTotal"></span></div>
@@ -719,7 +752,7 @@ body { -webkit-tap-highlight-color: transparent; }
     </div>
   </section>
 
-  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="fbBtn" type="button">Send feedback</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
+  <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="expBtn" type="button">Save a backup</button><span id="bkStat"></span><button class="linkish" id="moreFoot" type="button" aria-expanded="false">More</button><span id="footMore" hidden style="display:contents"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="fbBtn" type="button">Send feedback</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></span></div>
 </div>
 
 <!-- editor -->
@@ -739,9 +772,12 @@ body { -webkit-tap-highlight-color: transparent; }
       </div>
     </div>
     <div class="field"><span>Theme</span><div class="tpick" id="tpick"></div></div>
+    <div><button class="linkish" type="button" id="moreOptsBtn">More options: repeat, note, tags</button></div>
+    <div class="sgroup" id="moreOpts" hidden>
     <div class="field"><span>Repeat</span><div class="reprow"><select id="fRepeat"><option value="none">Doesn’t repeat</option><option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option><option value="days">Every few days…</option></select><input type="number" id="fEvery" min="1" max="365" value="14" aria-label="Number of days" hidden></div></div>
     <label class="field"><span>Note or link (optional)</span><input type="text" id="fNote" maxlength="200" placeholder="Gate B12, bring passport · https://…" autocomplete="off"></label>
     <div class="field"><span>Tags (optional)</span><input type="text" id="fTags" maxlength="80" placeholder="family, work, travel" autocomplete="off"><div class="chips" id="tagSug"></div></div>
+    </div>
     <label class="check" id="shareRow" hidden><input type="checkbox" id="fShared"><span>Share with everyone<small>Adds it to the shared list that everyone with this app's link can see.</small></span></label>
     <div class="err" id="ferr" hidden></div>
     <div class="acts">
@@ -876,7 +912,9 @@ body { -webkit-tap-highlight-color: transparent; }
   const DAY = 864e5;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mqPhone = matchMedia('(max-width: 640px)');
-  let query = '', presentOn = false;
+  let query = '', presentOn = false, pendingDir = 0, wantTab = '';
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const markChanged = () => lsSet('tminus.chg', Date.now());
   const pad = n => String(n).padStart(2, '0');
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const uid = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join('');
@@ -1050,7 +1088,7 @@ body { -webkit-tap-highlight-color: transparent; }
     if (raw && Array.isArray(raw.items)) { mine = raw.items; return; }
     mine = examples(); saveMine();
   }
-  function saveMine() { try { localStorage.setItem(KEY, JSON.stringify({ items: mine })); } catch (e) {} }
+  function saveMine() { try { localStorage.setItem(KEY, JSON.stringify({ items: mine })); } catch (e) {} markChanged(); }
   function at(y, mo, d, h) { return new Date(y, mo, d, h || 0, 0, 0).getTime(); }
   function examples() {
     const now = Date.now(), y = new Date().getFullYear();
@@ -1146,7 +1184,30 @@ body { -webkit-tap-highlight-color: transparent; }
     $('clearEx').hidden = !mine.some(c => c.example);
     renderHero();
     tickList();
-    applySearch();
+    applySearch(); syncShell();
+  }
+  function searchVis() {
+    const n = curTabSafe() === 'cd' ? mine.length + shared.length : curTabSafe() === 'timer' ? tools.timers.length : curTabSafe() === 'sw' ? tools.sws.length : 0;
+    $('q').parentElement.hidden = n < 6 && !query; // a search box only earns its place on a long list
+  }
+  function curTabSafe() { try { return curTab; } catch (e) { return 'cd'; } }
+  const ago = t => { const d = Date.now() - t; return d < 36e5 ? 'just now' : d < DAY ? Math.floor(d / 36e5) + ' h ago' : Math.floor(d / DAY) + (Math.floor(d / DAY) === 1 ? ' day ago' : ' days ago'); };
+  function syncShell() {
+    let school = false, classes = 0; try { school = klass.on; classes = klass.classes.filter(c => c.names.trim()).length; } catch (e) {}
+    let nCustom = 0; try { nCustom = customs.length; } catch (e) {} // this can run before the later sections have set themselves up
+    const own = mine.filter(c => !c.example).length, fresh = !lsGet('tminus.lvl') && !own && !tools.timers.length && !tools.sws.length && !school;
+    const was = document.body.classList.contains('fresh');
+    if (!fresh && !lsGet('tminus.lvl')) lsSet('tminus.lvl', '1');
+    document.body.classList.toggle('fresh', fresh); $('welcome').hidden = !fresh;
+    if (was && !fresh && wantTab) { const t = wantTab; wantTab = ''; setTimeout(() => setTab(t), 0); }
+    searchVis();
+    // backup: everything lives in this browser only, so say so once there is something worth keeping
+    const things = own + nCustom + classes, bk = +lsGet('tminus.bk') || 0, chg = +lsGet('tminus.chg') || 0, sn = +lsGet('tminus.bksnooze') || 0, now = Date.now();
+    const st = $('bkStat'); st.textContent = bk ? 'Last backup ' + ago(bk) : things ? 'Not backed up yet' : ''; st.classList.toggle('warn', !bk && things > 0);
+    const need = things >= 2 && chg > bk && now > sn && (!bk || now - bk > 7 * DAY);
+    $('bkBar').hidden = !need;
+    if (need) { const m = $('bkMsg'); m.textContent = ''; const b = document.createElement('b'); b.textContent = bk ? 'You have changes since your last backup (' + ago(bk) + '). ' : 'Nothing here is saved to an account. '; m.append(b, 'Your countdowns, themes and class lists live only in this browser on this device. Save a backup file so clearing the browser or changing device cannot lose them.'); }
+    if (things && canLink && !syncShell.asked && navigator.storage && navigator.storage.persist) { syncShell.asked = true; navigator.storage.persist().catch(() => {}); } // ask the browser not to clear this site's data on its own
   }
   function applySearch() {
     ['mine', 'shared', 'tmList', 'swList'].forEach(id => {
@@ -1318,7 +1379,9 @@ body { -webkit-tap-highlight-color: transparent; }
       b.append(n, s); b.onclick = () => pickHoliday(h); holl.appendChild(b);
     });
   }
-  function syncEvery() { $('fEvery').hidden = $('fRepeat').value !== 'days'; }
+  function syncEvery() { $('fEvery').hidden = $('fRepeat').value !== 'days'; if ($('fRepeat').value !== 'none') moreOpts(true); }
+  function moreOpts(show) { $('moreOpts').hidden = !show; $('moreOptsBtn').parentElement.hidden = show; }
+  $('moreOptsBtn').addEventListener('click', () => moreOpts(true));
   function toInputs(t, tz) {
     const d = new Date(toWall(t, tz));
     return { date: `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`, time: `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}` };
@@ -1354,7 +1417,8 @@ body { -webkit-tap-highlight-color: transparent; }
     $('fDate').value = v.date; $('fTime').value = v.time;
     $('fRepeat').value = cd && REPEATS.includes(cd.repeat) ? cd.repeat : 'none'; $('fEvery').value = (cd && cd.every) || 14; syncEvery();
     $('fNote').value = (cd && cd.note) || '';
-    pickTheme = cd ? cd.theme : 'minimal'; buildPicker();
+    pickTheme = cd ? cd.theme : (THEMES[lsGet('tminus.lastTheme')] ? lsGet('tminus.lastTheme') : 'minimal'); buildPicker();
+    moreOpts(!!(cd && ((cd.repeat && cd.repeat !== 'none') || cd.note || (cd.tags && cd.tags.length))));
     themeTouched = !!cd; autoName = null; calInit();
     const canShare = sharedOK && !sharedRO && (!cd || !cd.shared || canEditShared(cd));
     $('shareRow').hidden = !canShare;
@@ -1380,7 +1444,7 @@ body { -webkit-tap-highlight-color: transparent; }
     if (!isFinite(target)) return showErr('That date is not valid.');
     const wantShared = !$('shareRow').hidden && $('fShared').checked;
     const body = { title, target, theme: pickTheme, repeat: $('fRepeat').value, every: clamp($('fEvery').value | 0 || 1, 1, 365), note: $('fNote').value.trim().slice(0, 200), tz, tags: parseTags($('fTags').value) };
-    const old = editing;
+    const old = editing; lsSet('tminus.lastTheme', pickTheme);
     const id = old ? old.id : uid();
     const createdAt = old ? (old.createdAt || Date.now()) : Date.now();
     if ($('saveBtn').disabled) return;
@@ -3010,7 +3074,7 @@ body { -webkit-tap-highlight-color: transparent; }
   }
   let customs = [];
   try { customs = (JSON.parse(localStorage.getItem(CKEY) || '[]') || []).map(cleanTheme).filter(Boolean); } catch (e) {}
-  const saveCustoms = () => { try { localStorage.setItem(CKEY, JSON.stringify(customs)); return true; } catch (e) { return false; } };
+  const saveCustoms = () => { try { localStorage.setItem(CKEY, JSON.stringify(customs)); markChanged(); return true; } catch (e) { return false; } };
   function syncCustoms() {
     Object.keys(THEMES).forEach(k => { if (THEMES[k].custom) { delete THEMES[k]; delete BG[k]; } });
     customs.forEach(c => {
@@ -3386,7 +3450,7 @@ body { -webkit-tap-highlight-color: transparent; }
         box.appendChild(wrapRow(b, () => deleteTool(kind, T)));
       });
     });
-    tickTools(); applySearch();
+    tickTools(); applySearch(); syncShell();
   }
   function tickTools() {
     const now = Date.now();
@@ -3407,14 +3471,15 @@ body { -webkit-tap-highlight-color: transparent; }
   let curTab = 'cd';
   function setTab(name) {
     curTab = name;
-    document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
+    document.querySelectorAll('#tabs button[data-tab]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
+    try { localStorage.setItem('tminus.tab', name); } catch (e) {}
     $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
-    $('tab-class').hidden = name !== 'class'; $('q').parentElement.hidden = name === 'class';
+    $('tab-class').hidden = name !== 'class'; searchVis();
     $('newBtn').style.visibility = name === 'class' ? 'hidden' : ''; // keeps its place so the tabs do not shift
     $('nbLong').textContent = name === 'cd' ? ' countdown' : name === 'timer' ? ' timer' : ' stopwatch';
     renderTools();
   }
-  document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  document.querySelectorAll('#tabs button[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
   setInterval(() => { if (!$('tab-timer').hidden || !$('tab-sw').hidden) tickTools(); }, 250);
 
   /* ---------- the sheet for a new (or edited) timer or stopwatch ---------- */
@@ -3531,6 +3596,7 @@ body { -webkit-tap-highlight-color: transparent; }
       repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', tz: validTz(v.tz) ? v.tz : '', tags: cleanTags(v.tags), createdAt: +v.createdAt || Date.now() };
   }
   $('expBtn').addEventListener('click', async () => {
+    lsSet('tminus.bk', Date.now()); setTimeout(syncShell, 50);
     const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs, school: { classes: klass.classes, seq: klass.seq, bell: klass.bell } }, null, 1);
     if (canLink) { download('tminus-backup.json', text, 'application/json'); return toast('Backup saved as tminus-backup.json'); }
     try { await navigator.clipboard.writeText(text); toast('Backup copied. Paste it into a file named tminus-backup.json.'); }
@@ -3556,7 +3622,10 @@ body { -webkit-tap-highlight-color: transparent; }
     focusId = id;
     if (!keep) previewTheme = null;
     const theme = previewTheme || cd.theme;
-    dress(F, 'focus', theme); F._fg = null; F._th = theme; F.classList.toggle('present', presentOn);
+    const swapped = !F.hidden && F._th && F._th !== theme;
+    dress(F, 'focus', theme); F._fg = null; F._th = theme;
+    if (swapped && !reduce) { F.style.setProperty('--dir', pendingDir); F.classList.add('tin'); setTimeout(() => F.classList.remove('tin'), 420); }
+    pendingDir = 0; F.classList.toggle('present', presentOn);
     F._ms = null; $('fprog').parentElement.querySelectorAll('b').forEach(x => x.remove());
     F.hidden = false; $('shell').setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden';
@@ -3668,7 +3737,7 @@ body { -webkit-tap-highlight-color: transparent; }
   if (!Array.isArray(klass.seq) || !klass.seq.length) klass.seq = [['Starter', 5], ['Main activity', 25], ['Plenary', 10]];
   if (!Array.isArray(klass.bell)) klass.bell = [];
   klass.mins = clamp(klass.mins | 0 || 90, 1, 600);
-  const saveKlass = () => { try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} };
+  const saveKlass = () => { try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} markChanged(); };
   // the corner button: on, the app leads with the classroom tools, timers are plain, and full screen is projector view
   function setSchool(on, quiet) {
     klass.on = on; saveKlass(); document.body.classList.toggle('school', on); $('schoolBtn').setAttribute('aria-pressed', String(on)); presentOn = on;
@@ -3864,6 +3933,15 @@ body { -webkit-tap-highlight-color: transparent; }
     if (!klass.bell.length && Array.isArray(sc.bell)) klass.bell = sc.bell.slice(0, 30).map(p => ({ l: String(p && p.l || '').slice(0, 40), a: String(p && p.a || ''), b: String(p && p.b || ''), t: String(p && p.t || '') }));
     saveKlass(); drawClasses(); drawBell();
   }
+  const KT = [['quick', 'Quick timer'], ['seq', 'Sequence'], ['exam', 'Exam'], ['groups', 'Groups'], ['day', 'School day']], ksecs = [...document.querySelectorAll('#tab-class .kl .sec')];
+  function setKTool(k) {
+    if (!KT.some(x => x[0] === k)) k = 'quick';
+    if (klass.tool !== k) { klass.tool = k; try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} }
+    ksecs.forEach((sec, i) => { sec.hidden = KT[i][0] !== k; });
+    const box = $('kTabs'); box.textContent = '';
+    KT.forEach(([key, label]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', String(key === k)); b.onclick = () => setKTool(key); box.appendChild(b); });
+  }
+  setKTool(klass.tool);
   if (klass.on) setSchool(true, true);
 
   /* ---------- feedback: a pre-filled issue at github.com/bentokaz/tminus ---------- */
@@ -3986,7 +4064,9 @@ body { -webkit-tap-highlight-color: transparent; }
   function stepTheme(d) {
     const cd = find(focusId); if (!cd) return;
     const order = themeGroups().flatMap(g => g[1]), i = order.indexOf(previewTheme || cd.theme), k = order[(i + d + order.length) % order.length];
-    Promise.resolve(setFocusTheme(k)).then(() => toast(THEMES[k].name));
+    if (reduce) return Promise.resolve(setFocusTheme(k)).then(() => toast(THEMES[k].name));
+    F.style.setProperty('--dir', d); F.classList.add('tout'); // old theme leaves one way, the new one arrives from the other
+    setTimeout(() => { pendingDir = d; Promise.resolve(setFocusTheme(k)).then(() => toast(THEMES[k].name)); }, 130);
   }
   { let sx = 0, sy = 0, sid = null;
     F.addEventListener('pointerdown', e => { sid = null; if (e.button || e.target.closest('button, a, input, .tmenu, .fctl, .fnote')) return; sid = e.pointerId; sx = e.clientX; sy = e.clientY; });
@@ -4005,6 +4085,13 @@ body { -webkit-tap-highlight-color: transparent; }
   }
   $('pscrim').addEventListener('click', e => { if (e.target === $('pscrim')) $('pscrim').hidden = true; });
   function swatchBtn(theme, label, onPick) { const b = document.createElement('button'); b.type = 'button'; b.className = 'swb'; b.title = 'Theme: ' + THEMES[THEMES[theme] ? theme : 'plain'].name; b.setAttribute('aria-label', label + ', theme ' + THEMES[THEMES[theme] ? theme : 'plain'].name); b.appendChild(swatch(THEMES[theme] ? theme : 'plain')); b.onclick = onPick; return b; }
+
+  $('wNew').addEventListener('click', () => openEditor(null));
+  $('wTimer').addEventListener('click', () => { wantTab = 'timer'; openToolSheet('timer'); });
+  $('wEx').addEventListener('click', () => { lsSet('tminus.lvl', '1'); syncShell(); });
+  $('moreFoot').addEventListener('click', () => { const m = $('footMore'); m.hidden = !m.hidden; $('moreFoot').textContent = m.hidden ? 'More' : 'Less'; $('moreFoot').setAttribute('aria-expanded', String(!m.hidden)); });
+  $('bkGo').addEventListener('click', () => $('expBtn').click());
+  $('bkLater').addEventListener('click', () => { lsSet('tminus.bksnooze', Date.now() + 7 * DAY); syncShell(); });
 
   /* ================= wiring ================= */
   $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
@@ -4047,6 +4134,7 @@ body { -webkit-tap-highlight-color: transparent; }
 
   try { $('tzname').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { $('tzname').textContent = 'local'; }
   loadMine(); mine.forEach(c => { if (!THEMES[c.theme]) c.theme = 'minimal'; }); renderList();
+  if (!klass.on) { const lt = lsGet('tminus.tab'); if (tools.timers.some(t => t.running || t.done)) setTab('timer'); else if (lt === 'timer' || lt === 'sw') setTab(lt); }
   setInterval(() => { tickList(); if (focusId) focusTick(false); }, 250);
   // re-sort once a minute so finished countdowns move down the list
   setInterval(renderList, 60000);
