@@ -444,6 +444,10 @@ button { cursor: pointer; }
 .fbnote { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
 .check > span { min-width: 0; }
 .check small { overflow-wrap: anywhere; }
+.focus.fin .fclock { animation: finPunch .9s cubic-bezier(.2, .8, .2, 1); }
+@keyframes finPunch { 0% { transform: scale(1); } 18% { transform: scale(1.14); } 100% { transform: scale(1); } }
+.focus.shake .fmain, .focus.shake #bg { animation: finShake .6s linear 2; }
+@keyframes finShake { 0%, 100% { transform: none; } 15% { transform: translate(-7px, 4px); } 30% { transform: translate(6px, -5px); } 45% { transform: translate(-5px, -3px); } 60% { transform: translate(4px, 5px); } 80% { transform: translate(-2px, 2px); } }
 .tabs svg, .fbar, .ib .lbl-m { display: none; }
 button { touch-action: manipulation; }
 body { -webkit-tap-highlight-color: transparent; }
@@ -1311,12 +1315,193 @@ body { -webkit-tap-highlight-color: transparent; }
   }
 
   /* ================= particles (finales) ================= */
+  // The effects layer sits above everything in the full-screen view. It runs loose particles
+  // and, at zero, one "scene" per theme: a few seconds of drawing that tells that theme's ending
+  // (the water line dropping as you surface, a rocket leaving, a stamp landing...).
   const FX = (() => {
     const cv = $('fx'), g = cv.getContext('2d');
-    let parts = [], W = 0, H = 0, run = false;
+    let parts = [], W = 0, H = 0, run = false, sc = null, mute = false;
+    const R = Math.random, mixn = (a, b, t) => a + (b - a) * t;
+    const ez = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+    const env = (p, a, b) => ez(p / a) * (1 - ez((p - (1 - b)) / b)); // fade in over a, out over b
+    const pickc = c => c[R() * c.length | 0];
+    const P = o => Object.assign({ k: 'dot', x: 0, y: 0, vx: 0, vy: 0, g: 0, r: 0, vr: 0, s: 3, c: '#fff', life: 3 }, o);
+    const add = (n, f) => { for (let i = 0; i < n; i++) parts.push(P(f(i))); };
     function size() { const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); }
+
+    const S = {
+      // water: either you rise through the surface (the line drops past you) or the tide comes in and goes out
+      surface(p, t, o, st) {
+        const e = 1 - ez((p - .78) / .22), tide = o.tide;
+        const wl = tide ? mixn(H + 40, H * .3, env(p, .4, .45)) : mixn(-60, H * .8, ez((p - .14) / .36));
+        const wave = x => wl + Math.sin(x / 90 + t * 5) * 15 * (1 - p * .6) + Math.sin(x / 37 - t * 7) * 5;
+        if (!st.b) { st.b = 1; add(tide ? 30 : 110, () => ({ k: 'ring', x: R() * W, y: H * (.3 + R() * .9), vy: -(4 + R() * 9), s: 3 + R() * 10, c: 'rgba(255,255,255,.75)', life: 2, sway: .8, ph: R() * 6 })); }
+        if (!st.s && p > (tide ? .22 : .16)) { st.s = 1; add(150, () => ({ x: R() * W, y: Math.max(0, wl), vx: (R() - .5) * 5, vy: -(3 + R() * 11), g: .3, s: 1.5 + R() * 3, c: '#fff', life: 2.2 })); }
+        if (!tide && wl > -40) {
+          const sk = g.createLinearGradient(0, 0, 0, Math.max(1, wl)); sk.addColorStop(0, o.sky[0]); sk.addColorStop(1, o.sky[1]);
+          g.globalAlpha = .62 * e; g.fillStyle = sk; g.fillRect(0, 0, W, wl + 22);
+          const sx = W * .72, sy = wl * .4, sg = g.createRadialGradient(sx, sy, 0, sx, sy, 280); sg.addColorStop(0, 'rgba(255,246,205,.95)'); sg.addColorStop(1, 'rgba(255,246,205,0)');
+          g.globalAlpha = e; g.fillStyle = sg; g.fillRect(sx - 280, sy - 280, 560, 560);
+        }
+        const wg = g.createLinearGradient(0, Math.max(0, wl), 0, H); wg.addColorStop(0, o.sea[0]); wg.addColorStop(1, o.sea[1]);
+        g.globalAlpha = .62 * e; g.fillStyle = wg; g.beginPath(); g.moveTo(0, H); for (let x = 0; x <= W + 12; x += 12) g.lineTo(x, wave(x)); g.lineTo(W, H); g.fill();
+        g.globalAlpha = .9 * e; g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); for (let x = 0; x <= W + 12; x += 12) x ? g.lineTo(x, wave(x)) : g.moveTo(x, wave(x)); g.stroke();
+      },
+      // a sun comes up behind the clock and throws turning rays
+      sunrise(p, t, o, st) {
+        const e = env(p, .12, .3), rr = Math.min(W, H) * .2, cx = W / 2, cy = mixn(H + rr, H * .5, ez(p / .45)), L = Math.hypot(W, H);
+        const ov = g.createLinearGradient(0, H, 0, 0); ov.addColorStop(0, o.c[1]); ov.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = .5 * e; g.fillStyle = ov; g.fillRect(0, 0, W, H);
+        g.globalAlpha = .26 * e; g.fillStyle = o.c[0]; for (let i = 0; i < 18; i++) { const a = i / 18 * 6.283 + t * .25; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, L, a, a + .1); g.fill(); }
+        const sg = g.createRadialGradient(cx, cy, 0, cx, cy, rr * 2.4); sg.addColorStop(0, o.c[0]); sg.addColorStop(.35, o.c[0]); sg.addColorStop(1, 'rgba(255,255,255,0)');
+        g.globalAlpha = .6 * e; g.fillStyle = sg; g.beginPath(); g.arc(cx, cy, rr * 2.4, 0, 6.283); g.fill();
+        if (o.parts && !st.i) { st.i = 1; add(120, () => ({ k: 'petal', x: R() * W, y: -20 - R() * H * .6, vx: .4 + R(), vy: 1 + R() * 2, g: .01, r: R() * 6, vr: (R() - .5) * .08, s: 5 + R() * 6, c: pickc(o.parts), life: 6, sway: 1.2, ph: R() * 6 })); }
+      },
+      // a run of full-height lightning strikes, each with a white flash
+      storm(p, t, o, st) {
+        if (!st.b) st.b = [0, .45, .8, 1.6, 2.2, 3].map(t0 => { const pts = []; let x = W * (.1 + R() * .8), y = -10; while (y < H * (.7 + R() * .3)) { pts.push([x, y]); x += (R() - .5) * 110; y += 30 + R() * 60; } return { t0, pts }; });
+        for (const b of st.b) {
+          const u = (t - b.t0) / .55; if (u < 0 || u > 1) continue;
+          g.globalAlpha = (1 - u) * .55; g.fillStyle = '#eaf0ff'; g.fillRect(0, 0, W, H);
+          g.globalAlpha = Math.min(1, (1 - u) * 1.6); g.strokeStyle = '#fffbe0'; g.lineWidth = 2 + 5 * (1 - u); g.lineJoin = 'round'; g.shadowColor = '#ffe45c'; g.shadowBlur = 26;
+          g.beginPath(); b.pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); g.shadowBlur = 0;
+        }
+      },
+      // a volley of large firework shells
+      shells(p, t, o, st) {
+        if (!st.s) st.s = Array.from({ length: 12 }, (_, i) => ({ t0: i * .34 + R() * .2, x: W * (.1 + R() * .8), y: H * (.14 + R() * .5), R: Math.min(W, H) * (.17 + R() * .2), c: o.c[i % o.c.length], n: 34 + (R() * 20 | 0), rot: R() * 6 }));
+        g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; g.lineWidth = 2.6;
+        for (const sh of st.s) {
+          const u = (t - sh.t0) / 1.9; if (u <= 0 || u >= 1) continue;
+          const d = sh.R * (1 - Math.exp(-4.5 * u)), fall = 80 * u * u;
+          if (u < .1) { g.globalAlpha = (1 - u / .1) * .5; g.fillStyle = sh.c; g.beginPath(); g.arc(sh.x, sh.y, sh.R * .7, 0, 6.283); g.fill(); }
+          g.globalAlpha = 1 - u * u; g.strokeStyle = sh.c; g.beginPath();
+          for (let i = 0; i < sh.n; i++) { const a = sh.rot + i / sh.n * 6.283, c = Math.cos(a), sn = Math.sin(a); for (const k of [1, .58]) { g.moveTo(sh.x + c * d * k * .84, sh.y + sn * d * k * .84 + fall); g.lineTo(sh.x + c * d * k, sh.y + sn * d * k + fall); } }
+          g.stroke();
+        }
+      },
+      // the stars stretch into lines, the screen whites out, and you arrive
+      warp(p, t, o, st) {
+        const D = Math.hypot(W, H) * .5, cx = W / 2, cy = H / 2, k = Math.pow(ez(p / .5), 2);
+        if (!st.a) st.a = Array.from({ length: 200 }, () => [R() * 6.283, .04 + R() * .5]);
+        if (p < .58) { g.strokeStyle = '#eaf4ff'; g.lineCap = 'round'; for (const [a, r] of st.a) { const r0 = r * D * (1 + k * 2), r1 = r0 + k * D * .9 + 2, c = Math.cos(a), sn = Math.sin(a); g.globalAlpha = .25 + .7 * k; g.lineWidth = 1 + 2.5 * k; g.beginPath(); g.moveTo(cx + c * r0, cy + sn * r0); g.lineTo(cx + c * r1, cy + sn * r1); g.stroke(); } }
+        g.globalAlpha = Math.max(0, 1 - Math.abs(p - .54) / .13); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+        if (p > .54) { const u = (p - .54) / .46; g.globalAlpha = 1 - u; g.strokeStyle = o.c; g.lineWidth = 6 * (1 - u) + 1; g.beginPath(); g.arc(cx, cy, u * D * 1.1, 0, 6.283); g.stroke(); }
+      },
+      // a word lands on the screen like a stamp (or is typed, flickers on, or glitches in)
+      banner(p, t, o, st, timer) {
+        const txt = (timer && o.t2) || o.text, e = 1 - ez((p - .8) / .2), inn = o.type ? 1 : ez(p / .1), fs = Math.min(W * .9 / (txt.length * .6), H * .2);
+        if (o.dim !== 0) { g.globalAlpha = .4 * e * inn; g.fillStyle = '#000'; g.fillRect(0, 0, W, H); }
+        if (o.glitch) { g.fillStyle = o.c; for (let i = 0; i < 7; i++) { g.globalAlpha = .1 * e; g.fillRect(0, R() * H, W, 2 + R() * 14); } }
+        if (o.rain && !st.r) { st.r = 1; add(90, () => ({ k: 'char', ch: o.rain[R() * o.rain.length | 0], font: '500 ' + (18 + R() * 26 | 0) + 'px ' + o.font, x: R() * W, y: -R() * H, vy: 3 + R() * 5, c: o.rainC || o.c, life: 4 })); }
+        g.save(); g.translate(W / 2, H * .5); g.rotate(o.rot || 0); const sc = mixn(o.type ? 1 : 3.4, 1, inn) * (1 + .05 * Math.sin(Math.min(1, p / .22) * Math.PI)); g.scale(sc, sc);
+        g.font = (o.w || 700) + ' ' + fs + 'px ' + o.font; g.textAlign = 'left'; g.textBaseline = 'middle';
+        const tw = g.measureText(txt).width, shown = o.type ? txt.slice(0, Math.ceil(txt.length * ez(p / .4))) : txt, bx = -tw / 2 - fs * .4, bw = tw + fs * .8;
+        if (o.plate) { g.globalAlpha = .9 * e * inn; g.fillStyle = o.plate; g.fillRect(bx, -fs * .78, bw, fs * 1.56); }
+        if (o.box) { g.globalAlpha = e * inn; g.strokeStyle = o.c; g.lineWidth = fs * .07; g.strokeRect(bx, -fs * .78, bw, fs * 1.56); }
+        if (o.glitch && (t * 12 | 0) % 3 === 0) { const dx = (R() - .5) * fs * .2; g.globalAlpha = .6 * e; g.fillStyle = '#00e5ff'; g.fillText(shown, -tw / 2 + dx, 0); g.fillStyle = '#ff2d55'; g.fillText(shown, -tw / 2 - dx, 0); }
+        g.globalAlpha = e * inn * (o.flick && p < .45 && R() < .18 ? .25 : 1); g.fillStyle = o.c; if (o.glow) { g.shadowColor = o.c; g.shadowBlur = fs * .45; }
+        g.fillText(shown, -tw / 2, 0); g.shadowBlur = 0;
+        if (o.under) { g.strokeStyle = o.c; g.lineWidth = fs * .06; g.lineCap = 'round'; g.beginPath(); g.moveTo(-tw / 2, fs * .62); g.quadraticCurveTo(0, fs * .78, -tw / 2 + tw * ez((p - .12) / .25), fs * .6); g.stroke(); }
+        g.restore();
+      },
+      // molten wax or embers thrown up from the bottom of the screen
+      erupt(p, t, o) {
+        const e = env(p, .1, .35), gl = g.createLinearGradient(0, H, 0, H * .25); gl.addColorStop(0, o.c[0]); gl.addColorStop(1, 'rgba(0,0,0,0)');
+        g.globalAlpha = .6 * e; g.fillStyle = gl; g.fillRect(0, 0, W, H);
+        if (p < .55) add(o.n || 7, () => ({ x: W / 2 + (R() - .5) * W * (o.wide || .3), y: H + 10, vx: (R() - .5) * (o.spread || 10), vy: -(8 + R() * 14) * Math.sqrt(H / 800), g: .22, s: o.s[0] + R() * o.s[1], c: pickc(o.c), life: 3 }));
+      },
+      // a hard wind carrying snow, petals, leaves or sand across the screen
+      gust(p, t, o) {
+        const e = env(p, .15, .4);
+        if (o.veil) { g.globalAlpha = .34 * e; g.fillStyle = o.veil; g.fillRect(0, 0, W, H); }
+        g.globalAlpha = .22 * e; g.strokeStyle = '#fff'; g.lineWidth = 2; g.lineCap = 'round'; g.beginPath();
+        for (let i = 0; i < 14; i++) { const x = ((t * 1100 + i * 311) % (W + 500)) - 250, y = (i * 137.5 % 1) * H + Math.sin(t * 2 + i) * 20; g.moveTo(x, y); g.lineTo(x + 180, y + 8); }
+        g.stroke();
+        if (p < .6) add(o.n || 9, () => ({ k: o.k || 'petal', x: -30 - R() * W * .3, y: R() * H * 1.2 - H * .2, vx: 9 + R() * 13, vy: 1 + R() * 3, g: .01, r: R() * 6, vr: (R() - .5) * .3, s: o.s[0] + R() * o.s[1], c: pickc(o.c), life: 4, sway: 1.5, ph: R() * 6 }));
+      },
+      // curtains of light sweeping the whole sky
+      aurora(p, t, o) {
+        const e = env(p, .2, .35); g.globalCompositeOperation = 'lighter';
+        for (let k = 0; k < 3; k++) for (let x = 0; x < W; x += 10) {
+          const h = H * (.6 + .35 * Math.sin(x / 140 + t * 1.6 + k * 2)), y0 = 40 * Math.sin(x / 90 - t + k) - 20;
+          const gr = g.createLinearGradient(0, y0, 0, y0 + h); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(.3, o.c[k % o.c.length]); gr.addColorStop(1, 'rgba(0,0,0,0)');
+          g.globalAlpha = .3 * e * (.55 + .45 * Math.sin(x / 50 + t * 3 + k)); g.fillStyle = gr; g.fillRect(x, y0, 10, h);
+        }
+      },
+      // stage lights sweep the screen; with notes, music rises from the floor
+      spot(p, t, o) {
+        const e = env(p, .1, .3), L = Math.hypot(W, H); g.globalCompositeOperation = 'lighter';
+        [[0, H, 1], [W, H, -1], [W * .3, 0, 1], [W * .7, 0, -1]].forEach(([x, y, d], i) => {
+          const a = (y ? -Math.PI / 2 : Math.PI / 2) + d * (y ? .5 : 0) + .45 * Math.sin(t * 1.9 + i * 1.3);
+          g.globalAlpha = .24 * e; g.fillStyle = o.c[i % o.c.length]; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a - .13) * L, y + Math.sin(a - .13) * L); g.lineTo(x + Math.cos(a + .13) * L, y + Math.sin(a + .13) * L); g.fill();
+        });
+        if (o.notes && p < .6) add(1, () => ({ k: 'char', ch: '♪♫♩♬'[R() * 4 | 0], font: '600 ' + (26 + R() * 30 | 0) + 'px Georgia, serif', x: R() * W, y: H + 20, vy: -(3 + R() * 5), vx: (R() - .5) * 2, c: pickc(o.c), life: 3.2, sway: 1, ph: R() * 6, r: (R() - .5) * .5 }));
+      },
+      // paint thrown at the canvas, then running down it
+      splash(p, t, o, st) {
+        if (!st.s) st.s = Array.from({ length: 10 }, (_, i) => ({ t0: i * .28, x: W * (.08 + R() * .84), y: H * (.08 + R() * .7), r: Math.min(W, H) * (.07 + R() * .09), c: o.c[i % o.c.length], sat: Array.from({ length: 10 }, () => [R() * 6.283, .9 + R() * 1, .1 + R() * .26]), drip: Array.from({ length: 3 }, () => [(R() - .5) * 1.3, 50 + R() * 190, 4 + R() * 8]) }));
+        const e = 1 - ez((p - .8) / .2);
+        for (const b of st.s) {
+          const u = t - b.t0; if (u <= 0) continue;
+          const k = Math.min(1, u / .16), q = k * (1 + .3 * Math.sin(k * Math.PI));
+          g.globalAlpha = .82 * e; g.fillStyle = b.c; g.beginPath(); g.arc(b.x, b.y, b.r * q, 0, 6.283); g.fill();
+          for (const [a, d, z] of b.sat) { g.beginPath(); g.arc(b.x + Math.cos(a) * b.r * d * q, b.y + Math.sin(a) * b.r * d * q, b.r * z, 0, 6.283); g.fill(); }
+          for (const [dx, len, w] of b.drip) { const l = len * ez(u / 2.6); g.fillRect(b.x + dx * b.r * .7 - w / 2, b.y, w, l); g.beginPath(); g.arc(b.x + dx * b.r * .7, b.y + l, w * .75, 0, 6.283); g.fill(); }
+        }
+      },
+      // a map pin drops onto the spot and rings spread out from it
+      pin(p, t, o) {
+        const e = 1 - ez((p - .8) / .2), cx = W / 2, ty = H * .34, sz = Math.min(W, H) * .07, d = Math.min(1, t / .5);
+        const y = d < 1 ? mixn(-sz * 4, ty, d * d) : ty - Math.abs(Math.sin((t - .5) * 9)) * Math.exp(-(t - .5) * 5) * sz * 1.6;
+        g.strokeStyle = o.c; g.setLineDash([12, 12]); g.lineDashOffset = -t * 60; g.lineWidth = 3; g.globalAlpha = .7 * e * ez(t / .5);
+        g.beginPath(); g.moveTo(W * .04, H * .92); g.quadraticCurveTo(W * .25, H * .05, cx, ty); g.stroke(); g.setLineDash([]);
+        for (let k = 0; k < 4; k++) { const u = (t - .5 - k * .35) / 1.7; if (u <= 0 || u >= 1) continue; g.globalAlpha = (1 - u) * e; g.lineWidth = 4 * (1 - u) + 1; g.beginPath(); g.ellipse(cx, ty, u * W * .46, u * W * .17, 0, 0, 6.283); g.stroke(); }
+        g.globalAlpha = e; g.fillStyle = o.c; g.beginPath(); g.arc(cx, y - sz * 1.75, sz, Math.PI * .82, Math.PI * .18); g.lineTo(cx, y); g.closePath(); g.fill();
+        g.fillStyle = '#0e3a5a'; g.beginPath(); g.arc(cx, y - sz * 1.75, sz * .4, 0, 6.283); g.fill();
+      },
+      // a reaction: shock rings from the middle and a rush of bubbles
+      react(p, t, o, st) {
+        const cx = W / 2, cy = H / 2, D = Math.hypot(W, H) * .62;
+        g.globalAlpha = Math.max(0, .45 - t * .9); g.fillStyle = o.c[0]; g.fillRect(0, 0, W, H);
+        for (let k = 0; k < 4; k++) { const u = (t - k * .32) / 1.9; if (u <= 0 || u >= 1) continue; g.globalAlpha = 1 - u; g.strokeStyle = o.c[k % o.c.length]; g.lineWidth = 12 * (1 - u) + 1; g.beginPath(); g.arc(cx, cy, u * D, 0, 6.283); g.stroke(); }
+        if (!st.b) { st.b = 1; add(140, () => ({ k: 'ring', x: R() * W, y: H * (.4 + R() * .8), vy: -(2 + R() * 7), s: 3 + R() * 12, c: pickc(o.c), life: 3, sway: .8, ph: R() * 6 })); }
+      },
+      // the rain stops, the light comes through, a rainbow draws itself
+      rainbow(p, t, o, st) {
+        const e = env(p, .08, .3), cx = W / 2, cy = H * 1.05, R0 = Math.max(W * .52, H * .78), lw = R0 * .024, sw = ez(p / .45);
+        g.globalAlpha = .3 * e; g.fillStyle = '#fff4c8'; g.fillRect(0, 0, W, H);
+        g.lineWidth = lw + 1; ['#ff5a5a', '#ffa94d', '#ffe066', '#69db7c', '#4dabf7', '#9775fa'].forEach((c, i) => { g.globalAlpha = .6 * e; g.strokeStyle = c; g.beginPath(); g.arc(cx, cy, R0 - i * lw, Math.PI, Math.PI + Math.PI * sw); g.stroke(); });
+        if (!st.d) { st.d = 1; add(90, () => ({ x: R() * W, y: -R() * H, vy: 12 + R() * 10, s: 1.4, c: 'rgba(210,225,245,.8)', life: 1.1 })); }
+      },
+      // lift-off: a rocket climbs out of the bottom of the screen on a column of smoke
+      rocket(p, t, o) {
+        const u = Math.min(1, p / .75), sz = Math.min(W, H) * .05, y = mixn(H + sz * 4, -sz * 9, u * u * u * .88 + u * .12), x = W / 2 + Math.sin(t * 40) * 1.5;
+        const gl = g.createLinearGradient(0, H, 0, H * .4); gl.addColorStop(0, 'rgba(255,170,70,.8)'); gl.addColorStop(1, 'rgba(255,170,70,0)'); g.globalAlpha = env(p, .08, .6); g.fillStyle = gl; g.fillRect(0, 0, W, H);
+        if (p < .75) add(5, () => ({ x: x + (R() - .5) * sz, y: Math.min(H + 30, y + sz * 3.6), vx: (R() - .5) * 5, vy: 2 + R() * 4, g: -.03, s: 7 + R() * 16, c: 'rgba(225,228,236,.45)', life: 1.5 }));
+        g.globalAlpha = 1; g.fillStyle = '#ffb347'; g.beginPath(); g.moveTo(x - sz * .5, y + sz * 2.1); g.lineTo(x + sz * .5, y + sz * 2.1); g.lineTo(x, y + sz * (4.4 + R() * 1.8)); g.fill();
+        g.fillStyle = '#fff3c4'; g.beginPath(); g.moveTo(x - sz * .25, y + sz * 2.1); g.lineTo(x + sz * .25, y + sz * 2.1); g.lineTo(x, y + sz * (3.2 + R())); g.fill();
+        g.fillStyle = '#e2552b'; g.beginPath(); g.moveTo(x - sz * .6, y + sz * 1.1); g.lineTo(x - sz * 1.25, y + sz * 2.3); g.lineTo(x - sz * .6, y + sz * 2.1); g.moveTo(x + sz * .6, y + sz * 1.1); g.lineTo(x + sz * 1.25, y + sz * 2.3); g.lineTo(x + sz * .6, y + sz * 2.1); g.fill();
+        g.fillStyle = '#eef2f7'; g.fillRect(x - sz * .6, y - sz * 1.2, sz * 1.2, sz * 3.3); g.beginPath(); g.moveTo(x - sz * .6, y - sz * 1.2); g.quadraticCurveTo(x, y - sz * 3.6, x + sz * .6, y - sz * 1.2); g.fill();
+        g.fillStyle = '#3b82c4'; g.beginPath(); g.arc(x, y - sz * .3, sz * .3, 0, 6.283); g.fill();
+      },
+      // the quiet one: thin rings widening from the clock
+      rings(p, t, o) {
+        const cx = W / 2, cy = H / 2, D = Math.min(W, H) * .7;
+        for (let k = 0; k < 3; k++) { const u = (t - k * .3) / 2.2; if (u <= 0 || u >= 1) continue; g.globalAlpha = 1 - u; g.strokeStyle = o.c; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cy, u * D, 0, 6.283); g.stroke(); }
+      },
+    };
+
     function loop() {
       g.clearRect(0, 0, W, H);
+      if (sc) {
+        const t = (performance.now() - sc.t0) / 1000, p = t * 1000 / sc.dur;
+        if (p >= 1) sc = null;
+        else {
+          g.save(); sc.f(p, t, sc.o, sc.st, sc.timer); g.restore();
+          if (t < .3 && !sc.o.noflash) { g.globalAlpha = (1 - t / .3) * .4; g.fillStyle = '#fff'; g.fillRect(0, 0, W, H); }
+          g.globalAlpha = 1;
+        }
+      }
       parts = parts.filter(p => p.life > 0 && p.y < H + 40);
       for (const p of parts) {
         p.life -= 1 / 60; p.vy += p.g; p.vx *= .992; p.x += p.vx + (p.sway ? Math.sin(p.life * 3 + p.ph) * p.sway : 0); p.y += p.vy; p.r += p.vr;
@@ -1324,14 +1509,17 @@ body { -webkit-tap-highlight-color: transparent; }
         if (p.k === 'strip') g.fillRect(-p.s / 2, -p.s * .2, p.s, p.s * .4);
         else if (p.k === 'petal') { g.beginPath(); g.ellipse(0, 0, p.s, p.s * .5, 0, 0, 6.283); g.fill(); }
         else if (p.k === 'glyph') { g.font = `${p.s}px VT323, monospace`; g.fillText(p.ch, 0, 0); }
+        else if (p.k === 'char') { g.font = p.font; g.textAlign = 'center'; g.fillText(p.ch, 0, 0); }
+        else if (p.k === 'ring') { g.strokeStyle = p.c; g.lineWidth = 1.5; g.beginPath(); g.arc(0, 0, p.s, 0, 6.283); g.stroke(); }
         else { g.beginPath(); g.arc(0, 0, p.s, 0, 6.283); g.fill(); }
         g.restore();
       }
-      if (parts.length) requestAnimationFrame(loop); else { run = false; g.clearRect(0, 0, W, H); }
+      if (parts.length || sc) requestAnimationFrame(loop); else { run = false; g.clearRect(0, 0, W, H); }
     }
+    const start = () => { if (!run) { run = true; requestAnimationFrame(loop); } };
     return {
       burst(kind, colors, n) {
-        if (reduce) return;
+        if (reduce || mute) return;
         size();
         for (let i = 0; i < n; i++) {
           const c = colors[i % colors.length];
@@ -1340,11 +1528,64 @@ body { -webkit-tap-highlight-color: transparent; }
           else if (kind === 'glyph') parts.push({ k: 'glyph', ch: GLY[Math.random() * GLY.length | 0], x: Math.random() * W, y: -Math.random() * H, vx: 0, vy: 3 + Math.random() * 5, g: 0, r: 0, vr: 0, s: 18 + Math.random() * 18, c, life: 5 });
           else { const a = Math.random() * 6.283, sp = 2 + Math.random() * 7, cx = W / 2, cy = H / 2; parts.push({ k: 'dot', x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, g: .05, r: 0, vr: 0, s: 1.5 + Math.random() * 2.5, c, life: 2.6 }); }
         }
-        if (!run) { run = true; requestAnimationFrame(loop); }
+        start();
       },
-      clear() { parts = []; },
+      scene(name, o, timer) { if (reduce || !S[name]) return; size(); sc = { f: S[name], o: o || {}, st: {}, timer, t0: performance.now(), dur: (o && o.dur) || 5500 }; start(); },
+      quiet(v) { mute = v; },
+      clear() { parts = []; sc = null; },
     };
   })();
+
+  // which ending each theme plays at zero: [scene, options, keep the theme's own burst too]
+  const FIN = {
+    board: ['banner', { text: 'NOW ARRIVING', t2: 'TIME’S UP', font: '"Big Shoulders Display", sans-serif', w: 900, c: '#ffd23f', plate: '#0d1012', box: 1, dur: 4200 }],
+    minimal: ['rings', { c: '#e2552b', noflash: 1, dur: 3500 }],
+    terminal: ['banner', { text: '> EVENT ACTIVE', t2: '> TIMER DONE', font: 'VT323, monospace', w: 400, c: '#5dff8f', glitch: 1, glow: 1, dur: 4200 }, 1],
+    space: ['rocket', { shake: 1 }],
+    nature: ['sunrise', { c: ['#fff1b8', '#ffcf70'], parts: ['#f7a8c4', '#ffffff', '#ffd9e6'] }],
+    ocean: ['surface', { tide: 1, sea: ['#2aa6c9', '#06334d'] }],
+    arcade: ['banner', { text: 'STAGE CLEAR', t2: 'TIME UP', font: '"Press Start 2P", monospace', w: 400, c: '#ffe14d', glitch: 1, plate: '#000', dur: 4200 }, 1],
+    blueprint: ['banner', { text: 'APPROVED', t2: 'COMPLETE', font: '"Chakra Petch", sans-serif', c: '#ff6a5c', box: 1, rot: -.1, plate: 'rgba(10,34,70,.92)', dur: 4200 }],
+    snow: ['gust', { k: 'dot', c: ['#ffffff', '#dfeaff'], s: [2, 4], n: 14, veil: '#eaf2ff' }],
+    sunset: ['sunrise', { c: ['#ffd27a', '#ff5d8f'] }],
+    aurora: ['aurora', { c: ['rgba(90,255,170,1)', 'rgba(120,220,255,1)', 'rgba(255,120,200,1)'], noflash: 1, dur: 7000 }],
+    neon: ['banner', { text: 'OPEN', t2: 'TIME’S UP', font: '"Tilt Neon", sans-serif', w: 400, c: '#ff4fa3', glow: 1, flick: 1, dur: 4200 }],
+    rain: ['rainbow', {}],
+    chalk: ['banner', { text: 'Today!', t2: 'Time’s up!', font: 'Caveat, cursive', c: '#ffffff', under: 1, rot: -.05, dur: 4200 }],
+    party: ['spot', { c: ['#ff5d7a', '#ffcf4a', '#2ec4b6', '#ffffff'] }, 1],
+    lava: ['erupt', { c: ['#ff5a22', '#ffc247', '#ff8a2a'], s: [5, 12], shake: 1 }],
+    vinyl: ['spot', { notes: 1, c: ['#e0563a', '#f3ead9', '#f2b84b'] }],
+    dunes: ['gust', { k: 'dot', c: ['#e9bd7c', '#fff1c9', '#c98445'], s: [1, 2.5], n: 24, veil: '#e9bd7c' }],
+    circuit: ['banner', { text: 'SIGNAL LIVE', t2: 'CYCLE COMPLETE', font: '"Share Tech Mono", monospace', w: 400, c: '#ffd34d', glitch: 1, glow: 1, dur: 4200 }],
+    clouds: ['sunrise', { c: ['#fffbe0', '#ffe9a8'] }],
+    forest: ['sunrise', { c: ['#f4ffc2', '#c8e86b'], parts: ['#c8e86b', '#e9b44c', '#d9772b'] }],
+    reef: ['surface', { sea: ['#2aa6c9', '#073a55'], sky: ['#7fd0f5', '#e8f8ff'], dur: 6500 }],
+    lake: ['sunrise', { c: ['#ffe2bd', '#ff9a6b'] }],
+    sakura: ['gust', { k: 'petal', c: ['#f5a0be', '#f7b6cb', '#ffffff'], s: [5, 6], n: 12 }],
+    campfire: ['erupt', { c: ['#ff9a2e', '#ffe08a', '#ff4d1a'], s: [1.5, 3], n: 12, wide: .12, spread: 5 }],
+    storm: ['storm', { shake: 1, noflash: 1 }],
+    jelly: ['react', { c: ['#78e6ff', '#ff8fc0', '#ffcd82'] }],
+    fireworks: ['shells', { c: ['#ffcf4a', '#ff5d7a', '#6fe0ff', '#9dff8a', '#ffffff', '#ff9a3c'], dur: 6500 }],
+    warp: ['warp', { c: '#6fd3ff', noflash: 1 }],
+    math: ['banner', { text: 'Q.E.D.', t2: 't = 0', font: 'Fraunces, Georgia, serif', w: 500, c: '#d1462f', dim: 0, plate: '#f7f5ec', box: 1, rain: 'π∑√∫∞Δθ=+', rainC: '#1d2a44', dur: 4200 }],
+    science: ['react', { c: ['#7dffb0', '#e8fff8', '#ffd34d'] }],
+    history: ['banner', { text: 'ON THIS DAY', t2: 'THE HOUR HAS COME', font: '"Instrument Serif", Georgia, serif', w: 400, c: '#8a2f1b', box: 1, rot: -.07, dim: 0, plate: '#ead9b5', dur: 4200 }],
+    english: ['banner', { text: 'Chapter One', t2: 'The End.', font: '"Instrument Serif", Georgia, serif', w: 400, c: '#22252b', type: 1, dim: 0, under: 1, plate: '#fbfaf4', dur: 4200 }],
+    geography: ['pin', { c: '#ffd166' }],
+    music: ['spot', { notes: 1, c: ['#f2b84b', '#fbeedd', '#e0563a'] }],
+    art: ['splash', { c: ['#e4572e', '#17bebb', '#ffc914', '#76b041', '#3d5a80'] }],
+  };
+  // everything that happens on screen at zero: the theme's own reaction, its scene, and a jolt to the clock
+  function playFinale() {
+    if (!bgi) return;
+    const cd = find(focusId), th = previewTheme || (cd && cd.theme), f = FIN[th], cu = THEMES[th] && THEMES[th].custom;
+    if (th === 'plain') return;
+    FX.quiet(!!f && !f[2]); bgi.finale(); FX.quiet(false);
+    if (reduce) return;
+    if (f) FX.scene(f[0], f[1], !!(cd && cd.kind === 'timer')); else FX.scene('rings', { c: cu ? cu.acc : '#ffffff' });
+    F.classList.remove('fin', 'shake'); void F.offsetWidth; F.classList.add('fin'); if (f && f[1].shake) F.classList.add('shake');
+    setTimeout(() => F.classList.remove('fin', 'shake'), 1400);
+  }
 
   /* ================= theme backgrounds ================= */
   const BG = {};
@@ -2788,7 +3029,7 @@ body { -webkit-tap-highlight-color: transparent; }
       }
       if (was === 'down' && m !== 'down') {
         chime(cd.theme, 1); notify(cd.title + ' is here');
-        if (focusId === cd.id && bgi) bgi.finale(); else toast(cd.title + ' has arrived');
+        if (focusId === cd.id && bgi) playFinale(); else toast(cd.title + ' has arrived');
       }
     }
     let changed = false;
@@ -2796,7 +3037,7 @@ body { -webkit-tap-highlight-color: transparent; }
       if (!T.running || now < T.endAt) continue;
       T.running = false; T.left = 0; T.done = true; changed = true;
       chime(T.theme, 3); notify((T.label || 'Timer') + ' finished');
-      if (focusId === 't-' + T.id && bgi) bgi.finale(); else toast((T.label || 'Timer') + ' finished', 'Open', () => openFocus('t-' + T.id));
+      if (focusId === 't-' + T.id && bgi) playFinale(); else toast((T.label || 'Timer') + ' finished', 'Open', () => openFocus('t-' + T.id));
     }
     if (changed) { saveTools(); renderTools(); }
   }
@@ -3139,7 +3380,7 @@ body { -webkit-tap-highlight-color: transparent; }
     $('fprog').style.width = (o.prog * 100).toFixed(3) + '%';
     $('fpl1').textContent = repeatLabel(cd) ? 'Last time' : 'Created';
     $('fpl2').textContent = o.mode === 'down' ? (o.prog * 100).toFixed(1) + '% of the wait done' : 'Arrived';
-    if (cd.linked && !first && lastMode === 'down' && o.mode !== 'down' && bgi) { bgi.finale(); chime(theme, 1); } // saved ones are handled by watch()
+    if (cd.linked && !first && lastMode === 'down' && o.mode !== 'down' && bgi) { playFinale(); chime(theme, 1); } // saved ones are handled by watch()
     lastMode = o.mode;
     if (p.total !== lastSec) { if (lastSec >= 0 && bgi) { bgi.pulse('sec'); if (p.s === 0) bgi.pulse('min'); } lastSec = p.total; }
   }
@@ -3262,7 +3503,7 @@ body { -webkit-tap-highlight-color: transparent; }
     btn('Reset clock', () => setOff(0));
 
     sec('The open view');
-    btn('End animation', needOpen(() => { bgi.finale(); chime(previewTheme || find(focusId).theme, 1); }));
+    btn('End animation', needOpen(() => { playFinale(); chime(previewTheme || find(focusId).theme, 1); }));
     btn('Second pulse', needOpen(() => bgi.pulse('sec')));
     btn('Minute pulse', needOpen(() => bgi.pulse('min')));
     btn('Tour: every theme + its ending', () => {
@@ -3270,8 +3511,8 @@ body { -webkit-tap-highlight-color: transparent; }
       if (tour) return stop();
       if (!focusId) return toast('Open a countdown, timer or stopwatch first');
       let i = 0; const keys = TKEYS.slice();
-      const step = () => { if (!focusId || i >= keys.length) return stop(); previewTheme = keys[i++]; openFocus(focusId, true); toast(i + '/' + keys.length + ' ' + THEMES[previewTheme].name); setTimeout(() => { if (tour && bgi) bgi.finale(); }, 1500); };
-      step(); tour = setInterval(step, 5000);
+      const step = () => { if (!focusId || i >= keys.length) return stop(); previewTheme = keys[i++]; openFocus(focusId, true); toast(i + '/' + keys.length + ' ' + THEMES[previewTheme].name); setTimeout(() => { if (tour && bgi) playFinale(); }, 1500); };
+      step(); tour = setInterval(step, 7500);
     });
 
     sec('Make a test item (opens it)');
