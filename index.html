@@ -696,10 +696,11 @@ body { -webkit-tap-highlight-color: transparent; }
         </section>
         <section class="sec">
           <div class="sechead"><h3>Groups</h3><span id="grCount"></span></div>
+          <div class="kseg"><span>Class</span><div class="chips" id="grClasses"></div></div>
           <div class="chips" id="grQuick"></div>
           <div class="kown"><b>Any number</b><input class="knum" type="number" id="grN" min="1" max="100" value="12" inputmode="numeric" aria-label="Number"><select id="grMode" aria-label="What the number means"><option value="groups">groups</option><option value="size">in each group</option></select><button class="btn primary" type="button" id="grGo">Make</button></div>
           <div><button class="btn" type="button" id="grPick">Pick one name</button></div>
-          <details class="kmore" id="grDet"><summary>Class list</summary><div><textarea id="grNames" aria-label="Class list, one name per line" placeholder="Aisha&#10;Ben&#10;Chloe&#10;Dev"></textarea><p>One name per line, or paste a list. It stays in this browser and is never sent anywhere.</p></div></details>
+          <details class="kmore" id="grDet"><summary id="grSum">Class list</summary><div><input type="text" id="grName" maxlength="40" placeholder="Class name, like 9B Science" aria-label="Class name" autocomplete="off" style="padding:10px 12px;border:1px solid var(--rule);border-radius:var(--r);background:var(--bg)"><textarea id="grNames" aria-label="Class list, one name per line" placeholder="Aisha&#10;Ben&#10;Chloe&#10;Dev"></textarea><p>One name per line, or paste a list. It stays in this browser and is never sent anywhere.</p><div><button class="btn ghost danger" type="button" id="grDel">Delete this class</button></div></div></details>
         </section>
         <section class="sec">
           <div class="sechead"><h3>School day</h3><span id="blSum"></span></div>
@@ -3388,7 +3389,8 @@ body { -webkit-tap-highlight-color: transparent; }
     curTab = name;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
     $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
-    $('tab-class').hidden = name !== 'class'; $('newBtn').style.visibility = name === 'class' ? 'hidden' : ''; // keeps its place so the tabs do not shift $('q').parentElement.hidden = name === 'class';
+    $('tab-class').hidden = name !== 'class'; $('q').parentElement.hidden = name === 'class';
+    $('newBtn').style.visibility = name === 'class' ? 'hidden' : ''; // keeps its place so the tabs do not shift
     $('nbLong').textContent = name === 'cd' ? ' countdown' : name === 'timer' ? ' timer' : ' stopwatch';
     renderTools();
   }
@@ -3509,7 +3511,7 @@ body { -webkit-tap-highlight-color: transparent; }
       repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', tz: validTz(v.tz) ? v.tz : '', tags: cleanTags(v.tags), createdAt: +v.createdAt || Date.now() };
   }
   $('expBtn').addEventListener('click', async () => {
-    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs }, null, 1);
+    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs, school: { classes: klass.classes, seq: klass.seq, bell: klass.bell } }, null, 1);
     if (canLink) { download('tminus-backup.json', text, 'application/json'); return toast('Backup saved as tminus-backup.json'); }
     try { await navigator.clipboard.writeText(text); toast('Backup copied. Paste it into a file named tminus-backup.json.'); }
     catch (e) { toast('Could not copy the backup here. Use the website version to export.'); }
@@ -3518,7 +3520,7 @@ body { -webkit-tap-highlight-color: transparent; }
   $('impFile').addEventListener('change', async e => {
     const f = e.target.files[0]; e.target.value = ''; if (!f) return;
     try {
-      const d = JSON.parse(await f.text()); importThemes(d && d.themes);
+      const d = JSON.parse(await f.text()); importThemes(d && d.themes); importSchool(d && d.school);
       const items = (Array.isArray(d) ? d : d.items).map(cleanItem).filter(Boolean);
       if (!items.length) throw 0;
       items.forEach(it => { const i = mine.findIndex(c => c.id === it.id); if (i >= 0) mine[i] = it; else mine.push(it); });
@@ -3645,7 +3647,6 @@ body { -webkit-tap-highlight-color: transparent; }
   try { const k = JSON.parse(localStorage.getItem(KKEY) || '{}'); if (k && typeof k === 'object') Object.assign(klass, k); } catch (e) {}
   if (!Array.isArray(klass.seq) || !klass.seq.length) klass.seq = [['Starter', 5], ['Main activity', 25], ['Plenary', 10]];
   if (!Array.isArray(klass.bell)) klass.bell = [];
-  if (typeof klass.names !== 'string') klass.names = '';
   klass.mins = clamp(klass.mins | 0 || 90, 1, 600);
   const saveKlass = () => { try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} };
   // the corner button: on, the app leads with the classroom tools, timers are plain, and full screen is projector view
@@ -3736,13 +3737,35 @@ body { -webkit-tap-highlight-color: transparent; }
   });
 
   /* groups and the name picker: one tap puts the result on screen */
-  $('grNames').value = klass.names;
+  // classes: [{ id, name, names }], with klass.cur the one in use; an older single list becomes the first class
+  const cleanClasses = a => (Array.isArray(a) ? a : []).filter(c => c && typeof c === 'object').slice(0, 30).map(c => ({ id: typeof c.id === 'string' && /^[a-z0-9]{4,24}$/i.test(c.id) ? c.id : uid(), name: String(c.name || '').slice(0, 40), names: String(c.names || '').slice(0, 6000) }));
+  klass.classes = cleanClasses(klass.classes);
+  if (!klass.classes.length) klass.classes = [{ id: uid(), name: '', names: klass.names || '' }];
+  delete klass.names;
+  const curClass = () => klass.classes.find(c => c.id === klass.cur) || klass.classes[0];
+  const className = (c, i) => c.name.trim() || 'Class ' + (i + 1);
+  function drawClasses() {
+    const box = $('grClasses'), cur = curClass(); box.textContent = ''; klass.cur = cur.id;
+    klass.classes.forEach((c, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = className(c, i); b.setAttribute('aria-pressed', String(c === cur)); b.onclick = () => { klass.cur = c.id; picked = []; lastGroups = null; saveKlass(); drawClasses(); }; box.appendChild(b); });
+    const add = document.createElement('button'); add.type = 'button'; add.textContent = '+ Add a class'; add.onclick = () => {
+      if (klass.classes.length >= 30) return toast('That is the most classes you can keep here.');
+      const c = { id: uid(), name: '', names: '' }; klass.classes.push(c); klass.cur = c.id; picked = []; lastGroups = null; saveKlass(); drawClasses(); $('grDet').open = true; if (!mqPhone.matches) $('grName').focus();
+    }; box.appendChild(add);
+    $('grName').value = cur.name; $('grNames').value = cur.names; $('grSum').textContent = 'Names in ' + className(cur, klass.classes.indexOf(cur)); $('grDel').hidden = klass.classes.length < 2; $('grDel').textContent = 'Delete this class';
+    drawCount();
+  }
+  $('grName').addEventListener('input', () => { const c = curClass(); c.name = $('grName').value.slice(0, 40); saveKlass(); const i = klass.classes.indexOf(c); $('grClasses').children[i].textContent = className(c, i); $('grSum').textContent = 'Names in ' + className(c, i); });
+  let delClassArmed = false;
+  $('grDel').addEventListener('click', () => {
+    if (!delClassArmed) { delClassArmed = true; $('grDel').textContent = 'Press again to delete this class'; setTimeout(() => { delClassArmed = false; $('grDel').textContent = 'Delete this class'; }, 4000); return; }
+    delClassArmed = false; const c = curClass(); klass.classes = klass.classes.filter(x => x !== c); klass.cur = klass.classes[0].id; picked = []; lastGroups = null; saveKlass(); drawClasses();
+  });
   const names = () => [...new Set($('grNames').value.split(/[\n,]/).map(x => x.trim()).filter(Boolean))].slice(0, 200);
-  const drawCount = () => { const n = names().length; $('grCount').textContent = n ? n + (n === 1 ? ' name' : ' names') : 'No class list yet'; };
-  $('grNames').addEventListener('input', () => { klass.names = $('grNames').value.slice(0, 6000); saveKlass(); drawCount(); });
-  drawCount();
+  const drawCount = () => { const n = names().length; $('grCount').textContent = n ? n + (n === 1 ? ' name' : ' names') : 'No names yet'; };
+  $('grNames').addEventListener('input', () => { curClass().names = $('grNames').value.slice(0, 6000); saveKlass(); drawCount(); });
   const needNames = min => { if (names().length >= min) return false; $('grDet').open = true; $('grNames').focus(); toast(min > 1 ? 'Add your class list first (at least two names).' : 'Add your class list first.'); return true; };
   let lastGroups = null, lastAsk = ['groups', 4], picked = [];
+  drawClasses();
   function makeGroups() {
     const ns = names(), [mode, n] = lastAsk;
     for (let i = ns.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [ns[i], ns[j]] = [ns[j], ns[i]]; }
@@ -3812,6 +3835,13 @@ body { -webkit-tap-highlight-color: transparent; }
   }
   $('blGo').addEventListener('click', showDay); $('kNow').addEventListener('click', showDay);
   drawBell();
+  function importSchool(sc) { // from a backup file: classes are added, a sequence or bell times replace empty ones only
+    if (!sc || typeof sc !== 'object') return;
+    cleanClasses(sc.classes).forEach(c => { if (!c.names.trim() && !c.name.trim()) return; const i = klass.classes.findIndex(x => x.id === c.id); if (i >= 0) klass.classes[i] = c; else klass.classes.push(c); });
+    klass.classes = klass.classes.filter((c, i, a) => c.names.trim() || c.name.trim() || a.length === 1).slice(0, 30); if (!klass.classes.length) klass.classes = [{ id: uid(), name: '', names: '' }];
+    if (!klass.bell.length && Array.isArray(sc.bell)) klass.bell = sc.bell.slice(0, 30).map(p => ({ l: String(p && p.l || '').slice(0, 40), a: String(p && p.a || ''), b: String(p && p.b || '') }));
+    saveKlass(); drawClasses(); drawBell();
+  }
   if (klass.on) setSchool(true, true);
 
   /* ---------- feedback: a pre-filled issue at github.com/bentokaz/tminus ---------- */
