@@ -481,7 +481,7 @@ button { cursor: pointer; }
 .kline input[type=text], .sqr input, .blr input[type=text] { border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; padding: 8px 0; width: 100%; min-width: 0; font-size: 15px; }
 .sqr input, .blr input[type=text] { border-bottom-color: transparent; font-weight: 650; }
 .kline input[type=text]:focus, .sqr input:focus, .blr input[type=text]:focus { outline: none; border-bottom-color: var(--ink); }
-.sqr { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto 30px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--rule); }
+.sqr { display: grid; grid-template-columns: 22px 32px minmax(0, 1fr) auto 30px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--rule); }
 .sqr i { font: 500 12px/1 var(--f-num); color: var(--ink-3); font-style: normal; }
 .stp { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 4px; }
 .stp button { border: 0; background: none; width: 36px; height: 36px; font: 500 18px/1 var(--f-num); }
@@ -496,6 +496,11 @@ button { cursor: pointer; }
 .kown select { padding: 8px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); font: 500 14px/1 var(--f-ui); }
 .stp .knum { width: 52px; border: 0; background: none; text-align: center; padding: 8px 0; }
 .stp > span { font: 500 12px/1 var(--f-num); color: var(--ink-3); padding-right: 4px; }
+.swb { border: 0; padding: 0; background: none; display: grid; }
+.swb .sw { width: 32px; height: 32px; font-size: 11px; }
+.swb:hover .sw { outline: 2px solid var(--ink); outline-offset: 1px; }
+.focus { touch-action: none; }
+.tmenu { touch-action: pan-y; }
 .xbtn { border: 0; background: none; color: var(--ink-3); width: 30px; height: 36px; font-size: 18px; line-height: 1; }
 .xbtn:hover { color: #c4321a; }
 .exread { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -509,7 +514,7 @@ button { cursor: pointer; }
 .kmore > div { display: grid; gap: 10px; }
 .kmore textarea { width: 100%; min-height: 150px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--f-ui); resize: vertical; }
 .kmore p, .knote { margin: 0; font-size: 12.5px; color: var(--ink-3); }
-.blr { display: grid; grid-template-columns: minmax(0, 1fr) auto auto 30px; gap: 8px; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--rule); }
+.blr { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto auto 30px; gap: 8px; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--rule); }
 .blr input[type=time] { border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); padding: 7px 6px; font: 500 13px/1 var(--f-num); }
 #kNow { min-height: 150px; margin-bottom: 30px; }
 /* the corner switch that turns the whole app into its school version */
@@ -568,6 +573,9 @@ body { -webkit-tap-highlight-color: transparent; }
   .qt button { padding: 16px 4px 12px 10px; }
   .stp button, .xbtn { width: 42px; height: 44px; }
   .knum, .kown select { font-size: 16px; min-height: 44px; }
+  .blr { grid-template-columns: 32px auto auto 30px; justify-content: start; }
+  .blr input[type=text] { grid-column: 1 / -1; order: -1; }
+  .swb .sw { width: 36px; height: 36px; }
   .kline { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .blr input[type=time] { font-size: 16px; padding: 9px 4px; }
   .sqr input, .blr input[type=text], .kline input[type=text], .kmore textarea { font-size: 16px; }
@@ -794,6 +802,17 @@ body { -webkit-tap-highlight-color: transparent; }
 </div>
 
 <button id="schoolBtn" type="button" aria-pressed="false" aria-label="School mode" title="School mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 9.500 12 5l9 4.500-9 4.500z"/><path d="M7 11.800V16c0 1.200 2.200 2.500 5 2.500s5-1.300 5-2.500v-4.200M21 9.500V15"/></svg></button>
+
+<div class="scrim" id="pscrim" hidden style="z-index:47">
+  <div class="sheet">
+    <h2 id="pTitle">Theme</h2>
+    <div class="tpick" id="pPick"></div>
+    <div class="acts">
+      <div><button class="btn ghost" type="button" id="pNone">Use the plain default</button></div>
+      <div><button class="btn primary" type="button" id="pClose">Done</button></div>
+    </div>
+  </div>
+</div>
 
 <!-- big display for groups and the name picker -->
 <div id="bigshow" hidden><div class="krow" id="bsBar"></div><div id="bsBody" style="display:grid"></div></div>
@@ -3127,7 +3146,7 @@ body { -webkit-tap-highlight-color: transparent; }
   function toolCd(id) {
     if (typeof id !== 'string') return null;
     const k = id.slice(0, 2), T = k === 't-' ? tools.timers.find(t => t.id === id.slice(2)) : k === 'w-' ? tools.sws.find(s => s.id === id.slice(2)) : null;
-    return T ? { id, kind: k === 't-' ? 'timer' : 'sw', title: T.steps ? T.steps[Math.min(T.step | 0, T.steps.length - 1)].label : T.label || (k === 't-' ? 'Timer' : 'Stopwatch'), theme: T.theme, tool: T, note: T.task || '' } : null;
+    return T ? { id, kind: k === 't-' ? 'timer' : 'sw', title: T.steps ? T.steps[Math.min(T.step | 0, T.steps.length - 1)].label : T.label || (k === 't-' ? 'Timer' : 'Stopwatch'), theme: (T.steps && THEMES[T.steps[Math.min(T.step | 0, T.steps.length - 1)].theme] ? T.steps[Math.min(T.step | 0, T.steps.length - 1)].theme : T.theme), tool: T, note: T.task || '' } : null;
   }
   const timerLeft = (T, now) => T.running ? Math.max(0, T.endAt - now) : T.left;
   const swElapsed = (S, now) => S.running ? now - S.startAt + S.acc : S.acc;
@@ -3246,6 +3265,7 @@ body { -webkit-tap-highlight-color: transparent; }
   }
   function toolTick(cd) {
     const now = Date.now(), isT = cd.kind === 'timer', T = cd.tool;
+    if (!previewTheme && cd.theme !== F._th) return openFocus(cd.id); // the sequence moved to a step with a different theme
     let ms, prog;
     if (isT) {
       const left = timerLeft(T, now); ms = Math.ceil(left / 1000) * 1000; prog = clamp(1 - left / Math.max(T.dur, left, 1), 0, 1);
@@ -3536,7 +3556,7 @@ body { -webkit-tap-highlight-color: transparent; }
     focusId = id;
     if (!keep) previewTheme = null;
     const theme = previewTheme || cd.theme;
-    dress(F, 'focus', theme); F._fg = null; F.classList.toggle('present', presentOn);
+    dress(F, 'focus', theme); F._fg = null; F._th = theme; F.classList.toggle('present', presentOn);
     F._ms = null; $('fprog').parentElement.querySelectorAll('b').forEach(x => x.remove());
     F.hidden = false; $('shell').setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden';
@@ -3625,7 +3645,7 @@ body { -webkit-tap-highlight-color: transparent; }
   async function setFocusTheme(k) {
     const cd = find(focusId); if (!cd) return;
     $('tmenu').hidden = true;
-    if (cd.kind) { cd.tool.theme = k; saveTools(); renderTools(); return openFocus(cd.id); }
+    if (cd.kind) { const T = cd.tool; if (T.steps) T.steps[Math.min(T.step | 0, T.steps.length - 1)].theme = k; else T.theme = k; saveTools(); renderTools(); return openFocus(cd.id); }
     const editable = !cd.linked && (!cd.shared || canEditShared(cd));
     if (!editable) { previewTheme = k; openFocus(cd.id, true); return; }
     previewTheme = null;
@@ -3706,7 +3726,8 @@ body { -webkit-tap-highlight-color: transparent; }
       stp.append(mk('−', -1, 'Shorter'), val, unit, mk('+', 1, 'Longer'));
       const x = document.createElement('button'); x.type = 'button'; x.className = 'xbtn'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove step ' + (i + 1)); x.hidden = klass.seq.length < 2;
       x.onclick = () => { klass.seq.splice(i, 1); saveKlass(); drawSeq(); };
-      r.append(n, inp, stp, x); box.appendChild(r);
+      const sw = swatchBtn(st[2], 'Step ' + (i + 1), () => pickThemeFor('Theme for ' + (String(st[0]).trim() || 'step ' + (i + 1)), st[2], k => { st[2] = k; saveKlass(); drawSeq(); }));
+      r.append(n, sw, inp, stp, x); box.appendChild(r);
     });
     seqTotal();
   }
@@ -3716,7 +3737,7 @@ body { -webkit-tap-highlight-color: transparent; }
   });
   $('sqAdd').addEventListener('click', () => { if (klass.seq.length >= 40) return; klass.seq.push(['', 5]); saveKlass(); drawSeq(); if (!mqPhone.matches) { const ins = $('sqRows').querySelectorAll('input'); ins[ins.length - 1].focus(); } });
   $('sqGo').addEventListener('click', () => {
-    const steps = klass.seq.map(([l, m], i) => ({ label: String(l).trim() || 'Step ' + (i + 1), ms: m * 6e4 }));
+    const steps = klass.seq.map(([l, m, th], i) => ({ label: String(l).trim() || 'Step ' + (i + 1), ms: m * 6e4, theme: THEMES[th] ? th : '' }));
     newClassTimer({ label: steps.length > 1 ? steps[0].label + ' + ' + (steps.length - 1) + ' more' : steps[0].label, task: $('qtTask').value.trim(), dur: steps[0].ms, steps, traffic: $('qtTraffic').checked, running: true });
   });
   drawSeq();
@@ -3797,7 +3818,7 @@ body { -webkit-tap-highlight-color: transparent; }
 
   /* the school day: rows with time pickers; the strip at the top shows what is on now */
   const toMin = v => { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); return m ? +m[1] * 60 + +m[2] : NaN; }, mm = n => pad(Math.floor(n / 60)) + ':' + pad(n % 60);
-  const periods = () => klass.bell.map((p, i) => ({ label: String(p.l || '').trim() || 'Period ' + (i + 1), a: toMin(p.a), b: toMin(p.b) })).filter(p => p.b > p.a).sort((x, y) => x.a - y.a);
+  const periods = () => klass.bell.map((p, i) => ({ label: String(p.l || '').trim() || 'Period ' + (i + 1), a: toMin(p.a), b: toMin(p.b), t: p.t })).filter(p => p.b > p.a).sort((x, y) => x.a - y.a);
   function drawBell() {
     const box = $('blRows'); box.textContent = '';
     if (!klass.bell.length) { const p = document.createElement('p'); p.className = 'knote'; p.textContent = 'Add your bell times once. The timer then counts to the end of each period and break in turn.'; box.appendChild(p); }
@@ -3807,7 +3828,8 @@ body { -webkit-tap-highlight-color: transparent; }
       inp.addEventListener('input', () => { p.l = inp.value; saveKlass(); });
       const tm = (k, l) => { const t = document.createElement('input'); t.type = 'time'; t.value = p[k] || ''; t.setAttribute('aria-label', l); t.addEventListener('input', () => { p[k] = t.value; saveKlass(); bellNow(); }); return t; };
       const x = document.createElement('button'); x.type = 'button'; x.className = 'xbtn'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove period ' + (i + 1)); x.onclick = () => { klass.bell.splice(i, 1); saveKlass(); drawBell(); };
-      r.append(inp, tm('a', 'Starts'), tm('b', 'Ends'), x); box.appendChild(r);
+      const sw = swatchBtn(p.t, 'Period ' + (i + 1), () => pickThemeFor('Theme for ' + (String(p.l || '').trim() || 'period ' + (i + 1)), p.t, k => { p.t = k; saveKlass(); drawBell(); }));
+      r.append(sw, inp, tm('a', 'Starts'), tm('b', 'Ends'), x); box.appendChild(r);
     });
     bellNow();
   }
@@ -3828,7 +3850,7 @@ body { -webkit-tap-highlight-color: transparent; }
   setInterval(() => { if (!$('tab-class').hidden) bellNow(); }, 1000);
   function showDay() {
     const ps = periods(), d = new Date(), t = d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60, steps = []; let at = t;
-    ps.filter(p => p.b > t).forEach(p => { if (p.a > at) steps.push({ label: 'Until ' + p.label, ms: Math.round((p.a - at) * 6e4) }); steps.push({ label: p.label, ms: Math.round((p.b - Math.max(at, p.a)) * 6e4) }); at = p.b; });
+    ps.filter(p => p.b > t).forEach(p => { if (p.a > at) steps.push({ label: 'Until ' + p.label, ms: Math.round((p.a - at) * 6e4) }); steps.push({ label: p.label, ms: Math.round((p.b - Math.max(at, p.a)) * 6e4), theme: THEMES[p.t] ? p.t : '' }); at = p.b; });
     if (!steps.length) return toast(ps.length ? 'The school day is over.' : 'Add your bell times first.');
     tools.timers = tools.timers.filter(x => !x.bell);
     newClassTimer({ label: 'School day', dur: steps[0].ms, steps, bell: true, running: true });
@@ -3839,7 +3861,7 @@ body { -webkit-tap-highlight-color: transparent; }
     if (!sc || typeof sc !== 'object') return;
     cleanClasses(sc.classes).forEach(c => { if (!c.names.trim() && !c.name.trim()) return; const i = klass.classes.findIndex(x => x.id === c.id); if (i >= 0) klass.classes[i] = c; else klass.classes.push(c); });
     klass.classes = klass.classes.filter((c, i, a) => c.names.trim() || c.name.trim() || a.length === 1).slice(0, 30); if (!klass.classes.length) klass.classes = [{ id: uid(), name: '', names: '' }];
-    if (!klass.bell.length && Array.isArray(sc.bell)) klass.bell = sc.bell.slice(0, 30).map(p => ({ l: String(p && p.l || '').slice(0, 40), a: String(p && p.a || ''), b: String(p && p.b || '') }));
+    if (!klass.bell.length && Array.isArray(sc.bell)) klass.bell = sc.bell.slice(0, 30).map(p => ({ l: String(p && p.l || '').slice(0, 40), a: String(p && p.a || ''), b: String(p && p.b || ''), t: String(p && p.t || '') }));
     saveKlass(); drawClasses(); drawBell();
   }
   if (klass.on) setSchool(true, true);
@@ -3960,6 +3982,30 @@ body { -webkit-tap-highlight-color: transparent; }
   addEventListener('hashchange', () => { if (location.hash === '#test') testPanel(); });
   { let taps = []; document.querySelector('.brand b').addEventListener('click', () => { const n = RealDate.now(); taps = taps.filter(t => n - t < 3000); taps.push(n); if (taps.length >= 5) { taps = []; testPanel(); } }); }
 
+  // swipe left or right (or press the arrow keys) in the full-screen view to step through the themes
+  function stepTheme(d) {
+    const cd = find(focusId); if (!cd) return;
+    const order = themeGroups().flatMap(g => g[1]), i = order.indexOf(previewTheme || cd.theme), k = order[(i + d + order.length) % order.length];
+    Promise.resolve(setFocusTheme(k)).then(() => toast(THEMES[k].name));
+  }
+  { let sx = 0, sy = 0, sid = null;
+    F.addEventListener('pointerdown', e => { sid = null; if (e.button || e.target.closest('button, a, input, .tmenu, .fctl, .fnote')) return; sid = e.pointerId; sx = e.clientX; sy = e.clientY; });
+    F.addEventListener('pointerup', e => { if (sid !== e.pointerId) return; sid = null; const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return; stepTheme(dx < 0 ? 1 : -1); });
+    F.addEventListener('pointercancel', () => { sid = null; });
+  }
+  addEventListener('keydown', e => {
+    if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || !focusId || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || !$('tmenu').hidden || !$('mmenu').hidden || [...document.querySelectorAll('.scrim')].some(x => !x.hidden) || !$('bigshow').hidden) return;
+    e.preventDefault(); stepTheme(e.key === 'ArrowRight' ? 1 : -1);
+  });
+  function pickThemeFor(title, cur, set) {
+    $('pTitle').textContent = title; const close = () => { $('pscrim').hidden = true; };
+    fillPicker($('pPick'), THEMES[cur] ? cur : 'plain', k => { set(k); close(); });
+    $('pNone').onclick = () => { set(''); close(); }; $('pClose').onclick = close; $('pscrim').hidden = false;
+  }
+  $('pscrim').addEventListener('click', e => { if (e.target === $('pscrim')) $('pscrim').hidden = true; });
+  function swatchBtn(theme, label, onPick) { const b = document.createElement('button'); b.type = 'button'; b.className = 'swb'; b.title = 'Theme: ' + THEMES[THEMES[theme] ? theme : 'plain'].name; b.setAttribute('aria-label', label + ', theme ' + THEMES[THEMES[theme] ? theme : 'plain'].name); b.appendChild(swatch(THEMES[theme] ? theme : 'plain')); b.onclick = onPick; return b; }
+
   /* ================= wiring ================= */
   $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
   $('cancelBtn').addEventListener('click', closeEditor);
@@ -3993,7 +4039,7 @@ body { -webkit-tap-highlight-color: transparent; }
   $('clearEx').addEventListener('click', () => { mine = mine.filter(c => !c.example); saveMine(); renderList(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!$('bigshow').hidden) $('bigshow').hidden = true; else if (!$('fbscrim').hidden) $('fbscrim').hidden = true; else if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
+    if (!$('pscrim').hidden) $('pscrim').hidden = true; else if (!$('bigshow').hidden) $('bigshow').hidden = true; else if (!$('fbscrim').hidden) $('fbscrim').hidden = true; else if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
   });
   let rz = 0;
   addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (bgi) bgi.resize(); }); });
