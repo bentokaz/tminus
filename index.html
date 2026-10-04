@@ -463,6 +463,36 @@ button { cursor: pointer; }
 .tabs button { position: relative; }
 .tabs button.alert::after { content: ""; position: absolute; top: 4px; right: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
 @media (prefers-reduced-motion: reduce) { .focus.done .fdone, .focus.done .fclock, .hero.done { animation: none; } }
+/* classroom tools */
+.klgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 820px) { .klgrid { grid-template-columns: minmax(0, 1fr); } }
+.kcard { border: 1px solid var(--rule); border-radius: 6px; padding: 16px; display: grid; gap: 12px; align-content: start; background: var(--panel); }
+.kcard h3 { margin: 0; font: 800 17px/1.2 var(--f-ui); letter-spacing: -.01em; }
+.kcard p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.kcard textarea { font: 400 14px/1.5 var(--f-num); min-height: 112px; }
+.krow { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.krow .field { flex: 1; min-width: 84px; }
+.grout { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.grp { border: 1px solid var(--rule); border-radius: 5px; padding: 8px 10px; font-size: 14px; line-height: 1.45; background: var(--bg); }
+.grp b { display: block; font: 700 11px/1 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+.blnow { font: 500 14px/1.5 var(--f-num); }
+#bigshow { position: fixed; inset: 0; z-index: 50; background: var(--bg); color: var(--ink); overflow: auto; padding: clamp(16px, 4vw, 48px); display: grid; grid-template-rows: auto 1fr; gap: 20px; }
+#bigshow .grout { grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 16px; align-content: start; }
+#bigshow .grp { font-size: clamp(18px, 2.3vw, 30px); padding: 16px 20px; background: var(--panel); }
+#bigshow .grp b { font-size: .55em; margin-bottom: 10px; }
+#bigshow .one { font: 800 clamp(48px, 14vw, 210px)/1 var(--f-ui); letter-spacing: -.03em; text-align: center; align-self: center; overflow-wrap: anywhere; }
+/* full-screen view: task text, traffic-light frame, projector view */
+.focus.hastask .fnote { font: 600 clamp(18px, 3vw, 40px)/1.25 var(--t-head); max-width: 30ch; }
+.focus.tl-g:not(.done) .fdone, .focus.tl-a:not(.done) .fdone, .focus.tl-r:not(.done) .fdone { display: block; position: absolute; inset: 0; z-index: 4; pointer-events: none; border: 10px solid #2fb170; }
+.focus.tl-a:not(.done) .fdone { border-color: #f2b84b; }
+.focus.tl-r:not(.done) .fdone { border-color: #e5484d; }
+.focus.present .fhead, .focus.present .fbar { opacity: 0; pointer-events: none; transition: opacity .3s; }
+.focus.present.awake .fhead, .focus.present.awake .fbar { opacity: 1; pointer-events: auto; }
+.focus.th-plain.seq .feb, .focus.th-plain.seq .falt { display: block; }
+.focus.present { cursor: none; }
+.focus.present.awake { cursor: auto; }
+.focus.present .fmeta { font-size: clamp(16px, 2.2vw, 28px); }
+.focus.present .falt { font-size: clamp(14px, 1.8vw, 22px); }
 .tabs svg, .fbar, .ib .lbl-m { display: none; }
 button { touch-action: manipulation; }
 body { -webkit-tap-highlight-color: transparent; }
@@ -541,7 +571,7 @@ body { -webkit-tap-highlight-color: transparent; }
 <div class="shell" id="shell">
   <header class="top">
     <div class="brand"><b>T<i>−</i>Minus</b><span id="nowline">—</span></div>
-    <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/></svg>Countdowns</button><button type="button" data-tab="timer" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 4h10M7 20h10M8 4c0 4.500 4 5.500 4 8s-4 3.500-4 8M16 4c0 4.500-4 5.500-4 8s4 3.500 4 8"/></svg>Timer</button><button type="button" data-tab="sw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.500" r="6.500"/><path d="M12 13.500V10M10 3.500h4M12 3.500V7M17.500 8l1.300-1.300"/></svg>Stopwatch</button></nav>
+    <nav class="tabs" id="tabs" aria-label="Sections"><button type="button" data-tab="cd" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/></svg>Countdowns</button><button type="button" data-tab="timer" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 4h10M7 20h10M8 4c0 4.500 4 5.500 4 8s-4 3.500-4 8M16 4c0 4.500-4 5.500-4 8s4 3.500 4 8"/></svg>Timer</button><button type="button" data-tab="sw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.500" r="6.500"/><path d="M12 13.500V10M10 3.500h4M12 3.500V7M17.500 8l1.300-1.300"/></svg>Stopwatch</button><button type="button" data-tab="class" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 9.500 12 5l9 4.500-9 4.500z"/><path d="M7 11.800V16c0 1.200 2.200 2.500 5 2.500s5-1.300 5-2.500v-4.200M21 9.500V15"/></svg>Classroom</button></nav>
     <button class="btn primary" id="newBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg><span>New<span class="nb-long" id="nbLong"> countdown</span></span></button>
   </header>
   <div class="search"><input type="search" id="q" placeholder="Search countdowns, timers and stopwatches" aria-label="Search countdowns, timers and stopwatches" autocomplete="off"></div>
@@ -576,6 +606,52 @@ body { -webkit-tap-highlight-color: transparent; }
       <div class="sechead"><h3>Stopwatches</h3><span>They keep running if you close the page</span></div>
       <div id="swList"></div>
     </section>
+  </section>
+
+  <section class="tool" id="tab-class" hidden>
+    <div class="klgrid">
+      <div class="kcard">
+        <h3>Exam timer</h3>
+        <p>A plain, silent clock for the board. It opens ready and waits for you to press Start, then shows the start and finish times, the time now, and a green, amber and red frame as time runs down.</p>
+        <label class="field"><span>Exam name</span><input type="text" id="exTitle" maxlength="60" placeholder="Year 10 Maths, Paper 1" autocomplete="off"></label>
+        <div class="krow">
+          <label class="field"><span>Hours</span><input type="number" id="exH" min="0" max="9" value="1" inputmode="numeric"></label>
+          <label class="field"><span>Minutes</span><input type="number" id="exM" min="0" max="59" value="30" inputmode="numeric"></label>
+          <label class="field"><span>Reading time</span><input type="number" id="exRead" min="0" max="60" value="0" inputmode="numeric" aria-label="Reading time in minutes"></label>
+          <label class="field"><span>Extra time</span><select id="exExtra"><option value="0">None</option><option value="10">10%</option><option value="25">25%</option><option value="50">50%</option></select></label>
+        </div>
+        <label class="field"><span>Instructions shown under the clock (optional)</span><input type="text" id="exTask" maxlength="140" placeholder="Answer all questions. Black pen only." autocomplete="off"></label>
+        <label class="check"><input type="checkbox" id="exSound"><span>Sound at the warnings and the end<small>Off by default. Messages still appear at 30, 10 and 5 minutes left.</small></span></label>
+        <div><button class="btn primary" type="button" id="exGo">Open exam timer</button></div>
+      </div>
+      <div class="kcard">
+        <h3>Lesson sequence</h3>
+        <p>Timers that run one after another. Write one step per line: a name, then the minutes.</p>
+        <div class="chips" id="sqPresets"></div>
+        <label class="field"><span>Steps</span><textarea id="sqText" rows="5" placeholder="Starter 5&#10;Main activity 25&#10;Plenary 10"></textarea></label>
+        <label class="field"><span>Task shown under the clock (optional)</span><input type="text" id="sqTask" maxlength="140" placeholder="Work in silence. Hands up if you are stuck." autocomplete="off"></label>
+        <label class="check"><input type="checkbox" id="sqTraffic" checked><span>Colour warnings<small>A green frame that turns amber in the last quarter of each step and red in the last tenth.</small></span></label>
+        <div><button class="btn primary" type="button" id="sqGo">Start sequence</button></div>
+      </div>
+      <div class="kcard">
+        <h3>Groups and name picker</h3>
+        <p>One name per line. The list is kept in this browser only and is never sent anywhere.</p>
+        <label class="field"><span>Class list</span><textarea id="grNames" rows="5" placeholder="Aisha&#10;Ben&#10;Chloe&#10;Dev"></textarea></label>
+        <div class="krow">
+          <label class="field"><span>Number</span><input type="number" id="grN" min="1" max="40" value="4" inputmode="numeric"></label>
+          <label class="field" style="flex:2"><span>Meaning</span><select id="grMode"><option value="groups">groups in total</option><option value="size">people in each group</option></select></label>
+        </div>
+        <div class="krow"><button class="btn primary" type="button" id="grGo">Make groups</button><button class="btn" type="button" id="grPick">Pick a name</button><button class="btn ghost" type="button" id="grBig" hidden>Show on screen</button></div>
+        <div class="grout" id="grOut"></div>
+      </div>
+      <div class="kcard">
+        <h3>School day</h3>
+        <p>Your bell times, one per line: a name, then start and end. The timer then counts to the end of each period and break in turn.</p>
+        <label class="field"><span>Periods</span><textarea id="blText" rows="5" placeholder="Period 1 08:50-09:40&#10;Period 2 09:45-10:35&#10;Break 10:35-10:55&#10;Period 3 10:55-11:45"></textarea></label>
+        <div class="blnow" id="blNow"></div>
+        <div><button class="btn primary" type="button" id="blGo">Show on screen</button></div>
+      </div>
+    </div>
   </section>
 
   <div class="foot"><span>Times show in your time zone (<span id="tzname"></span>).</span><span style="display:flex;gap:16px;flex-wrap:wrap"><button class="linkish" id="clearEx" type="button" hidden>Remove the example countdowns</button><button class="linkish" id="installBtn" type="button" hidden>Install app</button><button class="linkish" id="fbBtn" type="button">Send feedback</button><button class="linkish" id="expBtn" type="button">Export backup</button><button class="linkish" id="impBtn" type="button">Import backup</button><input type="file" id="impFile" accept=".json,application/json" hidden><a class="linkish" href="https://github.com/bentokaz/tminus" target="_blank" rel="noopener">Source on GitHub</a></span></div>
@@ -660,6 +736,9 @@ body { -webkit-tap-highlight-color: transparent; }
   </div>
 </div>
 
+<!-- big display for groups and the name picker -->
+<div id="bigshow" hidden><div class="krow" id="bsBar"></div><div id="bsBody" style="display:grid"></div></div>
+
 <!-- feedback: opens a pre-filled issue on the project's GitHub page -->
 <div class="scrim" id="fbscrim" hidden style="z-index:46">
   <div class="sheet" id="fbsheet">
@@ -719,7 +798,7 @@ body { -webkit-tap-highlight-color: transparent; }
   const DAY = 864e5;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mqPhone = matchMedia('(max-width: 640px)');
-  let query = '';
+  let query = '', presentOn = false;
   const pad = n => String(n).padStart(2, '0');
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const uid = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join('');
@@ -2989,7 +3068,7 @@ body { -webkit-tap-highlight-color: transparent; }
   function toolCd(id) {
     if (typeof id !== 'string') return null;
     const k = id.slice(0, 2), T = k === 't-' ? tools.timers.find(t => t.id === id.slice(2)) : k === 'w-' ? tools.sws.find(s => s.id === id.slice(2)) : null;
-    return T ? { id, kind: k === 't-' ? 'timer' : 'sw', title: T.label || (k === 't-' ? 'Timer' : 'Stopwatch'), theme: T.theme, tool: T } : null;
+    return T ? { id, kind: k === 't-' ? 'timer' : 'sw', title: T.steps ? T.steps[Math.min(T.step | 0, T.steps.length - 1)].label : T.label || (k === 't-' ? 'Timer' : 'Stopwatch'), theme: T.theme, tool: T, note: T.task || '' } : null;
   }
   const timerLeft = (T, now) => T.running ? Math.max(0, T.endAt - now) : T.left;
   const swElapsed = (S, now) => S.running ? now - S.startAt + S.acc : S.acc;
@@ -2998,10 +3077,13 @@ body { -webkit-tap-highlight-color: transparent; }
   function timerToggle(T) {
     const now = Date.now();
     if (T.running) { T.left = Math.max(0, T.endAt - now); T.running = false; return; }
-    if (T.left <= 0 || T.done) T.left = T.dur;
+    if (T.left <= 0 || T.done) { if (T.steps) { T.step = 0; T.dur = T.steps[0].ms; } T.left = T.dur; T.startedAt = 0; }
+    if (!T.startedAt) T.startedAt = now;
     T.endAt = now + T.left; T.running = true; T.done = false;
   }
-  function timerReset(T) { T.running = false; T.left = T.dur; T.done = false; }
+  function timerReset(T) { if (T.steps) { T.step = 0; T.dur = T.steps[0].ms; } T.startedAt = 0; T.running = false; T.left = T.dur; T.done = false; }
+  const stepsAfter = T => T.steps ? T.steps.slice((T.step | 0) + 1).reduce((a, x) => a + x.ms, 0) : 0;
+  const hhmm = t => new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(new Date(t));
   function timerAdd(T, ms) { if (T.running) T.endAt += ms; else { T.left += ms; T.done = false; } }
   function swToggle(S) { const now = Date.now(); if (S.running) { S.acc = swElapsed(S, now); S.running = false; } else { S.startAt = now; S.running = true; } }
   function swLap(S) { const el = swElapsed(S, Date.now()); if (el > 0 && S.laps.length < 200) S.laps.push(el); }
@@ -3048,7 +3130,7 @@ body { -webkit-tap-highlight-color: transparent; }
   }
 
   // one watcher for every zero crossing, whether or not that countdown is on screen
-  const seen = new Map(), remSeen = new Map();
+  const seen = new Map(), remSeen = new Map(), leftSeen = new Map();
   function watch() {
     const now = Date.now();
     for (const cd of all()) {
@@ -3065,9 +3147,18 @@ body { -webkit-tap-highlight-color: transparent; }
     }
     let changed = false;
     for (const T of tools.timers) {
-      if (!T.running || now < T.endAt) continue;
+      if (!T.running) continue;
+      const here = focusId === 't-' + T.id && bgi, loud = !T.exam || T.exam.sound, lastStep = !T.steps || (T.step | 0) >= T.steps.length - 1;
+      const l = T.endAt - now, pl = leftSeen.get(T.id); leftSeen.set(T.id, l);
+      if (T.exam && lastStep && pl != null) for (const w of T.exam.warn) if (pl > w * 6e4 && l <= w * 6e4) { toast(w + ' minutes remaining'); if (loud) chime(T.theme, 1); if (here) bgi.pulse('min'); }
+      if (now < T.endAt) continue;
+      if (!lastStep) { // a sequence moves straight on to its next step
+        T.step = (T.step | 0) + 1; const d = T.steps[T.step].ms; T.dur = d; T.left = d; T.endAt += d; changed = true; leftSeen.delete(T.id);
+        if (loud) chime(T.theme, 1); toast('Next: ' + T.steps[T.step].label); if (here) bgi.pulse('min');
+        continue;
+      }
       T.running = false; T.left = 0; T.done = true; changed = true;
-      chime(T.theme, 3); notify((T.label || 'Timer') + ' finished');
+      if (loud) chime(T.theme, 3); notify((T.label || 'Timer') + ' finished');
       if (focusId === 't-' + T.id && bgi) playFinale(); else toast((T.label || 'Timer') + ' finished', 'Open', () => openFocus('t-' + T.id));
     }
     if (changed) { saveTools(); renderTools(); }
@@ -3102,6 +3193,20 @@ body { -webkit-tap-highlight-color: transparent; }
       $('feb').textContent = T.done ? 'Time’s up' : T.running ? 'Timer running' : left < T.dur ? 'Paused' : 'Ready';
       $('fmeta').textContent = T.running ? 'Ends at ' + new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(T.endAt)) : 'Set for ' + fmtDur(T.dur);
       $('fpl1').textContent = 'Start'; $('fpl2').textContent = Math.round(prog * 100) + '% elapsed';
+      if (T.steps) {
+        const n = T.steps.length, i = Math.min(T.step | 0, n - 1);
+        if ($('ftitle').textContent !== T.steps[i].label) $('ftitle').textContent = T.steps[i].label;
+        $('feb').textContent = T.done ? 'All done' : 'Step ' + (i + 1) + ' of ' + n + (T.running ? '' : left < T.dur ? ' · paused' : ' · ready');
+        $('fmeta').textContent = i + 1 < n ? 'Next: ' + T.steps[i + 1].label + ' (' + fmtDur(T.steps[i + 1].ms) + ')' : 'Last step';
+      }
+      if (T.exam) {
+        const end = (T.running ? T.endAt : now + left) + stepsAfter(T), tot = T.steps ? T.steps[T.steps.length - 1].ms : T.dur;
+        $('fmeta').textContent = T.startedAt ? 'Started ' + hhmm(T.startedAt) + ' · Finish ' + hhmm(end) + (T.exam.extra ? ' · With ' + T.exam.extra + '% extra time ' + hhmm(end + tot * T.exam.extra / 100) : '') : 'Press Start when everyone is ready';
+        $('falt').textContent = 'Time now ' + new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(now));
+      }
+      const fr = left / Math.max(T.dur, 1), last = !T.steps || (T.step | 0) >= T.steps.length - 1;
+      const tl = (T.traffic || T.exam) && !T.done && T.startedAt ? (T.exam ? (!last ? 'g' : left <= 3e5 ? 'r' : left <= 6e5 ? 'a' : 'g') : fr <= .1 ? 'r' : fr <= .25 ? 'a' : 'g') : '';
+      ['g', 'a', 'r'].forEach(c => F.classList.toggle('tl-' + c, tl === c));
     } else {
       ms = swElapsed(T, now); prog = (ms % 60000) / 60000;
       $('feb').textContent = T.running ? 'Stopwatch' : ms ? 'Paused' : 'Ready';
@@ -3112,7 +3217,7 @@ body { -webkit-tap-highlight-color: transparent; }
       $('fms').textContent = '.' + pad(Math.floor(ms % 1000 / 10));
     }
     const p = split(ms); api.set(p, true); info = { prog, mode: isT ? 'down' : 'up' };
-    $('falt').hidden = true; F.classList.toggle('done', isT && !!T.done);
+    $('falt').hidden = !(isT && T.exam); F.classList.toggle('done', isT && !!T.done);
     $('fprog').style.width = (prog * 100).toFixed(2) + '%';
     const go = $('fctl').firstElementChild;
     if (go) go.textContent = T.running ? 'Pause' : isT ? (T.done ? 'Restart' : T.left >= T.dur ? 'Start' : 'Resume') : (ms ? 'Resume' : 'Start');
@@ -3225,6 +3330,7 @@ body { -webkit-tap-highlight-color: transparent; }
     curTab = name;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
     $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
+    $('tab-class').hidden = name !== 'class'; $('newBtn').hidden = name === 'class'; $('q').parentElement.hidden = name === 'class';
     $('nbLong').textContent = name === 'cd' ? ' countdown' : name === 'timer' ? ' timer' : ' stopwatch';
     renderTools();
   }
@@ -3336,6 +3442,7 @@ body { -webkit-tap-highlight-color: transparent; }
     });
     if (!cd.kind && canLink) item('Add to calendar', '.ics file', () => { saveICS(cd); m.hidden = true; });
     if (!cd.kind && all().length > 1) item('Slideshow', slideT ? 'Stop' : 'Start', () => { toggleSlides(); m.hidden = true; });
+    item('Projector view', presentOn ? 'On' : 'Off', () => { presentOn = !presentOn; F.classList.toggle('present', presentOn); if (presentOn) toast('Buttons hide until you move the mouse or tap the screen'); buildMore(); });
     item('Send feedback', 'Bug or idea', () => { m.hidden = true; openFeedback(); });
   }
   function cleanItem(v) {
@@ -3369,7 +3476,7 @@ body { -webkit-tap-highlight-color: transparent; }
     focusId = id;
     if (!keep) previewTheme = null;
     const theme = previewTheme || cd.theme;
-    dress(F, 'focus', theme); F._fg = null;
+    dress(F, 'focus', theme); F._fg = null; F.classList.toggle('present', presentOn);
     F._ms = null; $('fprog').parentElement.querySelectorAll('b').forEach(x => x.remove());
     F.hidden = false; $('shell').setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden';
@@ -3381,8 +3488,8 @@ body { -webkit-tap-highlight-color: transparent; }
     $('shareBtn').hidden = !canLink; $('shareLbl').textContent = 'Share link';
     $('flog').textContent = ''; $('flog').hidden = theme !== 'terminal';
     $('tmenu').hidden = true; $('mmenu').hidden = true;
-    buildCtl(cd); renderNote(cd); wakeOn();
-    if (cd.kind) { $('editBtn').hidden = false; $('shareBtn').hidden = true; }
+    buildCtl(cd); renderNote(cd); wakeOn(); F.classList.toggle('hastask', !!(cd.kind && cd.note)); F.classList.toggle('seq', !!(cd.kind && (cd.tool.steps || cd.tool.exam)));
+    if (cd.kind) { $('editBtn').hidden = !!(cd.tool.steps || cd.tool.exam); $('shareBtn').hidden = true; }
     api = makeClock($('fclock'), theme);
     lastSec = -1; lastMode = null;
     FX.clear();
@@ -3473,6 +3580,89 @@ body { -webkit-tap-highlight-color: transparent; }
     if (mqPhone.matches) bs.forEach(b => $('fbar').appendChild(b)); else bs.forEach(b => $('fsBtn').parentElement.insertBefore(b, $('fsBtn')));
   }
   mqPhone.addEventListener('change', placeBar); placeBar();
+
+  /* ---------- classroom: exam timer, lesson sequences, groups, the school day ---------- */
+  const KKEY = 'tminus.class';
+  let klass = { names: '', bell: '', seq: '' };
+  try { Object.assign(klass, JSON.parse(localStorage.getItem(KKEY) || '{}')); } catch (e) {}
+  const saveKlass = () => { try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} };
+  $('grNames').value = klass.names || ''; $('blText').value = klass.bell || ''; $('sqText').value = klass.seq || '';
+  [['grNames', 'names'], ['blText', 'bell'], ['sqText', 'seq']].forEach(([id, k]) => $(id).addEventListener('input', () => { klass[k] = $(id).value.slice(0, 6000); saveKlass(); }));
+  // in projector view the buttons stay out of the way until someone moves the mouse or taps
+  { let wk = 0; const wakeUI = () => { if (!presentOn) return; F.classList.add('awake'); clearTimeout(wk); wk = setTimeout(() => F.classList.remove('awake'), 3500); }; F.addEventListener('pointermove', wakeUI); F.addEventListener('pointerdown', wakeUI); }
+  function newClassTimer(o) {
+    const now = Date.now(), T = Object.assign({ id: uid(), label: 'Timer', theme: 'plain', dur: 6e4, running: false, done: false, createdAt: now, step: 0 }, o);
+    T.left = T.dur; T.endAt = now + T.dur; if (T.running) T.startedAt = now;
+    tools.timers.push(T); saveTools(); renderTools(); openFocus('t-' + T.id); return T;
+  }
+  $('exGo').addEventListener('click', () => {
+    const mins = clamp($('exH').value | 0, 0, 9) * 60 + clamp($('exM').value | 0, 0, 59), read = clamp($('exRead').value | 0, 0, 60), title = $('exTitle').value.trim() || 'Exam';
+    if (mins < 1) return toast('Set how long the exam lasts.');
+    const steps = read ? [{ label: title + ': reading time', ms: read * 6e4 }, { label: title, ms: mins * 6e4 }] : null;
+    presentOn = true;
+    newClassTimer({ label: title, task: $('exTask').value.trim(), dur: steps ? steps[0].ms : mins * 6e4, steps, exam: { extra: +$('exExtra').value || 0, sound: $('exSound').checked, warn: [30, 10, 5].filter(w => w < mins) } });
+  });
+  // "Starter 5", "Break 30s", "Double period 1.5h": a name, a number, and an optional unit (minutes if left out)
+  function parseSteps(text) {
+    return text.split('\n').map(line => { const m = /^(.*?)[\s,:\-]*?(\d+(?:\.\d+)?)\s*(s|sec|secs|seconds|m|min|mins|minutes|h|hr|hours)?\s*$/i.exec(line.trim()); if (!m) return null;
+      const u = (m[3] || 'm')[0].toLowerCase(), ms = +m[2] * (u === 's' ? 1e3 : u === 'h' ? 36e5 : 6e4); return ms >= 1000 && ms <= 864e5 ? { label: m[1].trim().slice(0, 60) || 'Step', ms } : null; }).filter(Boolean).slice(0, 40);
+  }
+  [['Lesson', 'Starter 5\nMain activity 25\nPlenary 10'], ['Think, pair, share', 'Think 2\nPair 3\nShare 5'], ['Stations ×4', 'Station 1 8\nMove on 1\nStation 2 8\nMove on 1\nStation 3 8\nMove on 1\nStation 4 8'], ['Focus and breaks', 'Focus 25\nBreak 5\nFocus 25\nBreak 5\nFocus 25\nLong break 15'], ['Practice paper', 'Reading 10\nWriting 45\nCheck your work 5']].forEach(([name, text]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.onclick = () => { $('sqText').value = text; klass.seq = text; saveKlass(); }; $('sqPresets').appendChild(b);
+  });
+  $('sqGo').addEventListener('click', () => {
+    const steps = parseSteps($('sqText').value);
+    if (!steps.length) return toast('Write at least one step, like “Starter 5”.');
+    newClassTimer({ label: steps.length > 1 ? 'Sequence: ' + steps[0].label + ' + ' + (steps.length - 1) + ' more' : steps[0].label, task: $('sqTask').value.trim(), dur: steps[0].ms, steps, traffic: $('sqTraffic').checked, running: true });
+  });
+  // groups and the name picker
+  const names = () => [...new Set($('grNames').value.split(/[\n,]/).map(x => x.trim()).filter(Boolean))].slice(0, 200);
+  let lastGroups = null, picked = [];
+  function makeGroups() {
+    const ns = names(); if (ns.length < 2) { toast('Add at least two names to the class list.'); return null; }
+    for (let i = ns.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [ns[i], ns[j]] = [ns[j], ns[i]]; }
+    const n = clamp($('grN').value | 0 || 1, 1, 40), k = clamp($('grMode').value === 'groups' ? n : Math.ceil(ns.length / n), 1, ns.length), gs = Array.from({ length: k }, () => []);
+    ns.forEach((x, i) => gs[i % k].push(x)); return lastGroups = gs;
+  }
+  function drawGroups(box, gs) {
+    box.textContent = '';
+    gs.forEach((gr, i) => { const d = document.createElement('div'); d.className = 'grp'; const b = document.createElement('b'); b.textContent = 'Group ' + (i + 1); d.appendChild(b); gr.forEach(x => { const r = document.createElement('div'); r.textContent = x; d.appendChild(r); }); box.appendChild(d); });
+  }
+  function bigShow(build) {
+    const bar = $('bsBar'), body = $('bsBody'); bar.textContent = ''; body.textContent = ''; body.className = '';
+    const btn = (label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + (cls || ''); b.textContent = label; b.onclick = fn; bar.appendChild(b); };
+    build(body, btn); btn('Close', () => { $('bigshow').hidden = true; }, 'ghost'); $('bigshow').hidden = false;
+  }
+  const showGroups = () => bigShow((body, btn) => { body.className = 'grout'; drawGroups(body, lastGroups); btn('Shuffle again', () => { if (makeGroups()) { drawGroups($('grOut'), lastGroups); showGroups(); } }, 'primary'); });
+  $('grGo').addEventListener('click', () => { if (!makeGroups()) return; drawGroups($('grOut'), lastGroups); $('grBig').hidden = false; });
+  $('grBig').addEventListener('click', () => { if (lastGroups) showGroups(); });
+  function pickName() {
+    const ns = names(); if (!ns.length) return toast('Add some names to the class list first.');
+    let pool = ns.filter(x => !picked.includes(x)); if (!pool.length) { picked = []; pool = ns; } // everyone gets a turn before anyone gets a second
+    const who = pool[Math.random() * pool.length | 0]; picked.push(who);
+    bigShow((body, btn) => { const d = document.createElement('div'); d.className = 'one'; d.textContent = who; body.appendChild(d); btn('Pick another (' + (ns.length - picked.length) + ' left)', pickName, 'primary'); });
+  }
+  $('grPick').addEventListener('click', pickName);
+  // the school day: bell times, what is on now, and a timer that walks through the rest of the day
+  function parseBell(text) {
+    return text.split('\n').map(line => { const m = /^(.*?)[\s,:]+(\d{1,2})[:.](\d{2})\s*(?:-|–|to)\s*(\d{1,2})[:.](\d{2})\s*$/i.exec(line.trim()); if (!m) return null;
+      const a = +m[2] * 60 + +m[3], b = +m[4] * 60 + +m[5]; return b > a && b <= 1440 ? { label: m[1].trim().slice(0, 60) || 'Period', a, b } : null; }).filter(Boolean).sort((x, y) => x.a - y.a).slice(0, 30);
+  }
+  const mm = n => pad(Math.floor(n / 60)) + ':' + pad(n % 60);
+  function bellNow() {
+    const ps = parseBell($('blText').value), el = $('blNow'); if (!ps.length) { el.textContent = $('blText').value.trim() ? 'No lines could be read. Use “Period 1 08:50-09:40”.' : ''; return; }
+    const d = new Date(), t = d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60, cur = ps.find(p => t >= p.a && t < p.b), nxt = ps.find(p => p.a > t);
+    const left = m => fmtDur(Math.ceil(m * 60) * 1000);
+    el.textContent = cur ? 'Now: ' + cur.label + ' · ends in ' + left(cur.b - t) + ' (at ' + mm(cur.b) + ')' : nxt ? 'Next: ' + nxt.label + ' at ' + mm(nxt.a) + ' · starts in ' + left(nxt.a - t) : 'The school day is over (' + ps.length + ' periods read).';
+  }
+  setInterval(() => { if (!$('tab-class').hidden) bellNow(); }, 1000); $('blText').addEventListener('input', bellNow);
+  $('blGo').addEventListener('click', () => {
+    const ps = parseBell($('blText').value), d = new Date(), t = d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60, steps = []; let at = t;
+    ps.filter(p => p.b > t).forEach(p => { if (p.a > at) steps.push({ label: 'Until ' + p.label, ms: Math.round((p.a - at) * 6e4) }); steps.push({ label: p.label, ms: Math.round((p.b - Math.max(at, p.a)) * 6e4) }); at = p.b; });
+    if (!steps.length) return toast(ps.length ? 'The school day is over.' : 'Add your bell times first, like “Period 1 08:50-09:40”.');
+    tools.timers = tools.timers.filter(x => !x.bell);
+    newClassTimer({ label: 'School day', dur: steps[0].ms, steps, bell: true, running: true });
+  });
 
   /* ---------- feedback: a pre-filled issue at github.com/bentokaz/tminus ---------- */
   const APPV = '2026-10-03';
@@ -3623,7 +3813,7 @@ body { -webkit-tap-highlight-color: transparent; }
   $('clearEx').addEventListener('click', () => { mine = mine.filter(c => !c.example); saveMine(); renderList(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!$('fbscrim').hidden) $('fbscrim').hidden = true; else if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
+    if (!$('bigshow').hidden) $('bigshow').hidden = true; else if (!$('fbscrim').hidden) $('fbscrim').hidden = true; else if (!$('cscrim').hidden) closeThemeEditor(); else if (!$('tscrim').hidden) $('tscrim').hidden = true; else if (!$('scrim').hidden) closeEditor(); else if (!$('tmenu').hidden || !$('mmenu').hidden) { $('tmenu').hidden = true; $('mmenu').hidden = true; } else if (focusId) closeFocus();
   });
   let rz = 0;
   addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (bgi) bgi.resize(); }); });
