@@ -195,6 +195,24 @@ button { cursor: pointer; }
 .focus.th-history .ftitle, .focus.th-english .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
 .focus.th-art .fmain { text-shadow: 0 0 16px #f6f1e7, 0 0 5px #f6f1e7; }
 .focus.th-art .ftitle, .focus.th-art .dg { font-weight: 800; }
+.th-design { --t-bg: #f2efe9; --t-fg: #1c1c1c; --t-acc: #2f6bff; --t-dim: #6d6a64; --t-num: "Bricolage Grotesque", sans-serif; --t-numw: 800; --t-head: "Bricolage Grotesque", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif; --t-track: -.03em;
+  --t-art: radial-gradient(circle at 30% 50%, transparent 0 17%, #1c1c1c 18% 21%, transparent 22%), linear-gradient(#2f6bff, #2f6bff) 70% 50% / 22% 44% no-repeat, radial-gradient(rgba(28,28,28,.3) 1px, transparent 1.5px) 0 0 / 8px 8px, #f2efe9; }
+.th-languages { --t-bg: #fdf6e3; --t-fg: #2b2b3a; --t-acc: #e0563a; --t-dim: #76707f; --t-num: "Schibsted Grotesk", sans-serif; --t-numw: 700; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(#e0563a, #e0563a) 20% 30% / 44% 34% no-repeat, linear-gradient(#2b6f8a, #2b6f8a) 80% 74% / 40% 30% no-repeat, #fdf6e3; }
+.th-pe { --t-bg: #2e7d4f; --t-fg: #ffffff; --t-acc: #ffe14d; --t-dim: #d5ead9; --t-num: "Big Shoulders Display", sans-serif; --t-numw: 800; --t-head: "Big Shoulders Display", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: repeating-linear-gradient(transparent 0 7px, rgba(255,255,255,.8) 7px 8px) 0 100% / 100% 42% no-repeat, linear-gradient(#b5452c, #b5452c) 0 100% / 100% 42% no-repeat, repeating-linear-gradient(90deg, #2e7d4f 0 10px, #338a57 10px 20px); }
+.th-society { --t-bg: #1f2a38; --t-fg: #f3efe6; --t-acc: #f2a541; --t-dim: #9aa7b8; --t-num: "Fraunces", Georgia, serif; --t-numw: 500; --t-head: "Fraunces", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: radial-gradient(circle at 28% 36%, #f2a541 0 6%, transparent 7%), radial-gradient(circle at 70% 30%, #f3efe6 0 5%, transparent 6%), radial-gradient(circle at 54% 72%, #f3efe6 0 5%, transparent 6%), linear-gradient(20deg, transparent 48%, rgba(243,239,230,.5) 49% 51%, transparent 52%), linear-gradient(#253244, #162030); }
+.th-drama { --t-bg: #1a0d10; --t-fg: #fbeedd; --t-acc: #ffcf4a; --t-dim: #b99a8c; --t-num: "Instrument Serif", Georgia, serif; --t-numw: 400; --t-head: "Instrument Serif", Georgia, serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(90deg, #8a1724 0 16%, transparent 16% 84%, #8a1724 84%), radial-gradient(ellipse 34% 60% at 50% 100%, rgba(255,225,160,.55), transparent 70%), #1a0d10; }
+.th-economics { --t-bg: #0f1a17; --t-fg: #e9f5ee; --t-acc: #3ddc84; --t-dim: #86a596; --t-num: "JetBrains Mono", monospace; --t-numw: 500; --t-head: "Schibsted Grotesk", sans-serif; --t-ui: "Schibsted Grotesk", sans-serif;
+  --t-art: linear-gradient(155deg, transparent 49%, #3ddc84 50% 53%, transparent 54%), linear-gradient(rgba(233,245,238,.14) 1px, transparent 1px) 0 0 / 100% 12px, #0f1a17; }
+.th-computing { --t-bg: #14161c; --t-fg: #e6e9ef; --t-acc: #7aa2f7; --t-dim: #8791a8; --t-num: "IBM Plex Mono", monospace; --t-numw: 500; --t-head: "IBM Plex Mono", monospace; --t-ui: "IBM Plex Mono", monospace;
+  --t-art: linear-gradient(#7aa2f7, #7aa2f7) 16% 24% / 34% 9% no-repeat, linear-gradient(#9ece6a, #9ece6a) 30% 46% / 46% 9% no-repeat, linear-gradient(#e0af68, #e0af68) 30% 68% / 26% 9% no-repeat, #14161c; }
+.focus.th-pe .ftitle { text-transform: uppercase; font-weight: 900; }
+.focus.th-pe .fmain, .focus.th-drama .fmain { text-shadow: 0 2px 16px rgba(0,0,0,.45); }
+.focus.th-drama .ftitle, .focus.th-society .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
+.focus.th-languages .feb, .focus.th-society .feb, .focus.th-drama .feb { text-transform: none; letter-spacing: .02em; font-family: "Fraunces", serif; font-style: italic; font-size: clamp(16px, 2.2vw, 24px); }
 .focus.th-forest .ftitle { font-weight: 500; }
 .focus.th-reef .ftitle, .focus.th-reef .dg { font-weight: 800; }
 .focus.th-lake .ftitle { font-weight: 400; font-size: clamp(30px, 6vw, 72px); }
@@ -1085,6 +1103,20 @@ body { -webkit-tap-highlight-color: transparent; }
                 words: { down: 'Curtain up in', up: 'Playing for', today: 'On stage tonight' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
     art:      { name: 'Art', blurb: 'A brush stroke lands every second', digit: 'roll', glyph: '✎',
                 words: { down: 'Opening in', up: 'On show for', today: 'On show today' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    design:   { name: 'Design', blurb: 'Dot grid, shapes and a pen-tool curve', digit: 'roll', glyph: '◧',
+                words: { down: 'Deadline in', up: 'Shipped', today: 'Due today' }, labels: ['Days', 'Hours', 'Min', 'Sec'] },
+    languages:{ name: 'Languages', blurb: 'Greetings from around the world drifting up', digit: 'roll', glyph: 'Aあ',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    pe:       { name: 'PE', blurb: 'A pitch, a running track and six runners', digit: 'roll', glyph: 'PE',
+                words: { down: 'Kick-off in', up: 'Playing for', today: 'Game on' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
+    society:  { name: 'Individuals & societies', blurb: 'People as points, joined into a network', digit: 'roll', glyph: '⌘',
+                words: { down: 'until', up: 'since', today: 'is today' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    drama:    { name: 'Drama', blurb: 'Red curtains and a roaming spotlight', digit: 'roll', glyph: '❦',
+                words: { down: 'Curtain up in', up: 'On stage for', today: 'Opening night' }, labels: ['days', 'hours', 'minutes', 'seconds'] },
+    economics:{ name: 'Economics', blurb: 'A live price chart that ticks every second', digit: 'roll', glyph: '↗',
+                words: { down: 'Market opens in', up: 'Trading for', today: 'Markets open' }, labels: ['Days', 'Hrs', 'Min', 'Sec'] },
+    computing:{ name: 'Computing', blurb: 'Code typing itself line by line', digit: 'glitch', glyph: '{ }',
+                words: { down: '// time remaining', up: '// uptime', today: '// running' }, labels: ['days', 'hrs', 'min', 'sec'] },
   };
   let TKEYS = Object.keys(THEMES);
   const GROUPS = [
@@ -1092,7 +1124,7 @@ body { -webkit-tap-highlight-color: transparent; }
     ['Water & weather', ['ocean', 'reef', 'jelly', 'rain', 'storm', 'snow']],
     ['Sky & night', ['space', 'aurora', 'sunset', 'fireworks']],
     ['Retro & tech', ['board', 'terminal', 'arcade', 'circuit', 'blueprint', 'neon', 'warp']],
-    ['School subjects', ['math', 'science', 'english', 'history', 'geography', 'music', 'art']],
+    ['School subjects', ['math', 'science', 'english', 'languages', 'history', 'geography', 'society', 'economics', 'design', 'computing', 'art', 'music', 'drama', 'pe']],
     ['Simple & playful', ['plain', 'minimal', 'chalk', 'party', 'lava', 'vinyl']],
   ];
   function themeGroups() {
@@ -1887,6 +1919,7 @@ body { -webkit-tap-highlight-color: transparent; }
       balloon(g, s, o) { g.beginPath(); g.arc(0, -s, s, 0, 6.283); g.fill(); g.beginPath(); g.moveTo(-s * .78, -s * .38); g.lineTo(-s * .2, s * .55); g.lineTo(s * .2, s * .55); g.lineTo(s * .78, -s * .38); g.fill(); g.fillRect(-s * .2, s * .72, s * .4, s * .3); g.fillStyle = o.c2 || '#fff'; g.beginPath(); g.ellipse(0, -s, s * .34, s, 0, 0, 6.283); g.fill(); },
       train(g, s, o) { for (let i = 0; i < 7; i++) { g.fillStyle = o.c; g.fillRect(-i * s * 2.2, -s * .55, s * 2.05, s * .55); g.fillStyle = o.c2; for (let k = 0; k < 4; k++) g.fillRect(-i * s * 2.2 + s * .2 + k * s * .45, -s * .42, s * .3, s * .2); } g.fillStyle = o.c; g.beginPath(); g.moveTo(s * 2.05, -s * .55); g.quadraticCurveTo(s * 2.9, -s * .5, s * 3, 0); g.lineTo(s * 2.05, 0); g.fill(); const hl = g.createLinearGradient(s * 3, 0, s * 7, 0); hl.addColorStop(0, o.c2); hl.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha *= .5; g.fillStyle = hl; g.beginPath(); g.moveTo(s * 3, -s * .2); g.lineTo(s * 7, -s * .7); g.lineTo(s * 7, s * .1); g.fill(); },
       paper(g, s) { const a = g.globalAlpha; g.beginPath(); g.moveTo(s, 0); g.lineTo(-s, -s * .5); g.lineTo(-s * .6, 0); g.lineTo(-s, s * .5); g.closePath(); g.fill(); g.globalAlpha = a * .45; g.fillStyle = '#000'; g.beginPath(); g.moveTo(s, 0); g.lineTo(-s * .6, 0); g.lineTo(-s * .78, s * .44); g.fill(); },
+      ball(g, s, o, t) { g.beginPath(); g.arc(0, 0, s, 0, 6.283); g.fill(); g.strokeStyle = o.c2 || '#000'; g.lineWidth = s * .12; g.rotate(t * 3); g.beginPath(); g.arc(-s * .9, 0, s * .9, -1, 1); g.moveTo(s * .9 + s * .9 * Math.cos(Math.PI - 1), s * .9 * Math.sin(Math.PI - 1)); g.arc(s * .9, 0, s * .9, Math.PI - 1, Math.PI + 1); g.stroke(); },
       sat(g, s, o, t) { g.fillRect(-s * .2, -s * .2, s * .4, s * .4); g.fillRect(-s * .95, -s * .12, s * .65, s * .24); g.fillRect(s * .3, -s * .12, s * .65, s * .24); if (Math.sin(t * 6) > 0) { g.fillStyle = '#ff5a4d'; g.beginPath(); g.arc(0, -s * .32, s * .14, 0, 6.283); g.fill(); } },
     };
     const SHAPES = [
@@ -1928,6 +1961,12 @@ body { -webkit-tap-highlight-color: transparent; }
         g.translate(st.x, st.y); g.rotate(st.r); g.globalAlpha = Math.min(1, (1 - p) * 4); g.strokeStyle = o.c; g.lineWidth = o.w || 3; g.lineCap = 'round'; g.lineJoin = 'round';
         g.beginPath(); st.sh.slice(0, n).forEach(([x, y], i) => i ? g.lineTo(x * st.s, y * st.s) : g.moveTo(x * st.s, y * st.s)); g.stroke();
       },
+      blob(g, W, H, p, t, o, st) { // one big bubble of hot wax drifts all the way up
+        if (!st.x) { st.x = W * (.15 + R() * .7); st.r = Math.min(W, H) * (.08 + R() * .06); }
+        const y = H + st.r * 1.5 - (H + st.r * 3) * p, wob = Math.sin(t * 2.2) * .12, x = st.x + Math.sin(t * .9) * 22, gr = g.createRadialGradient(x, y, 0, x, y, st.r * 1.5);
+        gr.addColorStop(0, 'rgba(255,214,120,.95)'); gr.addColorStop(.6, 'rgba(255,110,40,.85)'); gr.addColorStop(1, 'rgba(255,90,34,0)');
+        g.fillStyle = gr; g.beginPath(); g.ellipse(x, y, st.r * (1.5 - wob), st.r * (1.5 + wob), 0, 0, 6.283); g.fill();
+      },
       rise(g, W, H, p, t, o, st) { // long arms reach up from below and sink back
         if (!st.x) st.x = [.12 + R() * .2, .62 + R() * .25].map(v => v * W);
         const top = H * .58 * Math.sin(Math.min(1, p) * Math.PI); g.strokeStyle = o.c; g.lineCap = 'round'; g.globalAlpha = o.a || .6;
@@ -1951,7 +1990,7 @@ body { -webkit-tap-highlight-color: transparent; }
       rain: [['flash', { c: '#dfe8ff', dur: 2200 }]],
       chalk: [['doodle', { c: 'rgba(255,255,255,.75)', w: 3, dur: 8000 }]],
       party: [['cross', { spr: 'balloon', y: [.5, .8], s: .04, c: '#ff5d7a', c2: '#ffcf4a', dur: 14000, climb: -.3, bob: 1 }]],
-      lava: [['rise', { c: '#ffb347', a: .4, dur: 8000 }]],
+      lava: [['blob', { dur: 12000 }]],
       vinyl: [['sweep', { c: 'rgba(243,234,217,.7)', a: .14, dur: 3200 }]],
       dunes: [['cross', { spr: 'birds', y: [.1, .25], s: .02, c: '#5a3a22', dur: 13000 }], ['cross', { spr: 'balloon', y: [.14, .28], s: .03, c: '#b5461f', c2: '#fff1c9', dur: 30000, bob: .6 }]],
       circuit: [['sweep', { c: '#ffd34d', a: .18, glitch: 1, dur: 2400 }]],
@@ -1968,6 +2007,13 @@ body { -webkit-tap-highlight-color: transparent; }
       math: [paper('#1d2a44'), ['doodle', { c: 'rgba(29,42,68,.6)', w: 2.5, dur: 8000 }]],
       science: [paper('#e8fff8'), ['sweep', { c: '#7dffb0', a: .12, dur: 3000 }]],
       history: [paper('#3b2a17')], english: [paper('#22252b')], music: [paper('#fbeedd')], art: [paper('#26221d')],
+      design: [paper('#1c1c1c'), ['doodle', { c: 'rgba(47,107,255,.8)', w: 2.5, dur: 8000 }]],
+      languages: [paper('#2b2b3a')],
+      pe: [['cross', { spr: 'ball', y: [.5, .62], s: .028, c: '#ffffff', c2: '#1c1c1c', dur: 7000, bob: 5, bobA: 2.2, a: 1 }]],
+      society: [paper('#f3efe6'), ['cross', { spr: 'plane', y: [.1, .3], s: .02, c: '#f3efe6', dur: 15000, bobA: 0 }]],
+      drama: [['sweep', { c: 'rgba(255,225,160,.8)', a: .14, dur: 3600 }]],
+      economics: [['sweep', { c: '#3ddc84', a: .14, glitch: 1, dur: 2600 }]],
+      computing: [['sweep', { c: '#7aa2f7', a: .16, glitch: 1, v: 1, dur: 2600 }]],
       geography: [paper('#f1f8ff'), ['cross', { spr: 'plane', y: [.1, .3], s: .022, c: '#f1f8ff', dur: 15000, bobA: 0 }]],
     };
     const AMBIENT = { campfire: 'fireflies', fireworks: 'twinkle', sunset: 'twinkle', snow: 'twinkle', aurora: 'twinkle', dunes: 'wisps', sakura: 'wisps' };
@@ -2043,6 +2089,13 @@ body { -webkit-tap-highlight-color: transparent; }
     english: ['banner', { text: 'Chapter One', t2: 'The End.', font: '"Instrument Serif", Georgia, serif', w: 400, c: '#22252b', type: 1, dim: 0, under: 1, plate: '#fbfaf4', dur: 4200 }],
     geography: ['pin', { c: '#ffd166' }],
     music: ['spot', { notes: 1, c: ['#f2b84b', '#fbeedd', '#e0563a'] }],
+    design: ['banner', { text: 'FINAL', t2: 'PENS DOWN', font: '"Bricolage Grotesque", sans-serif', w: 800, c: '#2f6bff', plate: '#f2efe9', box: 1, rot: -.05, dim: 0, dur: 4200 }],
+    languages: ['banner', { text: 'Bravo!', t2: 'Fin', font: 'Fraunces, Georgia, serif', w: 700, c: '#e0563a', plate: '#fdf6e3', dim: 0, under: 1, dur: 4200 }],
+    pe: ['banner', { text: 'FINISH', t2: 'FULL TIME', font: '"Big Shoulders Display", sans-serif', w: 900, c: '#ffe14d', plate: '#14301f', box: 1, dur: 4200 }],
+    society: ['react', { c: ['#f2a541', '#f3efe6', '#7fb2d9'] }],
+    drama: ['spot', { c: ['#ffcf4a', '#fbeedd', '#e0563a'] }],
+    economics: ['banner', { text: 'ALL-TIME HIGH', t2: 'MARKET CLOSED', font: '"JetBrains Mono", monospace', w: 700, c: '#3ddc84', plate: '#0a1210', glow: 1, dur: 4200 }],
+    computing: ['banner', { text: '> build passed', t2: '> process exited', font: '"IBM Plex Mono", monospace', w: 500, c: '#9ece6a', glitch: 1, type: 1, dur: 4200 }],
     art: ['splash', { c: ['#e4572e', '#17bebb', '#ffc914', '#76b041', '#3d5a80'] }],
   };
   // everything that happens on screen at zero: the theme's own reaction, its scene, and a jolt to the clock
@@ -3200,6 +3253,182 @@ body { -webkit-tap-highlight-color: transparent; }
         g.setLineDash([]); g.globalAlpha = 1;
       },
       finale() { const now = performance.now(); for (let i = 0; i < 8; i++) add(now + i * 90); FX.burst('confetti', COL, 160); },
+    };
+  };
+
+  // Design: a dotted layout grid, three outlined primitives turning slowly, and a pen-tool curve whose handles keep moving.
+  BG.design = cv => {
+    const K = canvasKit(cv); let ph = 0, last = 0, boost = -1e9;
+    return {
+      resize() { K.size(); },
+      pulse(kind) { if (kind === 'min') boost = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, m = Math.min(W, H), dt = last ? Math.min(.1, (now - last) / 1000) : 0; last = now;
+        if (!reduce) ph += dt * (1 + (now - boost < 4000 ? Math.sin((now - boost) / 4000 * Math.PI) * 5 : 0));
+        g.fillStyle = '#f2efe9'; g.fillRect(0, 0, W, H);
+        g.fillStyle = 'rgba(28,28,28,.17)'; for (let y = 14; y < H; y += 28) for (let x = 14; x < W; x += 28) g.fillRect(x, y, 2, 2);
+        g.strokeStyle = '#1c1c1c'; g.lineWidth = 2;
+        g.beginPath(); g.arc(W * .13, H * .26, m * .11, 0, 6.283); g.stroke();
+        g.fillStyle = '#2f6bff'; g.beginPath(); g.arc(W * .13 + Math.cos(ph * .5) * m * .11, H * .26 + Math.sin(ph * .5) * m * .11, 7, 0, 6.283); g.fill();
+        g.save(); g.translate(W * .87, H * .24); g.rotate(ph * .2); g.strokeRect(-m * .09, -m * .09, m * .18, m * .18); g.restore();
+        g.save(); g.translate(W * .86, H * .78); g.rotate(-ph * .15); g.beginPath(); for (let i = 0; i < 3; i++) { const a = -Math.PI / 2 + i * 2.094; i ? g.lineTo(Math.cos(a) * m * .11, Math.sin(a) * m * .11) : g.moveTo(Math.cos(a) * m * .11, Math.sin(a) * m * .11); } g.closePath(); g.stroke(); g.restore();
+        const p0 = [W * .07, H * .84], p3 = [W * .62, H * .87], c1 = [W * .22, H * (.64 + .1 * Math.sin(ph))], c2 = [W * .45, H * (.99 - .1 * Math.cos(ph * .8))];
+        g.strokeStyle = 'rgba(28,28,28,.45)'; g.lineWidth = 1; g.beginPath(); g.moveTo(p0[0], p0[1]); g.lineTo(c1[0], c1[1]); g.moveTo(p3[0], p3[1]); g.lineTo(c2[0], c2[1]); g.stroke();
+        g.strokeStyle = '#2f6bff'; g.lineWidth = 3; g.beginPath(); g.moveTo(p0[0], p0[1]); g.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], p3[0], p3[1]); g.stroke();
+        g.fillStyle = '#fff'; g.strokeStyle = '#1c1c1c'; g.lineWidth = 1.5; for (const p of [p0, p3]) { g.fillRect(p[0] - 5, p[1] - 5, 10, 10); g.strokeRect(p[0] - 5, p[1] - 5, 10, 10); }
+        for (const p of [c1, c2]) { g.beginPath(); g.arc(p[0], p[1], 4.5, 0, 6.283); g.fill(); g.stroke(); }
+      },
+      finale() { boost = performance.now(); FX.burst('confetti', ['#2f6bff', '#1c1c1c', '#ff5a3c'], 150); },
+    };
+  };
+
+  // Languages: speech bubbles carrying greetings in many languages rise slowly up the page.
+  BG.languages = cv => {
+    const K = canvasKit(cv); let bs = [];
+    const WORDS = ['Hola', 'Bonjour', 'こんにちは', 'Hallo', 'Ciao', '안녕하세요', 'Olá', 'Привет', '你好', 'مرحبا', 'Hej', 'नमस्ते', 'Merhaba', 'Jambo', 'Γειά σου', 'Hello', 'Xin chào', 'Salut'];
+    const COL = ['#e0563a', '#2b6f8a', '#e9a23b', '#3d8b6e', '#2b2b3a'];
+    const mk = (W, H, any) => ({ x: W * (.06 + Math.random() * .88), y: any ? Math.random() * H : H + 50, v: .12 + Math.random() * .25, w: WORDS[Math.random() * WORDS.length | 0], s: 15 + Math.random() * 16, c: COL[Math.random() * COL.length | 0], left: Math.random() < .5, tw: 0 });
+    return {
+      resize() { K.size(); bs = Array.from({ length: Math.round(K.W / 150) + 6 }, () => mk(K.W, K.H, true)); },
+      pulse() {},
+      frame() {
+        const g = K.g, W = K.W, H = K.H;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#fdf6e3'); gr.addColorStop(1, '#f5e4c2'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.textAlign = 'center'; g.textBaseline = 'middle';
+        for (const b of bs) {
+          if (!reduce) { b.y -= b.v; if (b.y < -60) Object.assign(b, mk(W, H)); }
+          g.font = '600 ' + b.s + 'px system-ui, "Segoe UI", sans-serif'; if (!b.tw) b.tw = g.measureText(b.w).width;
+          const w = b.tw + b.s * 1.3, h = b.s * 1.9, x = b.x - w / 2, y = b.y - h / 2;
+          g.globalAlpha = .6; g.fillStyle = b.c; g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, 5); else g.rect(x, y, w, h); g.fill();
+          g.beginPath(); const tx = b.left ? x + w * .22 : x + w * .78; g.moveTo(tx - 7, y + h - 1); g.lineTo(tx + (b.left ? -9 : 9), y + h + 11); g.lineTo(tx + 7, y + h - 1); g.fill();
+          g.globalAlpha = .9; g.fillStyle = '#fffaf0'; g.fillText(b.w, b.x, b.y + 1);
+        }
+        g.globalAlpha = 1; g.textBaseline = 'alphabetic';
+      },
+      finale() { FX.burst('confetti', COL, 160); },
+    };
+  };
+
+  // PE: a mown pitch above a six-lane running track; the runners sprint on the minute.
+  BG.pe = cv => {
+    const K = canvasKit(cv); let rs = [], sprint = -1e9;
+    return {
+      resize() { K.size(); rs = Array.from({ length: 6 }, (_, i) => ({ x: Math.random() * K.W, v: 1.1 + Math.random() * 1.5, i })); },
+      pulse(kind) { if (kind === 'min') sprint = performance.now(); },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, top = Math.round(H * .72), lane = (H - top) / 6, m = Math.min(W, H);
+        for (let x = 0, k = 0; x < W; x += 90, k++) { g.fillStyle = k % 2 ? '#2e7d4f' : '#338a57'; g.fillRect(x, 0, 90, top); }
+        g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 3; g.beginPath(); g.arc(W / 2, top * .5, m * .16, 0, 6.283); g.moveTo(W / 2, 0); g.lineTo(W / 2, top); g.moveTo(0, top * .5 - m * .2); g.lineTo(m * .14, top * .5 - m * .2); g.lineTo(m * .14, top * .5 + m * .2); g.lineTo(0, top * .5 + m * .2); g.moveTo(W, top * .5 - m * .2); g.lineTo(W - m * .14, top * .5 - m * .2); g.lineTo(W - m * .14, top * .5 + m * .2); g.lineTo(W, top * .5 + m * .2); g.stroke();
+        g.fillStyle = '#b5452c'; g.fillRect(0, top, W, H - top);
+        g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 2; g.beginPath(); for (let i = 0; i <= 6; i++) { g.moveTo(0, top + i * lane); g.lineTo(W, top + i * lane); } g.stroke();
+        g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '800 ' + Math.min(26, lane * .6) + 'px "Big Shoulders Display", sans-serif'; g.textAlign = 'left'; for (let i = 0; i < 6; i++) g.fillText(i + 1, 14, top + i * lane + lane * .72);
+        const sp = 1 + (now - sprint < 5000 ? Math.sin((now - sprint) / 5000 * Math.PI) * 4 : 0);
+        for (const r of rs) {
+          if (!reduce) { r.x += r.v * sp; if (r.x > W + 60) r.x = -60; }
+          const y = top + r.i * lane + lane / 2;
+          for (let k = 5; k >= 0; k--) { g.globalAlpha = k ? .1 * (6 - k) * .5 : 1; g.fillStyle = k ? '#fff' : ['#ffe14d', '#fff', '#9fe8ff', '#fff', '#ffb08f', '#fff'][r.i]; g.beginPath(); g.arc(r.x - k * 9 * Math.min(2, sp), y, Math.min(9, lane * .28), 0, 6.283); g.fill(); }
+        }
+        g.globalAlpha = 1;
+      },
+      finale() { sprint = performance.now(); FX.burst('confetti', ['#ffe14d', '#ffffff', '#b5452c'], 160); },
+    };
+  };
+
+  // Individuals & societies: people as points that drift and link to their neighbours; someone "speaks" each second.
+  BG.society = cv => {
+    const K = canvasKit(cv); let ns = [], pings = [];
+    return {
+      resize() { K.size(); ns = Array.from({ length: Math.round(Math.min(70, K.W * K.H / 24000)) }, (_, i) => ({ x: Math.random() * K.W, y: Math.random() * K.H, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, r: 3 + Math.random() * 3, hot: i % 7 === 0 })); },
+      pulse(kind) { if (kind === 'sec' && !reduce && ns.length) { const n = ns[Math.random() * ns.length | 0]; pings.push({ n, t0: performance.now() }); } },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H;
+        const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#253244'); gr.addColorStop(1, '#162030'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(243,239,230,.05)'; g.lineWidth = 1; g.beginPath(); for (let y = 40; y < H; y += 70) { g.moveTo(0, y); g.lineTo(W, y); } for (let x = 40; x < W; x += 70) { g.moveTo(x, 0); g.lineTo(x, H); } g.stroke();
+        for (const n of ns) { if (!reduce) { n.x += n.vx; n.y += n.vy; if (n.x < 0 || n.x > W) n.vx *= -1; if (n.y < 0 || n.y > H) n.vy *= -1; } }
+        g.lineWidth = 1;
+        for (let i = 0; i < ns.length; i++) for (let j = i + 1; j < ns.length; j++) { const a = ns[i], b = ns[j], d = Math.hypot(a.x - b.x, a.y - b.y); if (d < 170) { g.strokeStyle = 'rgba(243,239,230,' + (.3 * (1 - d / 170)) + ')'; g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke(); } }
+        for (const n of ns) { g.fillStyle = n.hot ? '#f2a541' : '#f3efe6'; g.globalAlpha = .9; g.beginPath(); g.arc(n.x, n.y, n.r, 0, 6.283); g.fill(); }
+        pings = pings.filter(p => now - p.t0 < 1600);
+        for (const p of pings) { const u = (now - p.t0) / 1600; g.globalAlpha = 1 - u; g.strokeStyle = '#f2a541'; g.lineWidth = 2; g.beginPath(); g.arc(p.n.x, p.n.y, p.n.r + u * 46, 0, 6.283); g.stroke(); }
+        g.globalAlpha = 1;
+      },
+      finale() { ns.forEach(n => pings.push({ n, t0: performance.now() + Math.random() * 600 })); FX.burst('dot', ['#f2a541', '#f3efe6', '#7fb2d9'], 140); },
+    };
+  };
+
+  // Drama: a dark stage with red curtains either side, floorboards, and two spotlights wandering across it.
+  BG.drama = cv => {
+    const K = canvasKit(cv); let dust = [];
+    return {
+      resize() { K.size(); dust = Array.from({ length: 50 }, () => ({ x: Math.random() * K.W, y: Math.random() * K.H * .8, ph: Math.random() * 6.283, r: .6 + Math.random() * 1.2 })); },
+      pulse() {},
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, t = reduce ? 0 : now / 1000, m = Math.min(W, H), fy = Math.round(H * .8);
+        const bgr = g.createRadialGradient(W / 2, H * .5, 0, W / 2, H * .5, Math.hypot(W, H) * .6); bgr.addColorStop(0, '#2b1319'); bgr.addColorStop(1, '#0e0608'); g.fillStyle = bgr; g.fillRect(0, 0, W, H);
+        const fl = g.createLinearGradient(0, fy, 0, H); fl.addColorStop(0, '#3d2619'); fl.addColorStop(1, '#1a0f0a'); g.fillStyle = fl; g.fillRect(0, fy, W, H - fy);
+        g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 1; g.beginPath(); for (let i = -8; i <= 8; i++) { g.moveTo(W / 2 + i * W * .05, fy); g.lineTo(W / 2 + i * W * .12, H); } g.stroke();
+        g.globalCompositeOperation = 'lighter';
+        [[.5 + .2 * Math.sin(t * .37), '255,225,160'], [.5 - .22 * Math.sin(t * .29 + 1), '200,220,255']].forEach(([fx, c], k) => {
+          const sx = W * (k ? .78 : .22), px = W * fx, py = fy + (H - fy) * .45, rx = m * .22, gr = g.createLinearGradient(sx, 0, px, py); gr.addColorStop(0, 'rgba(' + c + ',.26)'); gr.addColorStop(1, 'rgba(' + c + ',.06)');
+          g.fillStyle = gr; g.beginPath(); g.moveTo(sx - 12, -10); g.lineTo(sx + 12, -10); g.lineTo(px + rx, py); g.lineTo(px - rx, py); g.fill();
+          g.fillStyle = 'rgba(' + c + ',.2)'; g.beginPath(); g.ellipse(px, py, rx, m * .045, 0, 0, 6.283); g.fill();
+        });
+        g.globalCompositeOperation = 'source-over';
+        g.fillStyle = '#fff3d6'; for (const d of dust) { g.globalAlpha = .12 + .2 * (.5 + .5 * Math.sin(t + d.ph)); g.beginPath(); g.arc(d.x + Math.sin(t * .3 + d.ph) * 14, d.y + Math.cos(t * .25 + d.ph) * 10, d.r, 0, 6.283); g.fill(); }
+        g.globalAlpha = 1;
+        const cw = W * .13;
+        for (const side of [0, 1]) for (let i = 0; i < 6; i++) { const w = cw / 6, x0 = side ? W - cw + i * w : i * w, sw = Math.sin(t * .8 + i * .9 + side) * 2, cg = g.createLinearGradient(x0, 0, x0 + w, 0); cg.addColorStop(0, '#5e0f1a'); cg.addColorStop(.5, '#a91f2e'); cg.addColorStop(1, '#5e0f1a'); g.fillStyle = cg; g.fillRect(x0 + sw, 0, w + 1, H); }
+        g.fillStyle = '#7d1522'; const sc = Math.ceil(W / 120); for (let i = 0; i < sc; i++) { const w = W / sc; g.beginPath(); g.moveTo(i * w, 0); g.lineTo(i * w + w, 0); g.lineTo(i * w + w, H * .05); g.quadraticCurveTo(i * w + w / 2, H * .13, i * w, H * .05); g.fill(); }
+        g.fillStyle = '#f2b84b'; g.fillRect(0, H * .05 - 3, W, 3);
+      },
+      finale() { FX.burst('confetti', ['#ffcf4a', '#a91f2e', '#fbeedd'], 160); },
+    };
+  };
+
+  // Economics: a price line that takes a step every second, with volume bars beneath; a rally on the minute.
+  BG.economics = cv => {
+    const K = canvasKit(cv); let ser = [], rally = 0;
+    const step = v => Math.max(.08, Math.min(.92, v + (Math.random() - .48 + rally) * .05));
+    return {
+      resize() { K.size(); ser = [.4]; for (let i = 1; i < 110; i++) ser.push(step(ser[i - 1])); },
+      pulse(kind) { if (reduce) return; if (kind === 'min') rally = .5; ser.push(step(ser[ser.length - 1])); ser.shift(); rally *= .8; },
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, n = ser.length, X = i => i / (n - 1) * W, Y = v => H * (.8 - v * .62);
+        g.fillStyle = '#0f1a17'; g.fillRect(0, 0, W, H);
+        g.strokeStyle = 'rgba(233,245,238,.07)'; g.lineWidth = 1; g.fillStyle = 'rgba(233,245,238,.3)'; g.font = '500 11px "JetBrains Mono", monospace'; g.textAlign = 'right';
+        g.beginPath(); for (let k = 0; k <= 6; k++) { const y = Math.round(H * (.18 + k * .1)) + .5; g.moveTo(0, y); g.lineTo(W, y); g.fillText((180 - k * 20).toFixed(2), W - 8, y - 5); } g.stroke();
+        for (let i = 1; i < n; i++) { const up = ser[i] >= ser[i - 1]; g.fillStyle = up ? 'rgba(61,220,132,.22)' : 'rgba(255,107,94,.22)'; const h = 8 + Math.abs(ser[i] - ser[i - 1]) * H * 1.6; g.fillRect(X(i) - W / n * .35, H - h, W / n * .7, h); }
+        const ar = g.createLinearGradient(0, H * .2, 0, H * .85); ar.addColorStop(0, 'rgba(61,220,132,.28)'); ar.addColorStop(1, 'rgba(61,220,132,0)');
+        g.fillStyle = ar; g.beginPath(); g.moveTo(0, H); ser.forEach((v, i) => g.lineTo(X(i), Y(v))); g.lineTo(W, H); g.fill();
+        g.strokeStyle = '#3ddc84'; g.lineWidth = 2.5; g.lineJoin = 'round'; g.beginPath(); ser.forEach((v, i) => i ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke();
+        const ly = Y(ser[n - 1]); g.fillStyle = '#3ddc84'; g.beginPath(); g.arc(W - 3, ly, 5, 0, 6.283); g.fill(); g.globalAlpha = .35 * (.5 + .5 * Math.sin(now / 300)); g.beginPath(); g.arc(W - 3, ly, 13, 0, 6.283); g.fill(); g.globalAlpha = 1;
+      },
+      finale() { rally = 1.2; for (let i = 0; i < 14; i++) this.pulse('sec'); FX.burst('dot', ['#3ddc84', '#e9f5ee', '#ffd34d'], 150); },
+    };
+  };
+
+  // Computing: an editor where lines of code (shown as coloured tokens) type themselves and scroll.
+  BG.computing = cv => {
+    const K = canvasKit(cv); let rows = [], ind = 0;
+    const COL = ['#7aa2f7', '#9ece6a', '#e0af68', '#f7768e', '#565f89', '#c0caf5'], LH = 26;
+    const mk = full => { ind = Math.max(0, Math.min(4, ind + (Math.random() < .3 ? 1 : Math.random() < .35 ? -1 : 0))); const toks = Array.from({ length: Math.random() < .12 ? 0 : 2 + (Math.random() * 5 | 0) }, () => ({ w: 22 + Math.random() * 90, c: COL[Math.random() * COL.length | 0] })); return { ind, toks, shown: full ? toks.length : 0 }; };
+    return {
+      resize() { K.size(); rows = Array.from({ length: Math.floor(K.H / LH) - 2 }, () => mk(true)); },
+      pulse() {},
+      frame(now) {
+        const g = K.g, W = K.W, H = K.H, max = Math.floor(H / LH) - 1;
+        g.fillStyle = '#14161c'; g.fillRect(0, 0, W, H); g.fillStyle = '#191c24'; g.fillRect(0, 0, 54, H);
+        if (!reduce) { const cur = rows[rows.length - 1]; if (!cur || cur.shown >= cur.toks.length) { rows.push(mk(false)); if (rows.length > max) rows.shift(); } else cur.shown += .09; }
+        g.font = '500 11px "IBM Plex Mono", monospace'; g.textAlign = 'right';
+        rows.forEach((r, i) => {
+          const y = 22 + i * LH; g.fillStyle = 'rgba(135,145,168,.4)'; g.fillText(i + 1, 42, y + 4);
+          let x = 70 + r.ind * 28; const n = Math.floor(r.shown);
+          for (let k = 0; k < r.toks.length && k <= n; k++) { const tk = r.toks[k], w = k < n ? tk.w : tk.w * (r.shown - n); g.globalAlpha = .5; g.fillStyle = tk.c; g.fillRect(x, y - 5, w, 10); x += w + 8; }
+          g.globalAlpha = 1;
+          if (i === rows.length - 1 && Math.floor(now / 500) % 2) { g.fillStyle = '#c0caf5'; g.fillRect(x - 4, y - 8, 8, 16); }
+        });
+      },
+      finale() { FX.burst('glyph', ['#9ece6a', '#7aa2f7', '#c0caf5'], 120); },
     };
   };
 
