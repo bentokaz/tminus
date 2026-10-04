@@ -40,6 +40,7 @@
 }
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
+html { scrollbar-gutter: stable; } /* a long page and a short one keep the same width, so the header never shifts */
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -436,6 +437,7 @@ button { cursor: pointer; }
 .search input, .tsearch { width: 100%; padding: 10px 12px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--bg); color: var(--ink); font: 400 15px/1.3 var(--f-ui); }
 .search input:focus, .tsearch:focus { outline: none; border-color: var(--ink); }
 .search { max-width: 420px; }
+#newBtn { width: 188px; justify-content: center; }
 .tsearch { grid-column: 1 / -1; }
 .tmenu .tsearch { margin-bottom: 2px; }
 .tmenu { text-shadow: none; }
@@ -485,6 +487,15 @@ button { cursor: pointer; }
 .stp button { border: 0; background: none; width: 36px; height: 36px; font: 500 18px/1 var(--f-num); }
 .stp button:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .stp b { min-width: 62px; text-align: center; font: 500 14px/1 var(--f-num); font-variant-numeric: tabular-nums; }
+.knum { width: 70px; padding: 8px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); font: 500 14px/1 var(--f-num); font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield; }
+.knum::-webkit-outer-spin-button, .knum::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.knum:focus { outline: none; border-color: var(--ink); }
+.kother { display: inline-flex; align-items: center; gap: 6px; font: 500 13px/1 var(--f-num); color: var(--ink-2); }
+.kown { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font: 500 13px/1 var(--f-num); color: var(--ink-2); }
+.kown > b { font: 600 11px/1 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-right: 4px; }
+.kown select { padding: 8px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); font: 500 14px/1 var(--f-ui); }
+.stp .knum { width: 52px; border: 0; background: none; text-align: center; padding: 8px 0; }
+.stp > span { font: 500 12px/1 var(--f-num); color: var(--ink-3); padding-right: 4px; }
 .xbtn { border: 0; background: none; color: var(--ink-3); width: 30px; height: 36px; font-size: 18px; line-height: 1; }
 .xbtn:hover { color: #c4321a; }
 .exread { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -549,12 +560,14 @@ body { -webkit-tap-highlight-color: transparent; }
   #newBtn { position: fixed; z-index: 21; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); min-height: 54px; padding: 0 20px 0 16px; font-size: 16px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.22); }
   #newBtn svg { width: 20px; height: 20px; }
   #newBtn .nb-long { display: none; }
+  #newBtn { width: auto; }
 
   .search { max-width: none; }
   #schoolBtn { position: absolute; left: auto; bottom: auto; right: 16px; top: calc(env(safe-area-inset-top, 0px) + 8px); width: 44px; height: 44px; }
   .top { padding-right: 54px; }
   .qt button { padding: 16px 4px 12px 10px; }
   .stp button, .xbtn { width: 42px; height: 44px; }
+  .knum, .kown select { font-size: 16px; min-height: 44px; }
   .kline { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .blr input[type=time] { font-size: 16px; padding: 9px 4px; }
   .sqr input, .blr input[type=text], .kline input[type=text], .kmore textarea { font-size: 16px; }
@@ -660,6 +673,7 @@ body { -webkit-tap-highlight-color: transparent; }
         <section class="sec">
           <div class="sechead"><h3>Quick timer</h3><span>Tap a number to start it full screen</span></div>
           <div class="qt" id="qt"></div>
+          <div class="kown"><b>Any length</b><input class="knum" type="number" id="qtMin" min="0" max="600" value="7" inputmode="numeric" aria-label="Minutes">min<input class="knum" type="number" id="qtSec" min="0" max="59" value="0" inputmode="numeric" aria-label="Seconds">sec<button class="btn primary" type="button" id="qtGo">Start</button></div>
           <div class="kline"><label class="check"><input type="checkbox" id="qtTraffic" checked><span>Green, amber, red frame</span></label><input type="text" id="qtTask" maxlength="140" placeholder="Task to show under the clock (optional)" aria-label="Task to show under the clock" autocomplete="off"></div>
         </section>
         <section class="sec">
@@ -683,6 +697,7 @@ body { -webkit-tap-highlight-color: transparent; }
         <section class="sec">
           <div class="sechead"><h3>Groups</h3><span id="grCount"></span></div>
           <div class="chips" id="grQuick"></div>
+          <div class="kown"><b>Any number</b><input class="knum" type="number" id="grN" min="1" max="100" value="12" inputmode="numeric" aria-label="Number"><select id="grMode" aria-label="What the number means"><option value="groups">groups</option><option value="size">in each group</option></select><button class="btn primary" type="button" id="grGo">Make</button></div>
           <div><button class="btn" type="button" id="grPick">Pick one name</button></div>
           <details class="kmore" id="grDet"><summary>Class list</summary><div><textarea id="grNames" aria-label="Class list, one name per line" placeholder="Aisha&#10;Ben&#10;Chloe&#10;Dev"></textarea><p>One name per line, or paste a list. It stays in this browser and is never sent anywhere.</p></div></details>
         </section>
@@ -3373,7 +3388,7 @@ body { -webkit-tap-highlight-color: transparent; }
     curTab = name;
     document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === name)));
     $('tab-cd').hidden = name !== 'cd'; $('tab-timer').hidden = name !== 'timer'; $('tab-sw').hidden = name !== 'sw';
-    $('tab-class').hidden = name !== 'class'; $('newBtn').hidden = name === 'class'; $('q').parentElement.hidden = name === 'class';
+    $('tab-class').hidden = name !== 'class'; $('newBtn').style.visibility = name === 'class' ? 'hidden' : ''; // keeps its place so the tabs do not shift $('q').parentElement.hidden = name === 'class';
     $('nbLong').textContent = name === 'cd' ? ' countdown' : name === 'timer' ? ' timer' : ' stopwatch';
     renderTools();
   }
@@ -3631,7 +3646,7 @@ body { -webkit-tap-highlight-color: transparent; }
   if (!Array.isArray(klass.seq) || !klass.seq.length) klass.seq = [['Starter', 5], ['Main activity', 25], ['Plenary', 10]];
   if (!Array.isArray(klass.bell)) klass.bell = [];
   if (typeof klass.names !== 'string') klass.names = '';
-  klass.mins = clamp(klass.mins | 0 || 90, 5, 360);
+  klass.mins = clamp(klass.mins | 0 || 90, 1, 600);
   const saveKlass = () => { try { localStorage.setItem(KKEY, JSON.stringify(klass)); } catch (e) {} };
   // the corner button: on, the app leads with the classroom tools, timers are plain, and full screen is projector view
   function setSchool(on, quiet) {
@@ -3648,8 +3663,16 @@ body { -webkit-tap-highlight-color: transparent; }
     tools.timers.push(T); saveTools(); renderTools(); openFocus('t-' + T.id); return T;
   }
   // a row of choices where exactly one is pressed
-  function chipset(box, items, get, set) {
-    const draw = () => { box.textContent = ''; items.forEach(([label, v]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', String(get() === v)); b.onclick = () => { set(v); saveKlass(); draw(); }; box.appendChild(b); }); };
+  function chipset(box, items, get, set, other) {
+    const draw = () => {
+      box.textContent = '';
+      items.forEach(([label, v]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b._v = v; b.setAttribute('aria-pressed', String(get() === v)); b.onclick = () => { set(v); saveKlass(); draw(); }; box.appendChild(b); });
+      if (!other) return;
+      const w = document.createElement('label'); w.className = 'kother'; const i = document.createElement('input'); i.type = 'number'; i.className = 'knum'; i.min = other.min; i.max = other.max; i.placeholder = 'Other'; i.inputMode = 'numeric'; i.setAttribute('aria-label', 'Other, in ' + other.unit);
+      if (!items.some(([, v]) => v === get())) i.value = get();
+      i.addEventListener('input', () => { if (i.value === '') return; set(clamp(Math.round(+i.value) || 0, other.min, other.max)); saveKlass(); box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b._v === get()))); });
+      w.append(i, other.unit); box.appendChild(w);
+    };
     draw(); return draw;
   }
   const minLabel = m => m < 1 ? Math.round(m * 60) + ' sec' : m + ' min';
@@ -3661,6 +3684,10 @@ body { -webkit-tap-highlight-color: transparent; }
     $('qt').appendChild(b);
   });
 
+  const qtStart = ms => newClassTimer({ label: fmtDur(ms), dur: ms, task: $('qtTask').value.trim(), traffic: $('qtTraffic').checked, running: true });
+  $('qtGo').addEventListener('click', () => { const ms = (clamp(+$('qtMin').value || 0, 0, 600) * 60 + clamp(+$('qtSec').value || 0, 0, 59)) * 1000; if (ms < 1000) return toast('Set a length first.'); qtStart(Math.round(ms)); });
+  ['qtMin', 'qtSec'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('qtGo').click(); }));
+
   /* sequence: rows you nudge with − and +, not a text format */
   const SV = [.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 45, 50, 60, 90];
   function drawSeq() {
@@ -3670,17 +3697,19 @@ body { -webkit-tap-highlight-color: transparent; }
       const n = document.createElement('i'); n.textContent = i + 1;
       const inp = document.createElement('input'); inp.type = 'text'; inp.maxLength = 60; inp.value = st[0]; inp.placeholder = 'Step ' + (i + 1); inp.setAttribute('aria-label', 'Name of step ' + (i + 1)); inp.autocomplete = 'off';
       inp.addEventListener('input', () => { st[0] = inp.value; saveKlass(); });
-      const stp = document.createElement('span'); stp.className = 'stp'; const val = document.createElement('b'); val.textContent = minLabel(st[1]);
-      const nudge = d => { let k = SV.findIndex(v => v >= st[1]); if (k < 0) k = SV.length - 1; st[1] = SV[clamp(k + d, 0, SV.length - 1)]; saveKlass(); val.textContent = minLabel(st[1]); seqTotal(); };
+      const stp = document.createElement('span'); stp.className = 'stp'; const val = document.createElement('input'); val.type = 'number'; val.className = 'knum'; val.min = .1; val.max = 600; val.step = 'any'; val.value = st[1]; val.inputMode = 'decimal'; val.setAttribute('aria-label', 'Minutes for step ' + (i + 1));
+      val.addEventListener('input', () => { const v = +val.value; if (v > 0) { st[1] = clamp(v, .1, 600); saveKlass(); seqTotal(); } });
+      const unit = document.createElement('span'); unit.textContent = 'min';
+      const nudge = d => { let k = SV.findIndex(v => v >= st[1]); if (k < 0) k = SV.length; if (d > 0 && SV[k] !== st[1]) k--; st[1] = SV[clamp(k + d, 0, SV.length - 1)]; saveKlass(); val.value = st[1]; seqTotal(); };
       const mk = (t, d, l) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-label', l); b.onclick = () => nudge(d); return b; };
-      stp.append(mk('−', -1, 'Shorter'), val, mk('+', 1, 'Longer'));
+      stp.append(mk('−', -1, 'Shorter'), val, unit, mk('+', 1, 'Longer'));
       const x = document.createElement('button'); x.type = 'button'; x.className = 'xbtn'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove step ' + (i + 1)); x.hidden = klass.seq.length < 2;
       x.onclick = () => { klass.seq.splice(i, 1); saveKlass(); drawSeq(); };
       r.append(n, inp, stp, x); box.appendChild(r);
     });
     seqTotal();
   }
-  function seqTotal() { const t = klass.seq.reduce((a, x) => a + x[1], 0); $('sqTotal').textContent = klass.seq.length + (klass.seq.length === 1 ? ' step · ' : ' steps · ') + (t >= 60 ? Math.floor(t / 60) + ' h ' + Math.round(t % 60) + ' min' : minLabel(t)); }
+  function seqTotal() { const t = klass.seq.reduce((a, x) => a + x[1], 0); $('sqTotal').textContent = klass.seq.length + (klass.seq.length === 1 ? ' step · ' : ' steps · ') + (t >= 60 ? Math.floor(t / 60) + ' h ' + Math.round(t % 60) + ' min' : minLabel(Math.round(t * 100) / 100)); }
   [['Lesson', [['Starter', 5], ['Main activity', 25], ['Plenary', 10]]], ['Think, pair, share', [['Think', 2], ['Pair', 3], ['Share', 5]]], ['Stations ×4', [['Station 1', 8], ['Move on', 1], ['Station 2', 8], ['Move on', 1], ['Station 3', 8], ['Move on', 1], ['Station 4', 8]]], ['Focus and breaks', [['Focus', 25], ['Break', 5], ['Focus', 25], ['Break', 5], ['Focus', 25], ['Long break', 15]]], ['Practice paper', [['Reading', 10], ['Writing', 45], ['Check your work', 5]]]].forEach(([name, rows]) => {
     const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.onclick = () => { klass.seq = rows.map(r => r.slice()); saveKlass(); drawSeq(); }; $('sqPresets').appendChild(b);
   });
@@ -3693,10 +3722,10 @@ body { -webkit-tap-highlight-color: transparent; }
 
   /* exam clock: length by presets and nudges, options as switches */
   const drawExam = () => { $('exRead').textContent = Math.floor(klass.mins / 60) + ':' + pad(klass.mins % 60); const sm = document.createElement('small'); sm.textContent = 'h : min'; $('exRead').appendChild(sm); };
-  const drawDur = chipset($('exDur'), [['30 min', 30], ['45 min', 45], ['1 h', 60], ['1 h 30', 90], ['2 h', 120], ['2 h 30', 150], ['3 h', 180]], () => klass.mins, v => { klass.mins = v; drawExam(); });
-  document.querySelectorAll('.exread .stp button').forEach(b => b.addEventListener('click', () => { klass.mins = clamp(klass.mins + +b.dataset.d, 5, 360); saveKlass(); drawExam(); drawDur(); }));
-  chipset($('exReadC'), [['None', 0], ['5 min', 5], ['10 min', 10], ['15 min', 15]], () => klass.read, v => { klass.read = v; });
-  chipset($('exExtraC'), [['None', 0], ['10%', 10], ['25%', 25], ['50%', 50]], () => klass.extra, v => { klass.extra = v; });
+  const drawDur = chipset($('exDur'), [['30 min', 30], ['45 min', 45], ['1 h', 60], ['1 h 30', 90], ['2 h', 120], ['2 h 30', 150], ['3 h', 180]], () => klass.mins, v => { klass.mins = v; drawExam(); }, { unit: 'min', min: 1, max: 600 });
+  document.querySelectorAll('.exread .stp button').forEach(b => b.addEventListener('click', () => { klass.mins = clamp(klass.mins + +b.dataset.d, 1, 600); saveKlass(); drawExam(); drawDur(); }));
+  chipset($('exReadC'), [['None', 0], ['5 min', 5], ['10 min', 10], ['15 min', 15]], () => klass.read, v => { klass.read = v; }, { unit: 'min', min: 0, max: 60 });
+  chipset($('exExtraC'), [['None', 0], ['10%', 10], ['25%', 25], ['50%', 50]], () => klass.extra, v => { klass.extra = v; }, { unit: '%', min: 0, max: 200 });
   chipset($('exSoundC'), [['Silent', false], ['Chimes', true]], () => !!klass.sound, v => { klass.sound = v; });
   drawExam();
   $('exGo').addEventListener('click', () => {
@@ -3733,6 +3762,8 @@ body { -webkit-tap-highlight-color: transparent; }
   [['2 groups', 'groups', 2], ['3 groups', 'groups', 3], ['4 groups', 'groups', 4], ['5 groups', 'groups', 5], ['6 groups', 'groups', 6], ['Pairs', 'size', 2], ['Threes', 'size', 3], ['Fours', 'size', 4]].forEach(([label, mode, n]) => {
     const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.onclick = () => { if (needNames(2)) return; lastAsk = [mode, n]; showGroups(); }; $('grQuick').appendChild(b);
   });
+  $('grGo').addEventListener('click', () => { if (needNames(2)) return; lastAsk = [$('grMode').value, clamp(Math.round(+$('grN').value) || 1, 1, 100)]; showGroups(); });
+  $('grN').addEventListener('keydown', e => { if (e.key === 'Enter') $('grGo').click(); });
   function pickName() {
     if (needNames(1)) return; const ns = names();
     let pool = ns.filter(x => !picked.includes(x)); if (!pool.length) { picked = []; pool = ns; } // everyone gets a turn before anyone gets a second
