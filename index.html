@@ -1990,7 +1990,6 @@ body { -webkit-tap-highlight-color: transparent; }
       rain: [['flash', { c: '#dfe8ff', dur: 2200 }]],
       chalk: [['doodle', { c: 'rgba(255,255,255,.75)', w: 3, dur: 8000 }]],
       party: [['cross', { spr: 'balloon', y: [.5, .8], s: .04, c: '#ff5d7a', c2: '#ffcf4a', dur: 14000, climb: -.3, bob: 1 }]],
-      lava: [['blob', { dur: 12000 }]],
       vinyl: [['sweep', { c: 'rgba(243,234,217,.7)', a: .14, dur: 3200 }]],
       dunes: [['cross', { spr: 'birds', y: [.1, .25], s: .02, c: '#5a3a22', dur: 13000 }], ['cross', { spr: 'balloon', y: [.14, .28], s: .03, c: '#b5461f', c2: '#fff1c9', dur: 30000, bob: .6 }]],
       circuit: [['sweep', { c: '#ffd34d', a: .18, glitch: 1, dur: 2400 }]],
@@ -2030,7 +2029,8 @@ body { -webkit-tap-highlight-color: transparent; }
     }
     return {
       reset() { ev = null; next = performance.now() + 9000 + R() * 14000; },
-      trigger(theme) { const list = MAP[theme]; if (!list || reduce) return; const [type, o] = list[R() * list.length | 0]; ev = { f: T[type], o, t0: performance.now(), dur: o.dur || 9000, st: {} }; },
+      trigger(theme) { if (reduce) return; if (bgi && bgi.event) return bgi.event(); // a theme can stage its own event inside its background
+        const list = MAP[theme]; if (!list) return; const [type, o] = list[R() * list.length | 0]; ev = { f: T[type], o, t0: performance.now(), dur: o.dur || 9000, st: {} }; },
       draw(g, now, theme) {
         if (reduce) return;
         const W = innerWidth, H = innerHeight;
@@ -2675,7 +2675,7 @@ body { -webkit-tap-highlight-color: transparent; }
   // Lava lamp: wax blobs that rise, sink, stretch and merge, computed as a metaball field
   // on a half-size grid and scaled up; hotter (denser) wax glows yellow. They churn every minute.
   BG.lava = cv => {
-    const K = canvasKit(cv); let blobs = [], off = null, og = null, im = null, w = 0, h = 0, stir = -1e9, phase = 0, lastN = 0;
+    const K = canvasKit(cv); let blobs = [], off = null, og = null, im = null, w = 0, h = 0, stir = -1e9, phase = 0, lastN = 0, big = -1e9, bigX = .5;
     return {
       resize() {
         K.size(); const sc = Math.max(2.5, Math.sqrt(K.W * K.H / 230000)); // fine enough that the wax edges stay smooth
@@ -2685,12 +2685,16 @@ body { -webkit-tap-highlight-color: transparent; }
         blobs = Array.from({ length: 9 }, () => ({ x: w * (.1 + Math.random() * .8), r: m * (.07 + Math.random() * .075), ph: Math.random() * 6.283, sp: .05 + Math.random() * .07, dx: Math.random() * 6.283 }));
       },
       pulse(kind) { if (kind === 'min') stir = performance.now(); },
+      // the passing event is part of the lamp itself: one very large bubble of the same wax climbs from the pool at the
+      // bottom to the cap, merging with whatever it meets on the way
+      event() { big = performance.now(); bigX = .2 + Math.random() * .6; },
       frame(now) {
         const g = K.g; if (!im) return;
         const dt = lastN ? Math.min(.1, (now - lastN) / 1000) : 0; lastN = now;
         if (!reduce) phase += dt * (1 + (now - stir < 6000 ? Math.sin((now - stir) / 6000 * Math.PI) * 4 : 0));
         const bs = blobs.map(b => ({ x: b.x + Math.sin(phase * .13 + b.dx) * w * .06, y: h * (.5 + .47 * Math.sin(phase * b.sp + b.ph)), q: b.r * b.r }));
         bs.push({ x: w * .5, y: h + h * .2, q: (h * .3) * (h * .3) }, { x: w * .3, y: -h * .16, q: (h * .22) * (h * .22) }); // pools at the base and the cap
+        const ub = (now - big) / 15000; if (ub >= 0 && ub < 1) bs.push({ x: w * bigX + Math.sin(phase * .2) * w * .04, y: h * (1.28 - 1.6 * ub), q: Math.pow(Math.min(w, h) * (.17 + .03 * Math.sin(ub * 9)), 2) });
         const d = im.data;
         for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4) {
           let v = 0;
