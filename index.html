@@ -682,7 +682,15 @@ body { -webkit-tap-highlight-color: transparent; }
 }
 
 /* ---------- flat controls, the sheet's top bar, empty states, field errors ---------- */
-.ktabs { border: 0; border-radius: 3px; background: color-mix(in srgb, var(--ink) 7%, transparent); }
+/* the classroom tool tabs are deliberately not the header's control: no track, they stand on a heavy rule,
+   and the chosen one is filled in the accent colour, so the two rows never read as one */
+.ktabs { border: 0; border-bottom: 2px solid var(--ink); border-radius: 0; background: none; padding: 0; gap: 0; margin-top: 8px; }
+.ktabs button { border-radius: 0; padding: 14px 8px 13px; color: var(--ink-2); font-size: 15px; }
+.ktabs button + button { box-shadow: inset 1px 0 0 var(--rule); }
+.ktabs button:hover { color: var(--ink); }
+.ktabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.ktabs button[aria-pressed="true"] + button { box-shadow: none; }
+@media (max-width: 640px) { .ktabs button { font-size: 11px; padding: 10px 2px 9px; } }
 @media (min-width: 641px) { .tabs { border: 0; border-radius: 3px; background: color-mix(in srgb, var(--ink) 7%, transparent); } }
 .tabs button, .ktabs button { border-radius: 2px; }
 .chips button { border: 0; border-radius: 2px; background: color-mix(in srgb, var(--ink) 7%, transparent); }
