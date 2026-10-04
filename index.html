@@ -3218,6 +3218,95 @@ body { -webkit-tap-highlight-color: transparent; }
     $('fbscrim').hidden = true; toast('GitHub opened with your report filled in. Press Create there to send it.');
   });
 
+  /* ---------- test panel (for the developer): add #test to the address, or tap the T-Minus logo five times ----------
+     It can move the app's clock, so anything that normally needs a long wait can be seen in seconds. */
+  const RealDate = Date; let tOff = 0, tPanel = null, tStat = null, tour = 0;
+  function setOff(ms) {
+    tOff = ms;
+    if (!window.__tminusClock) { // every Date the app reads from now on is shifted by tOff
+      window.__tminusClock = true;
+      window.Date = class extends RealDate { constructor(...a) { if (a.length) super(...a); else super(RealDate.now() + tOff); } static now() { return RealDate.now() + tOff; } };
+    }
+    renderList(); renderTools(); if (focusId) focusTick(false); testStatus();
+  }
+  function testStatus() {
+    if (!tStat) return;
+    const cd = focusId && find(focusId);
+    tStat.textContent = (tOff ? 'TEST CLOCK ' + (tOff < 0 ? '-' : '+') + shortDur(Math.abs(tOff)) + ' → ' + fmtWhen(Date.now()) : 'Clock: real time') +
+      '\nOpen: ' + (cd ? (cd.kind || 'countdown') + ' “' + cd.title + '”' : 'nothing') +
+      '\n' + innerWidth + '×' + innerHeight + ' · ' + (canLink ? 'website' : 'embedded') + ' · sound ' + (muted ? 'off' : 'on') + ' · notify ' + (notifOK ? (wantNotif ? Notification.permission : 'off') : 'n/a') + ' · shared ' + (sharedOK ? (sharedRO ? 'read-only' : 'on') : 'off') + ' · v' + APPV;
+  }
+  function testPanel() {
+    if (tPanel) { tPanel.hidden = false; return testStatus(); }
+    tPanel = document.createElement('div');
+    tPanel.style.cssText = 'position:fixed;z-index:90;left:8px;top:64px;width:min(310px,calc(100vw - 16px));max-height:calc(100dvh - 76px);overflow:auto;background:#101214;color:#eee;border:1px solid #666;border-radius:6px;padding:8px 10px 10px;font:12px/1.4 system-ui,sans-serif';
+    const body = document.createElement('div'); body.style.cssText = 'display:grid;gap:4px';
+    const mkBtn = (label, fn, par) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.style.cssText = 'border:1px solid #666;background:#22262a;color:#eee;border-radius:4px;padding:6px 8px;font:inherit'; b.onclick = () => { fn(); testStatus(); }; par.appendChild(b); return b; };
+    const head = document.createElement('div'); head.style.cssText = 'display:flex;gap:6px;align-items:center;margin-bottom:6px';
+    const ttl = document.createElement('b'); ttl.textContent = 'Test panel'; ttl.style.flex = '1'; head.appendChild(ttl);
+    mkBtn('Min', () => { body.hidden = !body.hidden; }, head); mkBtn('Close', () => { tPanel.hidden = true; }, head);
+    tStat = document.createElement('div'); tStat.style.cssText = 'white-space:pre-wrap;color:#ffd166;margin-bottom:2px';
+    let row = null;
+    const sec = name => { const h = document.createElement('div'); h.textContent = name; h.style.cssText = 'margin-top:6px;color:#9aa;text-transform:uppercase;letter-spacing:.08em;font-size:10.5px'; row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px'; body.append(h, row); };
+    const btn = (label, fn) => mkBtn(label, fn, row);
+    const openCd = () => { const cd = focusId && find(focusId); if (!cd || cd.kind) { toast('Open a countdown first'); return null; } return cd; };
+    const needOpen = fn => () => { if (!focusId || !bgi) return toast('Open a countdown, timer or stopwatch first'); fn(); };
+    const make = (title, ms, extra) => { const now = Date.now(), it = Object.assign({ id: uid(), title, target: now + ms, theme: 'minimal', repeat: 'none', every: 1, note: '', tz: '', tags: ['test'], createdAt: now - DAY, test: true }, extra); mine.push(it); saveMine(); renderList(); openFocus(it.id); };
+    const makeTimer = ms => { const now = Date.now(), T = { id: uid(), label: 'Test ' + ms / 1000 + ' s', theme: 'minimal', dur: ms, left: ms, endAt: now + ms, running: true, done: false, createdAt: now, test: true }; tools.timers.push(T); saveTools(); renderTools(); openFocus('t-' + T.id); };
+    body.appendChild(tStat);
+
+    sec('Move the clock');
+    [['+10 s', 1e4], ['+1 min', 6e4], ['+1 h', 36e5], ['+1 day', DAY], ['+1 wk', 7 * DAY], ['+30 d', 30 * DAY]].forEach(([l, ms]) => btn(l, () => setOff(tOff + ms)));
+    btn('To 5 s before zero', () => { const cd = openCd(); if (!cd) return; const o = occ(cd, Date.now()); if (o.mode !== 'down') return toast('It has already arrived. Reset the clock first.'); setOff(o.t - 5000 - RealDate.now()); });
+    btn('To 5 s before next milestone', () => { const cd = openCd(); if (!cd) return; const now = Date.now(), o = occ(cd, now), nm = o.mode === 'down' && MILES.find(([ms]) => o.t - now > ms); if (!nm) return toast('No milestone left before zero'); setOff(o.t - nm[0] - 5000 - RealDate.now()); });
+    btn('Reset clock', () => setOff(0));
+
+    sec('The open view');
+    btn('End animation', needOpen(() => { bgi.finale(); chime(previewTheme || find(focusId).theme, 1); }));
+    btn('Second pulse', needOpen(() => bgi.pulse('sec')));
+    btn('Minute pulse', needOpen(() => bgi.pulse('min')));
+    btn('Tour: every theme + its ending', () => {
+      const stop = () => { clearInterval(tour); tour = 0; previewTheme = null; if (focusId) openFocus(focusId); };
+      if (tour) return stop();
+      if (!focusId) return toast('Open a countdown, timer or stopwatch first');
+      let i = 0; const keys = TKEYS.slice();
+      const step = () => { if (!focusId || i >= keys.length) return stop(); previewTheme = keys[i++]; openFocus(focusId, true); toast(i + '/' + keys.length + ' ' + THEMES[previewTheme].name); setTimeout(() => { if (tour && bgi) bgi.finale(); }, 1500); };
+      step(); tour = setInterval(step, 5000);
+    });
+
+    sec('Make a test item (opens it)');
+    btn('Countdown 10 s', () => make('Test: 10 seconds', 1e4));
+    btn('Countdown 70 s', () => make('Test: 70 seconds', 7e4));
+    btn('10 min + 8 s', () => make('Test: 10 minute milestone', 6e5 + 8e3));
+    btn('1 h + 8 s', () => make('Test: 1 hour milestone', 36e5 + 8e3));
+    btn('1 day + 8 s', () => make('Test: 1 day milestone', DAY + 8e3));
+    btn('100 days + 8 s', () => make('Test: 100 day milestone', 100 * DAY + 8e3));
+    btn('Weekly, due in 10 s', () => make('Test: weekly repeat', 1e4, { repeat: 'weekly' }));
+    btn('Every 2 days, due in 10 s', () => make('Test: every 2 days', 1e4, { repeat: 'days', every: 2 }));
+    btn('Finished yesterday', () => make('Test: finished', -DAY, { createdAt: Date.now() - 3 * DAY }));
+    btn('In Berlin time, 2 h', () => make('Test: Berlin', 2 * 36e5, { tz: 'Europe/Berlin' }));
+    btn('Timer 5 s', () => makeTimer(5000));
+    btn('Timer 65 s', () => makeTimer(65000));
+    btn('Stopwatch at 59:55', () => { const now = Date.now(), T = { id: uid(), label: 'Test 59:55', theme: 'board', acc: 3595000, startAt: now, running: true, laps: [], createdAt: now, test: true }; tools.sws.push(T); saveTools(); renderTools(); openFocus('w-' + T.id); });
+    btn('Remove test items', () => { if (focusId) closeFocus(); mine = mine.filter(c => !c.test); saveMine(); tools.timers = tools.timers.filter(t => !t.test); tools.sws = tools.sws.filter(t => !t.test); saveTools(); renderList(); renderTools(); toast('Test items removed'); });
+
+    sec('Alerts');
+    const curTheme = () => { const cd = focusId && find(focusId); return cd ? previewTheme || cd.theme : 'minimal'; };
+    btn('Chime ×1', () => chime(curTheme(), 1));
+    btn('Chime ×3', () => chime(curTheme(), 3));
+    btn('Bell', () => chime('minimal', 1)); btn('Beep', () => chime(SOUND.beep[0], 1));
+    btn('Message', () => toast('Test: 1 week to go'));
+    btn('Message + Undo', () => toast('Deleted “Test”', 'Undo', () => toast('Undo pressed')));
+    btn('Notification', () => { notify('Test notification'); if (!(notifOK && wantNotif)) toast('Notifications are off: turn on “Notify me at zero” in the More menu (website only).'); });
+    btn('Feedback form', openFeedback);
+
+    tPanel.append(head, body); document.body.appendChild(tPanel); testStatus();
+    setInterval(() => { if (!tPanel.hidden) testStatus(); }, 1000);
+  }
+  if (location.hash === '#test') setTimeout(testPanel, 0);
+  addEventListener('hashchange', () => { if (location.hash === '#test') testPanel(); });
+  { let taps = []; document.querySelector('.brand b').addEventListener('click', () => { const n = RealDate.now(); taps = taps.filter(t => n - t < 3000); taps.push(n); if (taps.length >= 5) { taps = []; testPanel(); } }); }
+
   /* ================= wiring ================= */
   $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
   $('cancelBtn').addEventListener('click', closeEditor);
