@@ -694,11 +694,11 @@ body { -webkit-tap-highlight-color: transparent; }
 #schoolBtn:hover { background: color-mix(in srgb, var(--ink) 17%, transparent); }
 #newBtn { border-radius: 2px; letter-spacing: .07em; text-transform: uppercase; font-size: 12.5px; font-weight: 700; }
 .tp { border-radius: 3px; }
-.sheet { border-radius: 3px; }
+.sheet { border-radius: 3px; padding-top: 0; } /* no top padding: the bar sits flush with the top edge and nothing shows above it */
 .ib { border-radius: 2px; }
 .calh button, .calg button, .holl button, .tag { border-radius: 2px; }
 /* the sheet's title and its Cancel / Save stay at the top while the form scrolls */
-.shead { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -22px calc(clamp(16px, 4vw, 28px) * -1) 0; padding: 12px clamp(16px, 4vw, 28px); background: var(--panel); border-bottom: 2px solid var(--ink); }
+.shead { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 calc(clamp(16px, 4vw, 28px) * -1); padding: 12px clamp(16px, 4vw, 28px); background: var(--panel); border-bottom: 2px solid var(--ink); }
 .shead h2 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sbtns { display: flex; gap: 6px; flex: none; }
 .acts:not(:has(button:not([hidden]))) { display: none; }
