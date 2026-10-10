@@ -1207,10 +1207,22 @@ body { -webkit-tap-highlight-color: transparent; }
   function loadMine() {
     let raw = null;
     try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
-    if (raw && Array.isArray(raw.items)) { mine = raw.items; return; }
+    if (raw && Array.isArray(raw.items)) { mine = raw.items; mineOther = []; return; }
     mine = examples(); saveMine();
   }
-  function saveMine() { try { localStorage.setItem(KEY, JSON.stringify({ items: mine })); } catch (e) {} markChanged(); }
+  // School mode and personal mode each have their own countdowns, timers and stopwatches. An item carries a
+  // "school" flag; mine / tools hold the current mode's items and mineOther / toolsOther hold the rest.
+  let mineOther = [];
+  const toolsOther = { timers: [], sws: [] };
+  const schoolOn = () => { try { return !!klass.on; } catch (e) { return false; } };
+  const tagMode = list => list.forEach(x => { if (x.school == null) x.school = schoolOn(); });
+  function applyMode() {
+    const on = schoolOn(), split = (a, b) => { const all = a.concat(b); return [all.filter(x => !!x.school === on), all.filter(x => !!x.school !== on)]; };
+    [mine, mineOther] = split(mine, mineOther);
+    [tools.timers, toolsOther.timers] = split(tools.timers, toolsOther.timers);
+    [tools.sws, toolsOther.sws] = split(tools.sws, toolsOther.sws);
+  }
+  function saveMine() { tagMode(mine); try { localStorage.setItem(KEY, JSON.stringify({ items: mine.concat(mineOther) })); } catch (e) {} markChanged(); }
   function at(y, mo, d, h) { return new Date(y, mo, d, h || 0, 0, 0).getTime(); }
   function examples() {
     const now = Date.now(), y = new Date().getFullYear();
@@ -1318,7 +1330,7 @@ body { -webkit-tap-highlight-color: transparent; }
   function syncShell() {
     let school = false, classes = 0; try { school = klass.on; classes = klass.classes.filter(c => c.names.trim()).length; } catch (e) {}
     let nCustom = 0; try { nCustom = customs.length; } catch (e) {} // this can run before the later sections have set themselves up
-    const own = mine.filter(c => !c.example).length, fresh = !lsGet('tminus.lvl') && !own && !tools.timers.length && !tools.sws.length && !school;
+    const own = mine.concat(mineOther).filter(c => !c.example).length, fresh = !lsGet('tminus.lvl') && !own && !tools.timers.length && !tools.sws.length && !school;
     const was = document.body.classList.contains('fresh');
     if (!fresh && !lsGet('tminus.lvl')) lsSet('tminus.lvl', '1');
     document.body.classList.toggle('fresh', fresh); $('welcome').hidden = !fresh;
@@ -2685,8 +2697,8 @@ body { -webkit-tap-highlight-color: transparent; }
         blobs = Array.from({ length: 9 }, () => ({ x: w * (.1 + Math.random() * .8), r: m * (.07 + Math.random() * .075), ph: Math.random() * 6.283, sp: .05 + Math.random() * .07, dx: Math.random() * 6.283 }));
       },
       pulse(kind) { if (kind === 'min') stir = performance.now(); },
-      // the passing event is part of the lamp itself: one very large bubble of the same wax climbs from the pool at the
-      // bottom to the cap, merging with whatever it meets on the way
+      // the passing event: a string of bubbles in a second, blue-white wax spirals up through the lamp. It is drawn
+      // in the same field as the orange wax, so the two colours stretch and blend where they touch.
       event() { big = performance.now(); bigX = .2 + Math.random() * .6; },
       frame(now) {
         const g = K.g; if (!im) return;
@@ -2694,12 +2706,20 @@ body { -webkit-tap-highlight-color: transparent; }
         if (!reduce) phase += dt * (1 + (now - stir < 6000 ? Math.sin((now - stir) / 6000 * Math.PI) * 4 : 0));
         const bs = blobs.map(b => ({ x: b.x + Math.sin(phase * .13 + b.dx) * w * .06, y: h * (.5 + .47 * Math.sin(phase * b.sp + b.ph)), q: b.r * b.r }));
         bs.push({ x: w * .5, y: h + h * .2, q: (h * .3) * (h * .3) }, { x: w * .3, y: -h * .16, q: (h * .22) * (h * .22) }); // pools at the base and the cap
-        const ub = (now - big) / 15000; if (ub >= 0 && ub < 1) bs.push({ x: w * bigX + Math.sin(phase * .2) * w * .04, y: h * (1.28 - 1.6 * ub), q: Math.pow(Math.min(w, h) * (.17 + .03 * Math.sin(ub * 9)), 2) });
+        const ub = (now - big) / 13000, es = [];
+        if (ub >= 0 && ub < 1.3) for (let k = 0; k < 7; k++) { const uk = ub * 1.25 - k * .045; if (uk > 0 && uk < 1) es.push({ x: w * bigX + Math.sin(uk * 13 + k * .6) * w * .075, y: h * (1.12 - 1.3 * uk), q: Math.pow(Math.min(w, h) * (.085 - k * .008), 2) }); }
         const d = im.data;
         for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i += 4) {
           let v = 0;
           for (let k = 0; k < bs.length; k++) { const ex = x - bs[k].x, ey = y - bs[k].y; const a = bs[k].q / (ex * ex + ey * ey + 1); v += a * a; }
+          let ve = 0;
+          for (let k = 0; k < es.length; k++) { const ex = x - es[k].x, ey = y - es[k].y; const a = es[k].q / (ex * ex + ey * ey + 1); ve += a * a; }
+          v += ve;
           if (v < .92) { d[i + 3] = 0; continue; }
+          if (ve > .02) { // event wax: blue at the edge, white-hot in the middle, blended into the orange by how much of the field is its own
+            const m = Math.min(1, ve / v * 1.25), hot2 = Math.min(1, (v - 1) / 5), hb = Math.min(1, (v - 1) / 6);
+            d[i] = (1 - m) * 255 + m * (70 + hot2 * 185); d[i + 1] = (1 - m) * (86 + hb * 132) + m * (190 + hot2 * 65); d[i + 2] = (1 - m) * (34 + hb * 60) + m * 255; d[i + 3] = Math.min(1, (v - .92) / .18) * 240; continue;
+          }
           const hot = Math.min(1, (v - 1) / 6);
           d[i] = 255; d[i + 1] = 86 + hot * 132; d[i + 2] = 34 + hot * 60; d[i + 3] = Math.min(1, (v - .92) / .18) * 240;
         }
@@ -3671,7 +3691,7 @@ body { -webkit-tap-highlight-color: transparent; }
   tools.sws = tools.sws.filter(s => s && typeof s.id === 'string');
   tools.timers.concat(tools.sws).forEach(t => { if (!THEMES[t.theme]) t.theme = 'minimal'; if (typeof t.label !== 'string') t.label = ''; });
   tools.sws.forEach(s => { if (!Array.isArray(s.laps)) s.laps = []; s.acc = +s.acc || 0; });
-  const saveTools = () => { try { localStorage.setItem(TKEY, JSON.stringify(tools)); } catch (e) {} };
+  const saveTools = () => { tagMode(tools.timers); tagMode(tools.sws); try { localStorage.setItem(TKEY, JSON.stringify({ timers: tools.timers.concat(toolsOther.timers), sws: tools.sws.concat(toolsOther.sws) })); } catch (e) {} };
   function toolCd(id) {
     if (typeof id !== 'string') return null;
     const k = id.slice(0, 2), T = k === 't-' ? tools.timers.find(t => t.id === id.slice(2)) : k === 'w-' ? tools.sws.find(s => s.id === id.slice(2)) : null;
@@ -3740,7 +3760,7 @@ body { -webkit-tap-highlight-color: transparent; }
   const seen = new Map(), remSeen = new Map(), leftSeen = new Map();
   function watch() {
     const now = Date.now();
-    for (const cd of all()) {
+    for (const cd of all().concat(mineOther)) {
       const o = occ(cd, now), m = o.mode, was = seen.get(cd.id); seen.set(cd.id, m);
       const rem = o.t - now, pr = remSeen.get(cd.id); remSeen.set(cd.id, m === 'down' ? rem : null);
       if (m === 'down' && pr != null && pr > rem && pr - rem < 60000) {
@@ -3753,7 +3773,7 @@ body { -webkit-tap-highlight-color: transparent; }
       }
     }
     let changed = false;
-    for (const T of tools.timers) {
+    for (const T of tools.timers.concat(toolsOther.timers)) {
       if (!T.running) continue;
       const here = focusId === 't-' + T.id && bgi, loud = !T.exam || T.exam.sound, lastStep = !T.steps || (T.step | 0) >= T.steps.length - 1;
       const l = T.endAt - now, pl = leftSeen.get(T.id); leftSeen.set(T.id, l);
@@ -4056,16 +4076,17 @@ body { -webkit-tap-highlight-color: transparent; }
     if (!cd.kind && canLink) item('Add to calendar', '.ics file', () => { saveICS(cd); m.hidden = true; });
     if (!cd.kind && all().length > 1) item('Slideshow', slideT ? 'Stop' : 'Start', () => { toggleSlides(); m.hidden = true; });
     item('Projector view', presentOn ? 'On' : 'Off', () => { presentOn = !presentOn; F.classList.toggle('present', presentOn); if (presentOn) toast('Buttons hide until you move the mouse or tap the screen'); buildMore(); });
+    if (!cd.shared && !cd.linked) item(schoolOn() ? 'Copy to personal' : 'Copy to school mode', 'Makes a copy', () => { m.hidden = true; copyAcross(cd); });
     item('Send feedback', 'Bug or idea', () => { m.hidden = true; openFeedback(); });
   }
   function cleanItem(v) {
     if (!v || typeof v.title !== 'string' || !isFinite(v.target) || !THEMES[v.theme]) return null;
     return { id: typeof v.id === 'string' && /^[a-z0-9]{4,24}$/i.test(v.id) ? v.id : uid(), title: v.title.slice(0, 80), target: +v.target, theme: v.theme,
-      repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', tz: validTz(v.tz) ? v.tz : '', tags: cleanTags(v.tags), createdAt: +v.createdAt || Date.now() };
+      repeat: REPEATS.includes(v.repeat) ? v.repeat : 'none', every: clamp(v.every | 0 || 1, 1, 365), note: typeof v.note === 'string' ? v.note.slice(0, 200) : '', tz: validTz(v.tz) ? v.tz : '', tags: cleanTags(v.tags), createdAt: +v.createdAt || Date.now(), school: v.school == null ? undefined : !!v.school };
   }
   $('expBtn').addEventListener('click', async () => {
     lsSet('tminus.bk', Date.now()); setTimeout(syncShell, 50);
-    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine, themes: customs, school: { classes: klass.classes, seq: klass.seq, bell: klass.bell } }, null, 1);
+    const text = JSON.stringify({ app: 'tminus', v: 1, items: mine.concat(mineOther), themes: customs, school: { classes: klass.classes, seq: klass.seq, bell: klass.bell } }, null, 1);
     if (canLink) { download('tminus-backup.json', text, 'application/json'); return toast('Backup saved as tminus-backup.json'); }
     try { await navigator.clipboard.writeText(text); toast('Backup copied. Paste it into a file named tminus-backup.json.'); }
     catch (e) { toast('Could not copy the backup here. Use the website version to export.'); }
@@ -4078,7 +4099,7 @@ body { -webkit-tap-highlight-color: transparent; }
       const items = (Array.isArray(d) ? d : d.items).map(cleanItem).filter(Boolean);
       if (!items.length) throw 0;
       items.forEach(it => { const i = mine.findIndex(c => c.id === it.id); if (i >= 0) mine[i] = it; else mine.push(it); });
-      saveMine(); renderList(); toast(`Imported ${items.length} countdown${items.length === 1 ? '' : 's'}`);
+      saveMine(); applyMode(); renderList(); toast(`Imported ${items.length} countdown${items.length === 1 ? '' : 's'}`);
     } catch (err) { toast('That file is not a T-Minus backup.'); }
   });
 
@@ -4209,6 +4230,7 @@ body { -webkit-tap-highlight-color: transparent; }
   // the corner button: on, the app leads with the classroom tools, timers are plain, and full screen is projector view
   function setSchool(on, quiet) {
     klass.on = on; saveKlass(); document.body.classList.toggle('school', on); $('schoolBtn').setAttribute('aria-pressed', String(on)); presentOn = on;
+    applyMode(); if (!quiet) { renderList(); renderTools(); } // at start-up the lists are drawn once everything has loaded
     if (on) setTab('class'); else if (curTab === 'class') setTab('cd');
     if (!quiet) toast(on ? 'School mode on' : 'School mode off');
   }
@@ -4587,6 +4609,18 @@ body { -webkit-tap-highlight-color: transparent; }
     if (!ac.children.length || !ac.firstElementChild.children.length) ac.remove();
   });
 
+  // a copy of a countdown, timer or stopwatch for the other mode (fresh id, timers and stopwatches reset to ready)
+  function copyAcross(cd) {
+    const to = !schoolOn(), now = Date.now();
+    if (cd.kind) {
+      const T = JSON.parse(JSON.stringify(cd.tool)); T.id = uid(); T.school = to; T.createdAt = now; T.running = false; T.done = false; delete T.bell;
+      if (cd.kind === 'timer') { if (T.steps) { T.step = 0; T.dur = T.steps[0].ms; } T.left = T.dur; T.startedAt = 0; toolsOther.timers.push(T); }
+      else { T.acc = 0; T.laps = []; toolsOther.sws.push(T); }
+      saveTools();
+    } else { const c = JSON.parse(JSON.stringify(mine.find(x => x.id === cd.id) || cd)); c.id = uid(); c.school = to; c.createdAt = now; delete c.example; delete c.shared; mineOther.push(c); saveMine(); }
+    toast('Copied to ' + (to ? 'school mode' : 'personal'), 'Switch', () => { if (focusId) closeFocus(); setSchool(to); if (!cd.kind) setTab('cd'); else setTab(cd.kind === 'timer' ? 'timer' : 'sw'); });
+  }
+
   /* ================= wiring ================= */
   $('newBtn').addEventListener('click', () => curTab === 'cd' ? openEditor(null) : openToolSheet(curTab));
   $('cancelBtn').addEventListener('click', closeEditor);
@@ -4627,7 +4661,7 @@ body { -webkit-tap-highlight-color: transparent; }
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (bgi) bgi.resize(); });
 
   try { $('tzname').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { $('tzname').textContent = 'local'; }
-  loadMine(); mine.forEach(c => { if (!THEMES[c.theme]) c.theme = 'minimal'; }); renderList();
+  loadMine(); mine.forEach(c => { if (!THEMES[c.theme]) c.theme = 'minimal'; }); applyMode(); renderList(); renderTools();
   if (!klass.on) { const lt = lsGet('tminus.tab'); if (tools.timers.some(t => t.running || t.done)) setTab('timer'); else if (lt === 'timer' || lt === 'sw') setTab(lt); }
   setInterval(() => { tickList(); if (focusId) focusTick(false); }, 250);
   // re-sort once a minute so finished countdowns move down the list
